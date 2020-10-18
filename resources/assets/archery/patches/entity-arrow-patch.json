@@ -1,0 +1,20 @@
+[ 
+	{ 
+		file: "game:entities/arrow", op: "replace", path: "/client/behaviors/0", value: 
+		{ 
+			code: "passivephysics", 
+			airDragFallingFactor: 0.25
+		}
+	},
+	{ 
+		file: "game:entities/arrow", op: "replace", path: "/server/behaviors/0", value: 
+		{ 
+			code: "passivephysics", 
+			airDragFallingFactor: 0.25
+		}
+	},
+
+	
+	{ file: "game:entities/arrow", op: "add", path: "/variantgroups/0/states/-", value: "obsidian"},
+	{ file: "game:entities/arrow", op: "add", path: "/client/shapeByType/arrow-obsidian", value: { base: "item/tool/arrow-stone" }}
+]

@@ -1,0 +1,20 @@
+[ 
+	{ 
+		file: "game:entities/spear", op: "replace", path: "/client/behaviors/0", value: 
+		{ 
+			code: "passivephysics", 
+			airDragFallingFactor: 0.6
+		}
+	},
+	{ 
+		file: "game:entities/spear", op: "replace", path: "/server/behaviors/0", value: 
+		{ 
+			code: "passivephysics", 
+			airDragFallingFactor: 0.6
+		}
+	},
+
+	
+	{ file: "game:entities/spear", op: "add", path: "/variantgroups/0/states/-", value: "iron"},
+	{ file: "game:entities/spear", op: "add", path: "/client/shapeByType/spear-iron", value: { base: "item/tool/spear-copper", offsetX: -0.8125 }}
+]

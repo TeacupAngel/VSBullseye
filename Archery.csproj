@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyTitle>Archery</AssemblyTitle>
+        <Authors>Rahjital</Authors>
+        <Version>0.1.0</Version>
+        <Description>A mod made to research procedural generation of towns, as inspired by the GDMC competition.</Description>
+        <RepositoryUrl/>
+        <TargetFramework>net452</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="VintagestoryAPI">
+            <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
+        </Reference>
+        <Reference Include="VSEssentials">
+            <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
+        </Reference>
+        <Reference Include="VSSurvivalMod">
+            <HintPath>$(VINTAGE_STORY)/Mods/VSSurvivalMod.dll</HintPath>
+        </Reference>
+        <Reference Include="VintagestoryLib">
+            <HintPath>$(VINTAGE_STORY)/VintagestoryLib.dll</HintPath>
+        </Reference>
+        <Reference Include="Cairo">
+            <HintPath>$(VINTAGE_STORY)/Lib/cairo-sharp.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="protobuf-net" Version="2.1.0"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ModResources Include="$(MSBuildProjectDirectory)/resources/**/*.*"/>
+    </ItemGroup>
+    <Target Name="Copy" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(VINTAGE_STORY_DATA)/Mods"/>
+        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(VINTAGE_STORY_DATA)/Mods"/>
+    </Target>
+    <Target Name="Package" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+        <MakeDir Directories="$(OutputDirectory)release/$(TargetName)" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(OutputDirectory)release/$(TargetName)"/>
+        <Copy SourceFiles="@(ModResources)" DestinationFolder="$(OutputDirectory)release/$(TargetName)/%(RecursiveDir)"/>
+        <ZipDirectory SourceDirectory="$(OutputDirectory)release/$(TargetName)" DestinationFile="$(MSBuildProjectDirectory)/release/$(TargetName).zip" Overwrite="true" />
+    </Target>
+</Project>

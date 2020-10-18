@@ -1,0 +1,23 @@
+[
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/variantgroups/0/states/-", value: "test"},
+
+	{ 
+		file: "game:itemtypes/tool/arrow", op: "add", path: "/shapeByType/arrow-test", value: 
+		{ 
+			base: "item/tool/arrow-gold"
+		} 
+	},
+
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/damageByType/*-test", value: "0" },
+
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/breakChanceOnImpactByType/*-test", value: "-1" },
+
+	{ file: "game:entities/arrow", op: "add", path: "/variantgroups/0/states/-", value: "test"},
+
+	{ 
+		file: "game:entities/arrow", op: "add", path: "/client/shapeByType/arrow-test", value: 
+		{ 
+			base: "item/tool/arrow-gold"
+		} 
+	}
+]

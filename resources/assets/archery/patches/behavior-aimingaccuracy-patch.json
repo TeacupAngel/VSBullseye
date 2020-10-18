@@ -1,0 +1,14 @@
+[ 
+	{ 
+		file: "game:entities/humanoid/player", 
+		op: "replace", 
+		path: "/client/behaviors/4/code", 
+		value: "archery.aimingaccuracy"
+	},
+	{ 
+		file: "game:entities/humanoid/player", 
+		op: "replace", 
+		path: "/server/behaviors/7/code", 
+		value: "archery.aimingaccuracy"
+	}
+]

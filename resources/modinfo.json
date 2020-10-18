@@ -1,0 +1,14 @@
+{
+	"type": "code",
+	"name": "Archery",
+	"modid": "archery",
+	"version": "0.1.0",
+
+	"description": ".",
+	"website": "",
+	"authors": [ "rahjital" ],
+
+	"dependencies": {
+		"game": "1.13.4"
+	}
+}

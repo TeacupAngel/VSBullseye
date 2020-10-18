@@ -1,0 +1,34 @@
+[ 
+	{ file: "game:itemtypes/tool/bow", op: "replace", path: "/class", value: "archery.ItemBow"},
+
+	{ 
+		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/aimAccuracy", value: 
+		{ 
+			accuracySpeed: 0.75,
+			accuracyMax: 0.95,
+			accuracyLossDelay: 4.25,
+			accuracyLossSpeed: 0.01,
+			accuracyLossMax: 0.15,
+			accuracyWobbleFrequency: 3,
+			accuracyWobbleMagnitude: 0.0025,
+			driftYaw: 0.0065,
+			driftPitch: 0.003,
+			driftSpeed: 3.5,
+			driftLossIncreaseSpeed: 0.125,
+			driftLossIncreaseMax: 0.5,
+			driftDecay: 0.8
+		} 
+	},
+	{ 
+		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/projectile", value: 
+		{ 
+			velocity: 22,
+			spread: 0.5,
+			accuracyBonus: 0.03,
+			zeroing: 0.03
+		} 
+	},
+
+	
+	{ file: "game:itemtypes/tool/bow", op: "replace", path: "/attributes/damageByType/*-simple", value: "0"}
+]

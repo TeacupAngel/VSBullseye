@@ -1,0 +1,67 @@
+{
+	"version": "0.2.0",
+	"configurations": [{
+		"name": "Launch Survival (Mono)",
+		"type": "mono",
+		"request": "launch",
+		"preLaunchTask": "build (Debug)",
+		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--addModPath", "${env:VINTAGE_STORY_DATA}/Mods",
+			"--playStyle", "surviveandbuild",
+			"--openWorld", "Survival Test",
+			"--addOrigin", "${workspaceFolder}/resources/assets"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Superflat (Mono)",
+		"type": "mono",
+		"request": "launch",
+		"preLaunchTask": "build (Debug)",
+		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--addModPath", "${env:VINTAGE_STORY_DATA}/Mods",
+			"--playStyle", "creativebuilding",
+			"--openWorld", "Superflat Test",
+			"--addOrigin", "${workspaceFolder}/resources/assets"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Survival (.NET)",
+		"type": "clr",
+		"request": "launch",
+		"preLaunchTask": "build (Debug)",
+		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--addModPath", "${env:VINTAGE_STORY_DATA}/Mods",
+			"--playStyle", "preset-surviveandbuild",
+			"--openWorld", "Survival Test",
+			"--addOrigin", "${workspaceFolder}/resources/assets"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Superflat (.NET)",
+		"type": "clr",
+		"request": "launch",
+		"preLaunchTask": "build (Debug)",
+		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--addModPath", "${env:VINTAGE_STORY_DATA}/Mods",
+			"--playStyle", "creativebuilding",
+			"--openWorld", "Superflat Test",
+			"--addOrigin", "${workspaceFolder}/resources/assets"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
+	}]
+}
