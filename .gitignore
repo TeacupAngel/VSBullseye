@@ -1,0 +1,6 @@
+# C# compilation files
+/bin
+/obj
+
+# release packaging folder
+/release
