@@ -39,11 +39,11 @@ namespace Archery
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
         {
-            aimRangedTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("freeaim", "gui/targetranged.png"));
+            aimRangedTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged.png"));
 
             // TESTING STUFF, DELETE LATER
-            aimRangedTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("freeaim", "gui/targetranged_yellow.png"));
-            aimRangedTextureRedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("freeaim", "gui/targetranged_red.png"));
+            aimRangedTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_yellow.png"));
+            aimRangedTextureRedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_red.png"));
             
             return true;
         }

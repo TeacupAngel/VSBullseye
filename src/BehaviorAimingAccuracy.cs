@@ -170,15 +170,15 @@ namespace Archery
                 accuracy += GameMath.Sin(SecondsSinceAimStart * 8) / 80f;
             }
 
-            // FreeAim
-            float freeAimAccuracyMod = Math.Max(1f - ((entity.Stats.GetBlended("rangedWeaponsAcc") - 1f)), 0.1f);
+            // Archery
+            float archeryAccuracyMod = Math.Max(1f - ((entity.Stats.GetBlended("rangedWeaponsAcc") - 1f)), 0.1f);
 
-            float freeAimAccuracy = GameMath.Max(1f - SecondsSinceAimStart, 0f) * 2.5f; // Loss of accuracy from draw
-            freeAimAccuracy += GameMath.Clamp((SecondsSinceAimStart - 6f) / 12f, 0f, 1f); // Loss of accuracy from holding too long
+            float archeryAccuracy = GameMath.Max(1f - SecondsSinceAimStart, 0f) * 2.5f; // Loss of accuracy from draw
+            archeryAccuracy += GameMath.Clamp((SecondsSinceAimStart - 6f) / 12f, 0f, 1f); // Loss of accuracy from holding too long
 
-            ClientMainPatch.driftMultiplier = freeAimAccuracyMod + freeAimAccuracy;
-            ClientMainPatch.twitchMultiplier = freeAimAccuracyMod + (freeAimAccuracy * 3f);
-            // FreeAim
+            ClientMainPatch.driftMultiplier = archeryAccuracyMod + archeryAccuracy;
+            ClientMainPatch.twitchMultiplier = archeryAccuracyMod + (archeryAccuracy * 3f);
+            // Archery
         }
     }
 
@@ -207,10 +207,10 @@ namespace Archery
 
             accuracy -= accuracyPenalty;
 
-            // FreeAim
+            // Archery
             ClientMainPatch.driftMultiplier += accuracyPenalty * 5f;
             ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f;
-            // FreeAim
+            // Archery
         }
     }
 
@@ -241,10 +241,10 @@ namespace Archery
 
             accuracy -= accuracyPenalty;
 
-            // FreeAim
+            // Archery
             ClientMainPatch.driftMultiplier += accuracyPenalty * 5f;
             ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f;
-            // FreeAim
+            // Archery
         }
     }
 

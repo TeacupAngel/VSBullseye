@@ -18,8 +18,12 @@ namespace Archery
     {
         WorldInteraction[] interactions;
 
+        private ArcheryCooldown cooldownSystem;
+
         public override void OnLoaded(ICoreAPI api)
         {
+            cooldownSystem = api.ModLoader.GetModSystem<ArcheryCooldown>();
+
             if (api.Side != EnumAppSide.Client) return;
             ICoreClientAPI capi = api as ICoreClientAPI;
 
@@ -99,7 +103,7 @@ namespace Archery
 
         public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            // FreeAim
+            // Archery
             if (byEntity.World is IClientWorldAccessor)
             {
                 ModelTransform tf = new ModelTransform();
@@ -111,7 +115,7 @@ namespace Archery
 
                 byEntity.Controls.UsingHeldItemTransformBefore = tf;
             }
-            // /FreeAim
+            // /Archery
 
 //            if (byEntity.World is IClientWorldAccessor)
             {
@@ -209,7 +213,7 @@ namespace Archery
             
             Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y, 0);
             Vec3d aheadPos = pos.AheadCopy(1, byEntity.SidedPos.Pitch + rndpitch, byEntity.SidedPos.Yaw + rndyaw);
-            // FreeAim
+            // Archery
             //Vec3d velocity = (aheadPos - pos) * byEntity.Stats.GetBlended("bowDrawingStrength");
             // implement rndpitch/rndyaw
             Vec3d targetVec = Vec3d.Zero;
@@ -224,7 +228,7 @@ namespace Archery
             }
 
             Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength");
-            // /FreeAim
+            // /Archery
             
             entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
             entity.ServerPos.Motion.Set(velocity);
@@ -235,12 +239,19 @@ namespace Archery
 
             byEntity.World.SpawnEntity(entity);
 
-            // FreeAim
-            if (byEntity.World.Side == EnumAppSide.Server && byEntity is EntityPlayer entityPlayer)
+            // Archery
+            EntityPlayer entityPlayer = byEntity as EntityPlayer;
+
+            if (byEntity.World.Side == EnumAppSide.Server && entityPlayer != null)
             {
                 ArcheryCore.serverInstance.SetFollowArrow((EntityProjectile)entity, entityPlayer);
             }
-             // /FreeAim
+            
+            if (entityPlayer != null)
+            {
+                cooldownSystem.SetCooldownTime(entityPlayer.PlayerUID);
+            }
+            // /Archery
 
             slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot);
 

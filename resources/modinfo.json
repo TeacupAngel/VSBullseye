@@ -1,14 +1,14 @@
 {
 	"type": "code",
-	"name": "FreeAim",
-	"modid": "freeaim",
-	"version": "0.1.0",
+	"name": "Archery",
+	"modid": "archery",
+	"version": "2.0.0",
 
 	"description": ".",
 	"website": "",
 	"authors": [ "rahjital" ],
 
 	"dependencies": {
-		"game": "1.13.4"
+		"game": "1.15.3"
 	}
 }

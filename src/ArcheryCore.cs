@@ -27,13 +27,11 @@ namespace Archery
 {
     public class ArcheryCore : ModSystem
     {
-        ClassRegistry classRegistry;
-
         public static ArcheryCore clientInstance;
         public static ArcheryCore serverInstance;
 
         [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-        public class FreeAimPlayerAimData
+        public class ArcheryPlayerAimData
         {
             public double aimX;
             public double aimY;
@@ -42,10 +40,10 @@ namespace Archery
         
         public override void Start(ICoreAPI api)
         {
-            classRegistry = Traverse.Create(api.ClassRegistry).Field<ClassRegistry>("registry").Value;
+            ClassRegistry classRegistry = Traverse.Create(api.ClassRegistry).Field<ClassRegistry>("registry").Value;
 
-            RegisterItems();
-            RegisterEntityBehaviors();
+            RegisterItems(classRegistry);
+            RegisterEntityBehaviors(classRegistry);
         }
 
         private EntityProjectile currentArrow;
@@ -59,7 +57,7 @@ namespace Archery
             {
                 if (currentArrow != null && arrowPlayer != null)
                 {
-                    (arrowPlayer.Player as IServerPlayer)?.SendMessage(GlobalConstants.GeneralChatGroup, "Tracking new arrow (cannot track two arros at once!)", EnumChatType.Notification);
+                    (arrowPlayer.Player as IServerPlayer)?.SendMessage(GlobalConstants.GeneralChatGroup, "Tracking new arrow (cannot track two arrows at once!)", EnumChatType.Notification);
                 }
 
                 currentArrow = arrow;
@@ -95,9 +93,9 @@ namespace Archery
         {
             serverInstance = this;
 
-            sapi.Network.RegisterChannel("freeaim")
-            .RegisterMessageType<FreeAimPlayerAimData>()
-            .SetMessageHandler<FreeAimPlayerAimData>(ReceivePlayerAimData);
+            sapi.Network.RegisterChannel("archery")
+            .RegisterMessageType<ArcheryPlayerAimData>()
+            .SetMessageHandler<ArcheryPlayerAimData>(ReceivePlayerAimData);
 
             aimVectors = new Dictionary<long, Vec3d>();
 
@@ -117,7 +115,7 @@ namespace Archery
             });
         }
 
-        private void ReceivePlayerAimData(IPlayer fromPlayer, FreeAimPlayerAimData aimData)
+        private void ReceivePlayerAimData(IPlayer fromPlayer, ArcheryPlayerAimData aimData)
         {
             Vec3d aimVector;
 
@@ -160,7 +158,7 @@ namespace Archery
         {
             clientInstance = this;
 
-            Harmony harmony = new Harmony("vs.freeaim");
+            Harmony harmony = new Harmony("vs.archery");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             client = capi.World as ClientMain;
@@ -174,8 +172,8 @@ namespace Archery
             mvMatrix = Traverse.Create(client).Field<StackMatrix4>("MvMatrix").Value;
             pMatrix = Traverse.Create(client).Field<StackMatrix4>("PMatrix").Value;
 
-            cNetworkChannel = capi.Network.RegisterChannel("freeaim")
-            .RegisterMessageType<FreeAimPlayerAimData>();
+            cNetworkChannel = capi.Network.RegisterChannel("archery")
+            .RegisterMessageType<ArcheryPlayerAimData>();
 
             capi.Event.RegisterGameTickListener(SendAimToServer, 100);
         }
@@ -214,7 +212,7 @@ namespace Archery
         {
             if (aiming)
             {
-                cNetworkChannel.SendPacket(new FreeAimPlayerAimData()
+                cNetworkChannel.SendPacket(new ArcheryPlayerAimData()
                 {
                     aimX = targetVec.X,
                     aimY = targetVec.Y,
@@ -223,21 +221,15 @@ namespace Archery
             }
         }
 
-        private void RegisterItems()
+        private void RegisterItems(ClassRegistry classRegistry)
         {
-            //api.RegisterItemClass("archery.ItemBow", typeof(ArcheryItemBow));
-            //api.RegisterItemClass("archery.ItemSpear", typeof(ArcheryItemSpear));
-
-            classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(FreeAim.ItemBow);
+            classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Archery.ItemBow);
         }
 
-        private void RegisterEntityBehaviors()
+        private void RegisterEntityBehaviors(ClassRegistry classRegistry)
         {
             classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Archery.EntityBehaviorAimingAccuracy);
             classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Archery.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
-
-            //api.RegisterEntityBehaviorClass("aimingaccuracy", typeof(EntityBehaviorAimingAccuracy));
-            //api.RegisterEntityBehaviorClass("archery.aimingaccuracy", typeof(ArcheryEntityBehaviorAimingAccuracy));
         }
     }
 }

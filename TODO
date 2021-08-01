@@ -4,10 +4,16 @@ GOALS
 --- spears and arrows can't be shot for a moment 
 --- shown visually by lowering the spear/bow for a moment; might 
 --- represents the time it takes to grab a new spear/arrow
+
+- Warmup
+--- will be necessary for loaded weapons like crossbows, muskets, etc.
+--- a smaller warmup could be useful even for weapons like 
+
 - Spear rebalance
 --- increase durability, but make throws reduce 2-3 durability; should make spears a more universal weapon than the ranged-with-option-of-melee
 --- diminishing returns on throw damage with better materials; make copper do far more damage than flint, but very little improvement past bronze
 --- allows iron and steel spears
+
 - Bow rebalance
 --- types of bows
 ----- Simple Bow - basic bow, easy to aim, but relatively short range (slower arrows than vanilla for higher arc)
@@ -18,9 +24,20 @@ GOALS
 --- make arrow break chance per damage, to stop higher-tier bows from being inherently more efficient
 --- obsidian arrows
 --- various fletching colours?
+ 
+- Minor tasks
+--- make bow aim angle respect screen FOV instead of magic numbers
+--- fix aiming not to be squished on non 16:10 display ratios (16:9 is the most common!)
+
 
 TASKS
 
 - reimplement random spread
+- reimplement aiming speed modifier
 - cooldown implementation
---- ModSystem that keeps its own 
+--- ModSystem that keeps its own
+
+
+INVESTIGATE
+
+- RegisterEventBusListener for ItemBow?
