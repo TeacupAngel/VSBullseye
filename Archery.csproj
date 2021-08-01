@@ -2,10 +2,10 @@
     <PropertyGroup>
         <AssemblyTitle>Archery</AssemblyTitle>
         <Authors>Rahjital</Authors>
-        <Version>0.1.0</Version>
-        <Description>A mod made to research procedural generation of towns, as inspired by the GDMC competition.</Description>
+        <Version>2.0.0</Version>
+        <Description></Description>
         <RepositoryUrl/>
-        <TargetFramework>net452</TargetFramework>
+        <TargetFramework>net461</TargetFramework>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <ItemGroup>
@@ -24,9 +24,12 @@
         <Reference Include="Cairo">
             <HintPath>$(VINTAGE_STORY)/Lib/cairo-sharp.dll</HintPath>
         </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="protobuf-net" Version="2.1.0"/>
+        <Reference Include="protobuf-net" Version="2.1.0">
+            <HintPath>$(VINTAGE_STORY)/Lib/protobuf-net.dll</HintPath>
+        </Reference>
+        <Reference Include="0Harmony">
+            <HintPath>$(VINTAGE_STORY)/Lib/0Harmony.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <ModResources Include="$(MSBuildProjectDirectory)/resources/**/*.*"/>

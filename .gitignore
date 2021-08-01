@@ -1,3 +1,5 @@
+*.wip
+
 # C# compilation files
 /bin
 /obj

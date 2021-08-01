@@ -1,7 +1,7 @@
 {
 	"type": "code",
-	"name": "Archery",
-	"modid": "archery",
+	"name": "FreeAim",
+	"modid": "freeaim",
 	"version": "0.1.0",
 
 	"description": ".",

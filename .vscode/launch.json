@@ -63,5 +63,37 @@
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Survival Server (.NET)",
+		"type": "clr",
+		"request": "launch",
+		"preLaunchTask": "build (Debug)",
+		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--addModPath", "${env:VINTAGE_STORY_DATA}/Mods",
+			"--playStyle", "preset-surviveandbuild",
+			"--openWorld", "Survival Test",
+			"--addOrigin", "${workspaceFolder}/resources/assets"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Superflat Server (.NET)",
+		"type": "clr",
+		"request": "launch",
+		"preLaunchTask": "build (Debug)",
+		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--addModPath", "${env:VINTAGE_STORY_DATA}/Mods",
+			"--playStyle", "creativebuilding",
+			"--openWorld", "Survival Test",
+			"--addOrigin", "${workspaceFolder}/resources/assets"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
 	}]
 }
