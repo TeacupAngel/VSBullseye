@@ -8,6 +8,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.API.Util;
+using Vintagestory.API.Datastructures;
 using Vintagestory.GameContent;
 
 using System.Globalization;
@@ -18,11 +19,13 @@ namespace Archery
     {
         WorldInteraction[] interactions;
 
-        private ArcheryCooldown cooldownSystem;
+        private ArcheryRangedWeaponSystem rangedWeaponSystem;
 
         public override void OnLoaded(ICoreAPI api)
         {
-            cooldownSystem = api.ModLoader.GetModSystem<ArcheryCooldown>();
+            // Archery
+            rangedWeaponSystem = api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
+            // /Archery
 
             if (api.Side != EnumAppSide.Client) return;
             ICoreClientAPI capi = api as ICoreClientAPI;
@@ -49,8 +52,22 @@ namespace Archery
                     }
                 };
             });
+
+            api.Event.RegisterEventBusListener(OnServerFired, 0.5, "archeryRangedWeaponFired");
         }
 
+        private void OnServerFired(string eventName, ref EnumHandling handling, IAttribute data)
+        {
+            TreeAttribute tree = data as TreeAttribute;
+            EntityAgent byEntity =  api.World.GetEntityById(tree.GetLong("entityId")) as EntityAgent;
+            int itemId = tree.GetInt("itemId");
+
+            if (itemId == Id)
+            {
+                HasShot(byEntity);
+                handling = EnumHandling.PreventSubsequent;
+            }
+        }
 
 
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity byEntity)
@@ -79,6 +96,16 @@ namespace Archery
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
+            // Archery
+            EntityPlayer entityPlayer = byEntity as EntityPlayer;
+
+            if (entityPlayer != null && !rangedWeaponSystem.HasPlayerCooldownPassed(entityPlayer.PlayerUID, 2))
+            {
+                handling = EnumHandHandling.NotHandled;
+                return;
+            }
+            // /Archery
+
             ItemSlot invslot = GetNextArrow(byEntity);
             if (invslot == null) return;
 
@@ -103,7 +130,7 @@ namespace Archery
 
         public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            // Archery
+            // Archery    
             if (byEntity.World is IClientWorldAccessor)
             {
                 ModelTransform tf = new ModelTransform();
@@ -138,7 +165,7 @@ namespace Archery
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
             byEntity.Attributes.SetInt("aiming", 0);
-            byEntity.AnimManager.StopAnimation("bowaim");
+            //byEntity.AnimManager.StopAnimation("bowaim"); // Archery
 
             if (byEntity.World is IClientWorldAccessor)
             {
@@ -150,6 +177,7 @@ namespace Archery
 
             if (cancelReason != EnumItemUseCancelReason.ReleasedMouse)
             {
+                byEntity.AnimManager.StopAnimation("bowaim"); // Archery
                 byEntity.Attributes.SetInt("aimingCancel", 1);
             }
 
@@ -160,7 +188,8 @@ namespace Archery
         {
             if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
             byEntity.Attributes.SetInt("aiming", 0);
-            byEntity.AnimManager.StopAnimation("bowaim");
+            byEntity.Attributes.SetInt("shooting", 1);
+            //byEntity.AnimManager.StopAnimation("bowaim"); // Archery
 
             if (byEntity.World is IClientWorldAccessor)
             {
@@ -170,7 +199,11 @@ namespace Archery
             slot.Itemstack.Attributes.SetInt("renderVariant", 0);
             (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
 
-            if (secondsUsed < 0.35f) return;
+            // Archery
+            float chargeTime = api.Side == EnumAppSide.Server ? 0.75f : 0.75f + 0.1f; // slightly longer charge on client, for safety in case of desync
+
+            if (secondsUsed < chargeTime) return;
+            // /Archery
 
             ItemSlot arrowSlot = GetNextArrow(byEntity);
             if (arrowSlot == null) return;
@@ -193,9 +226,11 @@ namespace Archery
             ItemStack stack = arrowSlot.TakeOut(1);
             arrowSlot.MarkDirty();
 
-            IPlayer byPlayer = null;
+            // Archery
+            /*IPlayer byPlayer = null;
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
-            byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
+            byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);*/
+            // /Archery
 
             float breakChance = 0.5f;
             if (stack.ItemAttributes != null) breakChance = stack.ItemAttributes["breakChanceOnImpact"].AsFloat(0.5f);
@@ -211,10 +246,11 @@ namespace Archery
             double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * acc * 0.75;
             double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * acc * 0.75;
             
-            Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y, 0);
-            Vec3d aheadPos = pos.AheadCopy(1, byEntity.SidedPos.Pitch + rndpitch, byEntity.SidedPos.Yaw + rndyaw);
             // Archery
+            //Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y, 0);
+            //Vec3d aheadPos = pos.AheadCopy(1, byEntity.SidedPos.Pitch + rndpitch, byEntity.SidedPos.Yaw + rndyaw);
             //Vec3d velocity = (aheadPos - pos) * byEntity.Stats.GetBlended("bowDrawingStrength");
+
             // implement rndpitch/rndyaw
             Vec3d targetVec = Vec3d.Zero;
 
@@ -247,17 +283,38 @@ namespace Archery
                 ArcheryCore.serverInstance.SetFollowArrow((EntityProjectile)entity, entityPlayer);
             }
             
-            if (entityPlayer != null)
-            {
-                cooldownSystem.SetCooldownTime(entityPlayer.PlayerUID);
-            }
-            // /Archery
+            HasShot(byEntity);
 
+            if (api.Side == EnumAppSide.Server)
+            {
+                rangedWeaponSystem.SendRangedWeaponFiredPacket(byEntity.EntityId, Id);
+            }
             slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot);
 
-            byEntity.AnimManager.StartAnimation("bowhit");
+            //byEntity.AnimManager.StartAnimation("bowhit");
+            // /Archery
         }
 
+        public void HasShot(EntityAgent byEntity)
+        {
+            if (byEntity.Attributes.GetInt("shooting") == 1)
+            {
+                byEntity.Attributes.SetInt("shooting", 0);
+
+                IPlayer byPlayer = null;
+                if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
+                byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
+
+                if (byPlayer != null)
+                {
+                    rangedWeaponSystem.SetPlayerCooldown(byPlayer.PlayerUID);
+                }
+
+                byEntity.AnimManager.StartAnimation("bowhit");
+
+                api.Event.RegisterCallback((ms) => {byEntity.AnimManager.StopAnimation("bowaim");}, 500);
+            }
+        }
 
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
         {

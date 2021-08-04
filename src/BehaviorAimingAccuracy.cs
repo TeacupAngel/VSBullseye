@@ -178,7 +178,7 @@ namespace Archery
 
             ClientMainPatch.driftMultiplier = archeryAccuracyMod + archeryAccuracy;
             ClientMainPatch.twitchMultiplier = archeryAccuracyMod + (archeryAccuracy * 3f);
-            // Archery
+            // /Archery
         }
     }
 
@@ -210,7 +210,7 @@ namespace Archery
             // Archery
             ClientMainPatch.driftMultiplier += accuracyPenalty * 5f;
             ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f;
-            // Archery
+            // /Archery
         }
     }
 
@@ -244,7 +244,7 @@ namespace Archery
             // Archery
             ClientMainPatch.driftMultiplier += accuracyPenalty * 5f;
             ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f;
-            // Archery
+            // /Archery
         }
     }
 
