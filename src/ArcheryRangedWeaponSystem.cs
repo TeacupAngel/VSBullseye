@@ -80,7 +80,8 @@ namespace Archery
 
         public override void Start(ICoreAPI api)
         {
-            api.World.RegisterGameTickListener(OnGameTick, 50);
+            //api.World.RegisterGameTickListener(OnGameTick, 50);
+            api.World.RegisterGameTickListener(OnGameTick, 1);
         }
 
         protected void OnGameTick(float dt)
@@ -88,7 +89,7 @@ namespace Archery
             currentTime += dt;
         }
 
-        public void SetEntityCooldown(long entityID)
+        public void StartEntityCooldown(long entityID)
         {
             cooldownByEntityID[entityID] = currentTime;
         }
@@ -96,6 +97,11 @@ namespace Archery
         public double GetEntityCooldown(long entityID)
         {
             return cooldownByEntityID.ContainsKey(entityID) ? cooldownByEntityID[entityID] : -double.MinValue;
+        }
+
+        public double GetEntityCooldownTime(long entityID)
+        {
+            return cooldownByEntityID.ContainsKey(entityID) ? currentTime - cooldownByEntityID[entityID] : 0;
         }
 
         public bool HasEntityCooldownPassed(long entityID, double cooldownTime)

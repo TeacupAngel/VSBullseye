@@ -21,10 +21,14 @@ namespace Archery
 
         private ArcheryRangedWeaponSystem rangedWeaponSystem;
 
+        ModelTransform defaultFpHandTransform;
+
         public override void OnLoaded(ICoreAPI api)
         {
             // Archery
             rangedWeaponSystem = api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
+
+            defaultFpHandTransform = FpHandTransform.Clone();
             // /Archery
 
             if (api.Side != EnumAppSide.Client) return;
@@ -53,7 +57,9 @@ namespace Archery
                 };
             });
 
+            // Archery
             api.Event.RegisterEventBusListener(OnServerFired, 0.5, "archeryRangedWeaponFired");
+            // /Archery
         }
 
         private void OnServerFired(string eventName, ref EnumHandling handling, IAttribute data)
@@ -94,10 +100,29 @@ namespace Archery
             return slot;
         }
 
+        private double cooldownTime = 2;
+
+        // Archery    
+        public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
+        {
+            if (byEntity.World is IClientWorldAccessor && !rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, cooldownTime))
+            {
+                double cooldownRemaining = cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
+
+                double transformTime = 0.25;
+                // For spear, change it to only show the raising animation
+                double transformFraction = GameMath.Clamp((cooldownTime - cooldownRemaining) / transformTime, 0f, 1f);
+                transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
+
+                FpHandTransform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
+            }
+        }
+        // /Archery
+
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
             // Archery
-            if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, 2))
+            if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, cooldownTime))
             {
                 handling = EnumHandHandling.NotHandled;
                 return;
@@ -303,7 +328,7 @@ namespace Archery
                 if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
                 byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
 
-                rangedWeaponSystem.SetEntityCooldown(byEntity.EntityId);
+                rangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);
 
                 byEntity.AnimManager.StartAnimation("bowhit");
 
