@@ -74,7 +74,7 @@ namespace Archery
         }
 
         // Common
-        Dictionary<string, double> cooldownByPlayerUID = new Dictionary<string, double>();
+        Dictionary<long, double> cooldownByEntityID = new Dictionary<long, double>();
 
         private double currentTime;
 
@@ -88,19 +88,19 @@ namespace Archery
             currentTime += dt;
         }
 
-        public void SetPlayerCooldown(string playerUID)
+        public void SetEntityCooldown(long entityID)
         {
-            cooldownByPlayerUID[playerUID] = currentTime;
+            cooldownByEntityID[entityID] = currentTime;
         }
 
-        public double GetPlayerCooldown(string playerUID)
+        public double GetEntityCooldown(long entityID)
         {
-            return cooldownByPlayerUID.ContainsKey(playerUID) ? cooldownByPlayerUID[playerUID] : -double.MinValue;
+            return cooldownByEntityID.ContainsKey(entityID) ? cooldownByEntityID[entityID] : -double.MinValue;
         }
 
-        public bool HasPlayerCooldownPassed(string playerUID, double cooldownTime)
+        public bool HasEntityCooldownPassed(long entityID, double cooldownTime)
         {
-            return cooldownByPlayerUID.ContainsKey(playerUID) ? currentTime > cooldownByPlayerUID[playerUID] + cooldownTime : true;
+            return cooldownByEntityID.ContainsKey(entityID) ? currentTime > cooldownByEntityID[entityID] + cooldownTime : true;
         }
     }
 }

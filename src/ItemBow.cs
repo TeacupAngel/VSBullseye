@@ -97,9 +97,7 @@ namespace Archery
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
             // Archery
-            EntityPlayer entityPlayer = byEntity as EntityPlayer;
-
-            if (entityPlayer != null && !rangedWeaponSystem.HasPlayerCooldownPassed(entityPlayer.PlayerUID, 2))
+            if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, 2))
             {
                 handling = EnumHandHandling.NotHandled;
                 return;
@@ -305,10 +303,7 @@ namespace Archery
                 if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
                 byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
 
-                if (byPlayer != null)
-                {
-                    rangedWeaponSystem.SetPlayerCooldown(byPlayer.PlayerUID);
-                }
+                rangedWeaponSystem.SetEntityCooldown(byEntity.EntityId);
 
                 byEntity.AnimManager.StartAnimation("bowhit");
 
