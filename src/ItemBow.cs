@@ -20,11 +20,9 @@ namespace Archery
         WorldInteraction[] interactions;
 
         private ArcheryRangedWeaponSystem rangedWeaponSystem;
+        ArcheryRangedWeaponStats weaponStats;
 
         ModelTransform defaultFpHandTransform;
-
-        private float cooldownTime = 2;
-        private float chargeTime = 0.75f;
 
         public override void OnLoaded(ICoreAPI api)
         {
@@ -32,6 +30,8 @@ namespace Archery
             rangedWeaponSystem = api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
 
             defaultFpHandTransform = FpHandTransform.Clone();
+
+            weaponStats = Attributes.KeyExists("archeryWeaponStats") ? Attributes?["archeryWeaponStats"].AsObject<ArcheryRangedWeaponStats>() : new ArcheryRangedWeaponStats();
             // /Archery
 
             if (api.Side != EnumAppSide.Client) return;
@@ -106,14 +106,23 @@ namespace Archery
         // Archery    
         public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
         {
-            if (byEntity.World is IClientWorldAccessor && !rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, cooldownTime))
+            if (byEntity.World is IClientWorldAccessor)
             {
-                float cooldownRemaining = cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
-
-                float transformTime = 0.25f;
                 // For spear, change it to only show the raising animation
-                float transformFraction = GameMath.Clamp((cooldownTime - cooldownRemaining) / transformTime, 0f, 1f);
-                transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
+                float transformFraction;
+
+                if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, weaponStats.cooldownTime))
+                {
+                    float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
+                    float transformTime = 0.25f;
+
+                    transformFraction = GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f);
+                    transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
+                }
+                else
+                {
+                    transformFraction = 0;
+                }
 
                 FpHandTransform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
             }
@@ -123,11 +132,18 @@ namespace Archery
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
             // Archery
-            if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, cooldownTime))
+            if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, weaponStats.cooldownTime))
             {
                 handling = EnumHandHandling.NotHandled;
                 return;
             }
+
+            if (byEntity.World is IClientWorldAccessor)
+            {
+                ClientMainPatch.SetRangedWeaponStats(weaponStats);
+            }
+
+            byEntity.GetBehavior<EntityBehaviorAimingAccuracy>().SetRangedWeaponStats(weaponStats);
             // /Archery
 
             ItemSlot invslot = GetNextArrow(byEntity);
@@ -141,7 +157,7 @@ namespace Archery
             slot.Itemstack.Attributes.SetInt("renderVariant", 1);
 
             // Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
-            byEntity.Attributes.SetInt("archeryAiming", 1);
+            byEntity.Attributes.SetInt("archeryAiming", 1); // Archery
             byEntity.Attributes.SetInt("aimingCancel", 0);
             byEntity.AnimManager.StartAnimation("bowaim");
 
@@ -166,7 +182,7 @@ namespace Archery
                 byEntity.Controls.UsingHeldItemTransformBefore = tf;
 
                 // Show different crosshair if we are ready to shoot
-                SystemRenderAimPatch.readyToShoot = secondsUsed > chargeTime + 0.1f;
+                SystemRenderAimPatch.readyToShoot = secondsUsed > weaponStats.chargeTime + 0.1f;
             }
             // /Archery
 
@@ -190,7 +206,7 @@ namespace Archery
 
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
-            byEntity.Attributes.SetInt("archeryAiming", 0);
+            byEntity.Attributes.SetInt("archeryAiming", 0);  // Archery
             //byEntity.AnimManager.StopAnimation("bowaim"); // Archery
 
             if (byEntity.World is IClientWorldAccessor)
@@ -213,7 +229,7 @@ namespace Archery
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
             if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
-            byEntity.Attributes.SetInt("archeryAiming", 0);
+            byEntity.Attributes.SetInt("archeryAiming", 0);  // Archery
             byEntity.Attributes.SetInt("shooting", 1);
             //byEntity.AnimManager.StopAnimation("bowaim"); // Archery
 
@@ -226,7 +242,7 @@ namespace Archery
             (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
 
             // Archery
-            float chargeNeeded = api.Side == EnumAppSide.Server ? chargeTime : chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
+            float chargeNeeded = api.Side == EnumAppSide.Server ? weaponStats.chargeTime : weaponStats.chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
 
             if (secondsUsed < chargeNeeded) return;
             // /Archery
