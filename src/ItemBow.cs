@@ -305,7 +305,7 @@ namespace Archery
                 targetVec = ArcheryCore.targetVec;
             }
 
-            Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength");
+            Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             // /Archery
             
             entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));

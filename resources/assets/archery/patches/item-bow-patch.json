@@ -2,6 +2,10 @@
 	{ 
 		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/archeryWeaponStatsByType", value: 
 		{
+			"*-crude": { 
+				twitchMagnitude: 40,
+			},
+
 			"*-simple": { 
 				twitchMagnitude: 40,
 				twitchMax: 5

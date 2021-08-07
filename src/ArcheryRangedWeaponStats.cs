@@ -21,6 +21,7 @@ namespace Archery
         // ItemBow stats
         public float cooldownTime = 0.75f;
         public float chargeTime = 0.5f;
+        public float projectileVelocity = 30f; // Default arrow speed
 
         // Harmony client patch stats
         public float horizontalLimit = 0.125f;
