@@ -16,7 +16,8 @@ using Cairo;
 
 namespace Archery
 {
-    [HarmonyPatch(typeof(SystemRenderPlayerAimAcc))]
+    // Not needed anymore as Archery bows use different non-vanilla entity Attribute for aiming, but keeping this for now just to be sure
+    /*[HarmonyPatch(typeof(SystemRenderPlayerAimAcc))]
     class SystemRenderPlayerAimAccPatch
     {
         [HarmonyPrefix]
@@ -25,7 +26,7 @@ namespace Archery
         {
             return false;
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(SystemRenderAim))]
     class SystemRenderAimPatch

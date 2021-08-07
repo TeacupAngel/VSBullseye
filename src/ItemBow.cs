@@ -140,7 +140,7 @@ namespace Archery
             slot.Itemstack.Attributes.SetInt("renderVariant", 1);
 
             // Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
-            byEntity.Attributes.SetInt("aiming", 1);
+            byEntity.Attributes.SetInt("archeryAiming", 1);
             byEntity.Attributes.SetInt("aimingCancel", 0);
             byEntity.AnimManager.StartAnimation("bowaim");
 
@@ -187,7 +187,7 @@ namespace Archery
 
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
-            byEntity.Attributes.SetInt("aiming", 0);
+            byEntity.Attributes.SetInt("archeryAiming", 0);
             //byEntity.AnimManager.StopAnimation("bowaim"); // Archery
 
             if (byEntity.World is IClientWorldAccessor)
@@ -210,7 +210,7 @@ namespace Archery
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
             if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
-            byEntity.Attributes.SetInt("aiming", 0);
+            byEntity.Attributes.SetInt("archeryAiming", 0);
             byEntity.Attributes.SetInt("shooting", 1);
             //byEntity.AnimManager.StopAnimation("bowaim"); // Archery
 

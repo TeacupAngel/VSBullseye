@@ -228,8 +228,11 @@ namespace Archery
 
         private void RegisterEntityBehaviors(ClassRegistry classRegistry)
         {
-            classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Archery.EntityBehaviorAimingAccuracy);
-            classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Archery.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
+            //classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Archery.EntityBehaviorAimingAccuracy);
+            //classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Archery.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
+
+            // Not replacing the vanilla AimingAccuracy behaviour for compatibility
+            classRegistry.RegisterentityBehavior("archery.aimingaccuracy", typeof(Archery.EntityBehaviorAimingAccuracy));
         }
     }
 }

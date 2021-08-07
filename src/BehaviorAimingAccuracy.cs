@@ -28,7 +28,7 @@ namespace Archery
             modifiers.Add(new SprintAimingAccuracy(agent));
             modifiers.Add(new OnHurtAimingAccuracy(agent));
 
-            entity.Attributes.RegisterModifiedListener("aiming", OnAimingChanged);
+            entity.Attributes.RegisterModifiedListener("archeryAiming", OnAimingChanged);
 
             Rand = new Random((int)(entity.EntityId + entity.World.ElapsedMilliseconds));
         }
@@ -36,7 +36,7 @@ namespace Archery
         private void OnAimingChanged()
         {
             bool beforeAiming = IsAiming;
-            IsAiming = entity.Attributes.GetInt("aiming") > 0;
+            IsAiming = entity.Attributes.GetInt("archeryAiming") > 0;
 
             if (beforeAiming == IsAiming) return;
 
@@ -76,7 +76,7 @@ namespace Archery
 
             if (!entity.Alive)
             {
-                entity.Attributes.SetInt("aiming", 0);
+                entity.Attributes.SetInt("archeryAiming", 0);
             }
 
             float accuracy = 0;
@@ -86,7 +86,8 @@ namespace Archery
                 modifiers[i].Update(deltaTime, ref accuracy);
             }
 
-            entity.Attributes.SetFloat("aimingAccuracy", accuracy);
+            // Archery
+            //entity.Attributes.SetFloat("aimingAccuracy", accuracy);
         }
 
         public override void OnEntityReceiveDamage(DamageSource damageSource, float damage)
@@ -103,7 +104,7 @@ namespace Archery
 
         public override string PropertyName()
         {
-            return "aimingaccuracy";
+            return "archery.aimingaccuracy";
         }
     }
 
