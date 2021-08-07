@@ -23,6 +23,9 @@ namespace Archery
 
         ModelTransform defaultFpHandTransform;
 
+        private float cooldownTime = 2;
+        private float chargeTime = 0.75f;
+
         public override void OnLoaded(ICoreAPI api)
         {
             // Archery
@@ -100,18 +103,16 @@ namespace Archery
             return slot;
         }
 
-        private double cooldownTime = 2;
-
         // Archery    
         public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
         {
             if (byEntity.World is IClientWorldAccessor && !rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, cooldownTime))
             {
-                double cooldownRemaining = cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
+                float cooldownRemaining = cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
 
-                double transformTime = 0.25;
+                float transformTime = 0.25f;
                 // For spear, change it to only show the raising animation
-                double transformFraction = GameMath.Clamp((cooldownTime - cooldownRemaining) / transformTime, 0f, 1f);
+                float transformFraction = GameMath.Clamp((cooldownTime - cooldownRemaining) / transformTime, 0f, 1f);
                 transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
 
                 FpHandTransform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
@@ -162,8 +163,10 @@ namespace Archery
                 Vec2f currentAim = ArcheryCore.GetCurrentAim();
 
                 tf.Rotation.Set(-currentAim.X / 15f, currentAim.Y / 15f, 0);
-
                 byEntity.Controls.UsingHeldItemTransformBefore = tf;
+
+                // Show different crosshair if we are ready to shoot
+                SystemRenderAimPatch.readyToShoot = secondsUsed > chargeTime + 0.1f;
             }
             // /Archery
 
@@ -223,9 +226,9 @@ namespace Archery
             (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
 
             // Archery
-            float chargeTime = api.Side == EnumAppSide.Server ? 0.75f : 0.75f + 0.1f; // slightly longer charge on client, for safety in case of desync
+            float chargeNeeded = api.Side == EnumAppSide.Server ? chargeTime : chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
 
-            if (secondsUsed < chargeTime) return;
+            if (secondsUsed < chargeNeeded) return;
             // /Archery
 
             ItemSlot arrowSlot = GetNextArrow(byEntity);

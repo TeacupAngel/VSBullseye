@@ -33,9 +33,13 @@ namespace Archery
         ICoreServerAPI sapi;
         IServerNetworkChannel serverNetworkChannel;
 
+        IWorldAccessor world;
+
         public override void StartServerSide(ICoreServerAPI api)
         {
             sapi = api;
+
+            world = api.World;
 
             serverNetworkChannel = api.Network.RegisterChannel("archeryitem")
             .RegisterMessageType<ArcheryRangedWeaponFired>();
@@ -59,6 +63,8 @@ namespace Archery
         {
             capi = api;
 
+            world = api.World;
+
             api.Network.RegisterChannel("archeryitem")
             .RegisterMessageType<ArcheryRangedWeaponFired>()
             .SetMessageHandler<ArcheryRangedWeaponFired>(OnClientRangedWeaponFired);
@@ -74,39 +80,21 @@ namespace Archery
         }
 
         // Common
-        Dictionary<long, double> cooldownByEntityID = new Dictionary<long, double>();
-
-        private double currentTime;
-
-        public override void Start(ICoreAPI api)
-        {
-            //api.World.RegisterGameTickListener(OnGameTick, 50);
-            api.World.RegisterGameTickListener(OnGameTick, 1);
-        }
-
-        protected void OnGameTick(float dt)
-        {
-            currentTime += dt;
-        }
+        Dictionary<long, long> cooldownByEntityID = new Dictionary<long, long>();
 
         public void StartEntityCooldown(long entityID)
         {
-            cooldownByEntityID[entityID] = currentTime;
+            cooldownByEntityID[entityID] = world.ElapsedMilliseconds;
         }
 
-        public double GetEntityCooldown(long entityID)
+        public float GetEntityCooldownTime(long entityID)
         {
-            return cooldownByEntityID.ContainsKey(entityID) ? cooldownByEntityID[entityID] : -double.MinValue;
-        }
-
-        public double GetEntityCooldownTime(long entityID)
-        {
-            return cooldownByEntityID.ContainsKey(entityID) ? currentTime - cooldownByEntityID[entityID] : 0;
+            return cooldownByEntityID.ContainsKey(entityID) ? (world.ElapsedMilliseconds - cooldownByEntityID[entityID]) / 1000f : 0;
         }
 
         public bool HasEntityCooldownPassed(long entityID, double cooldownTime)
         {
-            return cooldownByEntityID.ContainsKey(entityID) ? currentTime > cooldownByEntityID[entityID] + cooldownTime : true;
+            return cooldownByEntityID.ContainsKey(entityID) ? world.ElapsedMilliseconds > cooldownByEntityID[entityID] + (cooldownTime * 1000) : true;
         }
     }
 }

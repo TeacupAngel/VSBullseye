@@ -36,6 +36,8 @@ namespace Archery
         private static int aimRangedTextureYellowId;
         private static int aimRangedTextureRedId;
 
+        public static bool readyToShoot = false;
+
         [HarmonyPrefix]
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
@@ -56,7 +58,9 @@ namespace Archery
             if (ArcheryCore.aiming)
             {
                 //___game.Render2DTexture(aimRangedTextureYellowId, ___game.Width / 2 - 16 + FreeAimCore.aimX, ___game.Height / 2 - 16 + FreeAimCore.aimY, 32, 32, 10000f);
-                ___game.Render2DTexture(aimRangedTextureId, ___game.Width / 2 - 16 + ArcheryCore.aimX + ArcheryCore.aimOffsetX, ___game.Height / 2 - 16 + ArcheryCore.aimY + ArcheryCore.aimOffsetY, 32, 32, 10000f);
+                int textureId = readyToShoot ? aimRangedTextureId : aimRangedTextureRedId;
+                
+                ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + ArcheryCore.aimX + ArcheryCore.aimOffsetX, ___game.Height / 2 - 16 + ArcheryCore.aimY + ArcheryCore.aimOffsetY, 32, 32, 10000f);
 
                 return false;
             }
