@@ -59,8 +59,12 @@ namespace Archery
 
             if (IsAiming && entity.World is IServerWorldAccessor)
             {
-                double rndpitch = Rand.NextDouble() - 0.5;
-                double rndyaw = Rand.NextDouble() - 0.5;
+                // Archery
+                //double rndpitch = Rand.NextDouble() - 0.5;
+                //double rndyaw = Rand.NextDouble() - 0.5;
+                double rndpitch = Rand.NextDouble();
+                double rndyaw = Rand.NextDouble();
+                // /Archery
                 entity.WatchedAttributes.SetDouble("aimingRandPitch", rndpitch);
                 entity.WatchedAttributes.SetDouble("aimingRandYaw", rndyaw);
             }

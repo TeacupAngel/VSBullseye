@@ -284,28 +284,33 @@ namespace Archery
             ((EntityProjectile)entity).ProjectileStack = stack;
             ((EntityProjectile)entity).DropOnImpactChance = 1 - breakChance;
 
-            float acc = Math.Max(0.001f, (1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0)));
-            double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * acc * 0.75;
-            double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * acc * 0.75;
-            
             // Archery
+            //float acc = Math.Max(0.001f, (1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0)));
+
+            // Might as well reuse these for now
+            double spreadAngle = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1);
+            double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
+            
             //Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y, 0);
             //Vec3d aheadPos = pos.AheadCopy(1, byEntity.SidedPos.Pitch + rndpitch, byEntity.SidedPos.Yaw + rndyaw);
             //Vec3d velocity = (aheadPos - pos) * byEntity.Stats.GetBlended("bowDrawingStrength");
 
-            // implement rndpitch/rndyaw
-            Vec3d targetVec = Vec3d.Zero;
+            // New method to generate random spread, works when aimed straight up/straight down
+            Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? ArcheryCore.aimVectors[byEntity.EntityId] : ArcheryCore.targetVec;
 
-            if (byEntity.World.Side == EnumAppSide.Server)
-            {
-                targetVec = ArcheryCore.aimVectors[byEntity.EntityId];
-            }  
-            else
-            {
-                targetVec = ArcheryCore.targetVec;
-            }
+            Vec3d perp = MathHelper.Vec3GetPerpendicular(targetVec);
+            Vec3d perp2 = targetVec.Cross(perp);
 
-            Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
+            double angle = spreadAngle * (GameMath.PI * 2f);
+            double offsetAngle = spreadMagnitude *  weaponStats.projectileSpread * GameMath.DEG2RAD;
+
+            double magnitude = GameMath.Tan(offsetAngle);
+
+            Vec3d deviation = magnitude * perp * GameMath.Cos(angle) + magnitude * perp2 * GameMath.Sin(angle);
+            Vec3d newAngle = (targetVec + deviation) * (targetVec.Length() / (targetVec.Length() + deviation.Length()));
+
+            //Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
+            Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             // /Archery
             
             entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
