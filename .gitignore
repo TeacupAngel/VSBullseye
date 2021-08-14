@@ -1,6 +1,7 @@
 TODO
 TODO_Goals
 TODO_Feedback
+*.old
 
 # C# compilation files
 /bin
