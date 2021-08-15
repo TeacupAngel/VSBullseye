@@ -1,0 +1,12 @@
+[ 
+	{ 
+		file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/archeryWeaponStats", value: 
+		{ 
+			horizontalLimit: 0,
+			verticalLimit: 0,
+        	verticalOffset: 0,
+			projectileSpread: 3,
+			projectileVelocity: 19.5
+		}
+	},
+]

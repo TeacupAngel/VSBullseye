@@ -59,9 +59,9 @@ namespace Archery
             return 0.3f;
         }
 
-        public override bool GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override int GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot)
         {
-            return true;
+            return 3;
         }
 
         public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot)

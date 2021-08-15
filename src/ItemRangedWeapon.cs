@@ -177,9 +177,9 @@ namespace Archery
             return 0.1f;
         }
 
-        public virtual bool GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot)
+        public virtual int GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot)
         {
-            return false;
+            return 0;
         }
 
         public virtual EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot)
@@ -211,9 +211,20 @@ namespace Archery
             float damage = GetProjectileDamage(byEntity, slot);
             float dropChance = GetProjectileDropChance(byEntity, slot);
             float weight = GetProjectileWeight(byEntity, slot);
-            bool damageStackOnImpact = GetProjectileDamageOnImpact(byEntity, slot);
+            bool damageStackOnImpact = GetProjectileDamageOnImpact(byEntity, slot) > 0;
 
             EntityProperties type = GetProjectileEntityType(byEntity, slot);
+
+            // If we need to damage the projectile by more than 1 durability per shot, do it here, but leave at least 1 durability left
+            if (GetProjectileDamageOnImpact(byEntity, slot) > 1)
+            {
+                int durability = slot.Itemstack.Attributes.GetInt("durability", Durability);
+
+                int projectileDamage = GetProjectileDamageOnImpact(byEntity, slot) - 1;
+                projectileDamage = projectileDamage >= durability ? durability - 1 : projectileDamage;
+
+                slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, projectileDamage);
+            }
 
             ItemStack stack = ammoSlot.TakeOut(1);
             ammoSlot.MarkDirty();
@@ -249,7 +260,9 @@ namespace Archery
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             // /Archery
             
-            entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
+            // Feels awful, might redo later with zeroing
+            //entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
+            entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
             entity.ServerPos.Motion.Set(velocity);
 
             entity.Pos.SetFrom(entity.ServerPos);
