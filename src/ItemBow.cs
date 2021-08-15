@@ -6,10 +6,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
-using Vintagestory.API.Server;
 using Vintagestory.API.Util;
-using Vintagestory.API.Datastructures;
-using Vintagestory.GameContent;
 
 using System.Globalization;
 
@@ -64,6 +61,8 @@ namespace Archery
 
             slot.Itemstack.Attributes.SetInt("renderVariant", 1);
 
+            byEntity.AnimManager.StartAnimation("bowaim");
+
             IPlayer byPlayer = null;
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
             byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-draw"), byEntity, byPlayer, false, 8);
@@ -102,16 +101,16 @@ namespace Archery
             }
         }
 
-        public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity)
+        public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot)
         {
-            ItemSlot slot = null;
+            ItemSlot arrowSlot = null;
             byEntity.WalkInventory((invslot) =>
             {
                 if (invslot is ItemSlotCreative) return true;
 
                 if (invslot.Itemstack != null && invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-"))
                 {
-                    slot = invslot;
+                    arrowSlot = invslot;
                     currentArrowSlot = invslot;
                     return false;
                 }
@@ -119,7 +118,7 @@ namespace Archery
                 return true;
             });
 
-            return slot;
+            return arrowSlot;
         }
 
         public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot)
@@ -141,11 +140,21 @@ namespace Archery
             return damage;
         }
 
-        public override float GetProjectileBreakChance(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot)
         {
             float breakChance = 0.5f;
             if (currentArrowSlot.Itemstack.ItemAttributes != null) breakChance = currentArrowSlot.Itemstack.ItemAttributes["breakChanceOnImpact"].AsFloat(0.5f);
-            return breakChance;
+            return 1f - breakChance;
+        }
+
+        public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot)
+        {
+            return byEntity.World.GetEntityType(new AssetLocation("arrow-" + currentArrowSlot.Itemstack.Collectible.Variant["material"]));
+        }
+
+        public override int GetWeaponDamageOnShot(EntityAgent byEntity, ItemSlot weaponSlot)
+        {
+            return 1;
         }
 
         public override void OnShotImmediate(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
@@ -159,6 +168,17 @@ namespace Archery
             (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
         }
 
+        public override void OnShotConfirmed(EntityAgent byEntity) 
+        {
+            IPlayer byPlayer = null;
+            if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
+            byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
+
+            byEntity.AnimManager.StartAnimation("bowhit");
+
+            api.Event.RegisterCallback((ms) => {byEntity.AnimManager.StopAnimation("bowaim");}, 500);
+        }
+
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
@@ -168,7 +188,6 @@ namespace Archery
             float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
             if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
         }
-
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
         {

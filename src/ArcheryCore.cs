@@ -224,6 +224,7 @@ namespace Archery
         private void RegisterItems(ClassRegistry classRegistry)
         {
             classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Archery.ItemBow);
+            classRegistry.ItemClassToTypeMapping["ItemSpear"] = typeof(Archery.ItemSpear);
         }
 
         private void RegisterEntityBehaviors(ClassRegistry classRegistry)

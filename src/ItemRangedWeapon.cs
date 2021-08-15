@@ -102,7 +102,7 @@ namespace Archery
             byEntity.GetBehavior<EntityBehaviorAimingAccuracy>().SetRangedWeaponStats(weaponStats);
             // /Archery
 
-            ItemSlot invslot = GetNextAmmoSlot(byEntity);
+            ItemSlot invslot = GetNextAmmoSlot(byEntity, slot);
             if (invslot == null) return;
 
             // Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
@@ -157,7 +157,7 @@ namespace Archery
 
         public virtual void OnAimingCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, EnumItemUseCancelReason cancelReason) {}
 
-        public virtual ItemSlot GetNextAmmoSlot(EntityAgent byEntity)
+        public virtual ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot)
         {
             throw new NotImplementedException(String.Format("Item {0} does not have implementation for GetNextAmmoSlot()!", Code));
         }
@@ -167,9 +167,29 @@ namespace Archery
             return 0f;
         }
 
-        public virtual float GetProjectileBreakChance(EntityAgent byEntity, ItemSlot weaponSlot)
+        public virtual float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot)
         {
-            return -1f;
+            return 1.1f;
+        }
+
+        public virtual float GetProjectileWeight(EntityAgent byEntity, ItemSlot weaponSlot)
+        {
+            return 0.1f;
+        }
+
+        public virtual bool GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot)
+        {
+            return false;
+        }
+
+        public virtual EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot)
+        {
+            throw new NotImplementedException(String.Format("Item {0} does not have implementation for GetProjectileEntityType()!", Code));
+        }
+
+        public virtual int GetWeaponDamageOnShot(EntityAgent byEntity, ItemSlot weaponSlot)
+        {
+            return 0;
         }
 
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
@@ -184,22 +204,27 @@ namespace Archery
             if (secondsUsed < chargeNeeded) return;
             // /Archery
 
-            ItemSlot ammoSlot = GetNextAmmoSlot(byEntity);
+            ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot);
             if (ammoSlot == null) return;
 
             //string arrowMaterial = arrowSlot.Itemstack.Collectible.FirstCodePart(1);
             float damage = GetProjectileDamage(byEntity, slot);
-            float breakChance = GetProjectileBreakChance(byEntity, slot);
+            float dropChance = GetProjectileDropChance(byEntity, slot);
+            float weight = GetProjectileWeight(byEntity, slot);
+            bool damageStackOnImpact = GetProjectileDamageOnImpact(byEntity, slot);
+
+            EntityProperties type = GetProjectileEntityType(byEntity, slot);
 
             ItemStack stack = ammoSlot.TakeOut(1);
             ammoSlot.MarkDirty();
 
-            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation("arrow-" + stack.Collectible.Variant["material"]));
-            Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
-            ((EntityProjectile)entity).FiredBy = byEntity;
-            ((EntityProjectile)entity).Damage = damage;
-            ((EntityProjectile)entity).ProjectileStack = stack;
-            ((EntityProjectile)entity).DropOnImpactChance = 1 - breakChance;
+            EntityProjectile entity = byEntity.World.ClassRegistry.CreateEntity(type) as EntityProjectile;;
+            entity.FiredBy = byEntity;
+            entity.Damage = damage;
+            entity.ProjectileStack = stack;
+            entity.DropOnImpactChance = dropChance;
+            entity.DamageStackOnImpact = damageStackOnImpact;
+            entity.Weight = weight;
 
             // Archery
             // Might as well reuse these for now
@@ -224,7 +249,7 @@ namespace Archery
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             // /Archery
             
-            entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
+            entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
             entity.ServerPos.Motion.Set(velocity);
 
             entity.Pos.SetFrom(entity.ServerPos);
@@ -248,7 +273,13 @@ namespace Archery
             {
                 rangedWeaponSystem.SendRangedWeaponFiredPacket(byEntity.EntityId, Id);
             }
-            slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot);
+
+            int weaponDamage = GetWeaponDamageOnShot(byEntity, slot);
+
+            if (weaponDamage > 0)
+            {
+                slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, weaponDamage);
+            }
             // /Archery
         }
 
@@ -260,16 +291,12 @@ namespace Archery
             {
                 byEntity.Attributes.SetInt("shooting", 0);
 
-                IPlayer byPlayer = null;
-                if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
-                byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
-
                 rangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);
 
-                byEntity.AnimManager.StartAnimation("bowhit");
-
-                api.Event.RegisterCallback((ms) => {byEntity.AnimManager.StopAnimation("bowaim");}, 500);
+                OnShotConfirmed(byEntity);
             }
         }
+
+        public virtual void OnShotConfirmed(EntityAgent byEntity) {}
     }
 }
