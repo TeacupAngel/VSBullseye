@@ -16,10 +16,19 @@ using Cairo;
 
 namespace Archery
 {
+    public enum ArcheryRangedWeaponType
+    {
+        Bow,
+        Throw
+    }
+
     public class ArcheryRangedWeaponStats
     {
+        // General
+        public ArcheryRangedWeaponType weaponType;
+
         // ItemBow stats
-        public float cooldownTime = 0.75f;
+        public float cooldownTime = 0.75f;  
         public float chargeTime = 0.5f;
         public float projectileVelocity = 30f; // Vanilla arrow speed
         public float projectileSpread = 1f; // In degrees

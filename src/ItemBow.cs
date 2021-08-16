@@ -16,14 +16,13 @@ namespace Archery
     {
         WorldInteraction[] interactions;
 
-        private ArcheryRangedWeaponSystem rangedWeaponSystem;
-        ArcheryRangedWeaponStats weaponStats;
-
         ItemSlot currentArrowSlot;
 
         public override void OnLoaded(ICoreAPI api)
         {
             base.OnLoaded(api);
+
+            weaponStats.weaponType = ArcheryRangedWeaponType.Bow;
 
             if (api.Side != EnumAppSide.Client) return;
             ICoreClientAPI capi = api as ICoreClientAPI;

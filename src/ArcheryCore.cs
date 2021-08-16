@@ -41,9 +41,25 @@ namespace Archery
         public override void Start(ICoreAPI api)
         {
             ClassRegistry classRegistry = Traverse.Create(api.ClassRegistry).Field<ClassRegistry>("registry").Value;
+            //ClassRegistry classRegistry = api.ClassRegistry as ClassRegistry;
 
             RegisterItems(classRegistry);
             RegisterEntityBehaviors(classRegistry);
+        }
+
+        private void RegisterItems(ClassRegistry classRegistry)
+        {
+            classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Archery.ItemBow);
+            classRegistry.ItemClassToTypeMapping["ItemSpear"] = typeof(Archery.ItemSpear);
+        }
+
+        private void RegisterEntityBehaviors(ClassRegistry classRegistry)
+        {
+            //classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Archery.EntityBehaviorAimingAccuracy);
+            //classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Archery.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
+
+            // Not replacing the vanilla AimingAccuracy behaviour for compatibility
+            classRegistry.RegisterentityBehavior("archery.aimingaccuracy", typeof(Archery.EntityBehaviorAimingAccuracy));
         }
 
         private EntityProjectile currentArrow;
@@ -220,20 +236,11 @@ namespace Archery
                 });
             }
         }
-
-        private void RegisterItems(ClassRegistry classRegistry)
+        
+        public static void SetClientRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
         {
-            classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Archery.ItemBow);
-            classRegistry.ItemClassToTypeMapping["ItemSpear"] = typeof(Archery.ItemSpear);
-        }
-
-        private void RegisterEntityBehaviors(ClassRegistry classRegistry)
-        {
-            //classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Archery.EntityBehaviorAimingAccuracy);
-            //classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Archery.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
-
-            // Not replacing the vanilla AimingAccuracy behaviour for compatibility
-            classRegistry.RegisterentityBehavior("archery.aimingaccuracy", typeof(Archery.EntityBehaviorAimingAccuracy));
+            SystemRenderAimPatch.SetRangedWeaponStats(weaponStats);
+            ClientMainPatch.SetRangedWeaponStats(weaponStats);
         }
     }
 }

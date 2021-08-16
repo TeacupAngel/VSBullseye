@@ -16,13 +16,12 @@ using Cairo;
 
 namespace Archery
 {
-    // Not needed anymore as Archery bows use different non-vanilla entity Attribute for aiming, but keeping this for now just to be sure
     /*[HarmonyPatch(typeof(SystemRenderPlayerAimAcc))]
     class SystemRenderPlayerAimAccPatch
     {
         [HarmonyPrefix]
         [HarmonyPatch("OnRenderFrame2DOverlay")]
-        static bool OnRenderFrame2DOverlayPrefix()
+        static bool OnRenderFrame2DOverlayPrefix(SystemRenderPlayerAimAcc __instance)
         {
             return false;
         }
@@ -31,10 +30,13 @@ namespace Archery
     [HarmonyPatch(typeof(SystemRenderAim))]
     class SystemRenderAimPatch
     {
-        private static int aimRangedTextureId;
+        private static ArcheryRangedWeaponStats weaponStats = new ArcheryRangedWeaponStats();
 
-        private static int aimRangedTextureYellowId;
-        private static int aimRangedTextureRedId;
+        private static int aimTextureId;
+        private static int aimTextureYellowId;
+        private static int aimTextureRedId;
+
+        private static int aimTextureThrowCircleId;
 
         public static bool readyToShoot = false;
 
@@ -42,9 +44,11 @@ namespace Archery
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
         {
-            aimRangedTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged.png"));
-            aimRangedTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_yellow.png"));
-            aimRangedTextureRedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_red.png"));
+            aimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged.png"));
+            aimTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_yellow.png"));
+            aimTextureRedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_red.png"));
+
+            aimTextureThrowCircleId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/throw_circle.png"));
             
             return true;
         }
@@ -56,21 +60,30 @@ namespace Archery
             if (ArcheryCore.aiming)
             {
                 //___game.Render2DTexture(aimRangedTextureYellowId, ___game.Width / 2 - 16 + FreeAimCore.aimX, ___game.Height / 2 - 16 + FreeAimCore.aimY, 32, 32, 10000f);
-                int textureId = readyToShoot ? aimRangedTextureId : aimRangedTextureRedId;
+                int textureId = readyToShoot ? aimTextureId : aimTextureRedId;
                 
                 ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + ArcheryCore.aimX + ArcheryCore.aimOffsetX, ___game.Height / 2 - 16 + ArcheryCore.aimY + ArcheryCore.aimOffsetY, 32, 32, 10000f);
+
+                if (weaponStats.weaponType == ArcheryRangedWeaponType.Throw)
+                {
+                    ___game.Render2DTexture(aimTextureThrowCircleId, ___game.Width / 2 - 160, ___game.Height / 2 - 160, 320, 320, 10001f);
+                }
 
                 return false;
             }
             
             return true;
         }
+
+        public static void SetRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
+        {
+            SystemRenderAimPatch.weaponStats = weaponStats;
+        }
     }
 
     [HarmonyPatch(typeof(ClientMain))]
     class ClientMainPatch
     {
-        // Might need to switch to a method of sending stats over that will generate less garbage
         private static ArcheryRangedWeaponStats weaponStats = new ArcheryRangedWeaponStats();
 
         /*static float horizontalLimit = 0.125f;

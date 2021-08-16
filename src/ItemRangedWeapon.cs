@@ -17,12 +17,10 @@ namespace Archery
 {
     public class ItemRangedWeapon : Item
     {
-        //WorldInteraction[] interactions;
+        protected ArcheryRangedWeaponSystem rangedWeaponSystem;
+        protected ArcheryRangedWeaponStats weaponStats;
 
-        private ArcheryRangedWeaponSystem rangedWeaponSystem;
-        ArcheryRangedWeaponStats weaponStats;
-
-        ModelTransform defaultFpHandTransform;
+        protected ModelTransform defaultFpHandTransform;
 
         public override void OnLoaded(ICoreAPI api)
         {
@@ -96,7 +94,7 @@ namespace Archery
 
             if (byEntity.World is IClientWorldAccessor)
             {
-                ClientMainPatch.SetRangedWeaponStats(weaponStats);
+                ArcheryCore.SetClientRangedWeaponStats(weaponStats);
             }
 
             byEntity.GetBehavior<EntityBehaviorAimingAccuracy>().SetRangedWeaponStats(weaponStats);

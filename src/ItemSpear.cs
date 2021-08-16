@@ -11,6 +11,13 @@ namespace Archery
 {
     public class ItemSpear : ItemRangedWeapon
     {
+        public override void OnLoaded(ICoreAPI api)
+        {
+            base.OnLoaded(api);
+
+            weaponStats.weaponType = ArcheryRangedWeaponType.Throw;
+        }
+
         public override void OnAimingStart(ItemSlot slot, EntityAgent byEntity)
         {
             byEntity.StartAnimation("aim");
