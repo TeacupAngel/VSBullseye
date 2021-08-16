@@ -116,11 +116,10 @@ namespace Archery
                 //ArcheryCore.aimOffsetX += ((float)noisegen.Noise(__instance.ElapsedMilliseconds * driftFrequency, 1000f) - 0.5f) * driftMagnitude * dt;
                 //ArcheryCore.aimOffsetY += ((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * driftFrequency) - 0.5f) * driftMagnitude * dt;
 
-                float horizontalRatio = __instance.Width / 1920f;
-                float verticalRatio = __instance.Height / 1200f;
+                float fovRatio = __instance.Width / 1920f;
 
-                ArcheryCore.aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.driftFrequency, 1000f) - 0.5f) - ArcheryCore.aimOffsetX / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * horizontalRatio;
-                ArcheryCore.aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.driftFrequency) - 0.5f) - ArcheryCore.aimOffsetY / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * verticalRatio;
+                ArcheryCore.aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.driftFrequency, 1000f) - 0.5f) - ArcheryCore.aimOffsetX / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
+                ArcheryCore.aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.driftFrequency) - 0.5f) - ArcheryCore.aimOffsetY / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
 
                 if (__instance.Api.World.ElapsedMilliseconds > twitchLastChangeMilliseconds + weaponStats.twitchDuration)
                 {
@@ -149,8 +148,8 @@ namespace Archery
                 //ArcheryCore.aimOffsetX += twitchX * stepSize * twitchMagnitude * dt;
                 //ArcheryCore.aimOffsetY += twitchY * stepSize * twitchMagnitude * dt;
 
-                ArcheryCore.aimOffsetX += twitchX * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * horizontalRatio;
-                ArcheryCore.aimOffsetY += twitchY * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * verticalRatio;
+                ArcheryCore.aimOffsetX += twitchX * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
+                ArcheryCore.aimOffsetY += twitchY * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
 
                 twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 
