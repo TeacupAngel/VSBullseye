@@ -256,6 +256,7 @@ namespace Archery
 
             //Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
+            velocity += byEntity.ServerPos.Motion;
             // /Archery
             
             // Feels awful, might redo later with zeroing

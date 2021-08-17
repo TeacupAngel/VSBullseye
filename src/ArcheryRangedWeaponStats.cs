@@ -25,7 +25,7 @@ namespace Archery
     public class ArcheryRangedWeaponStats
     {
         // General
-        public ArcheryRangedWeaponType weaponType;
+        public ArcheryRangedWeaponType weaponType = ArcheryRangedWeaponType.Bow;
 
         // ItemBow stats
         public float cooldownTime = 0.75f;  
@@ -48,7 +48,11 @@ namespace Archery
 
         // AimAccuracy EntityBehaviour stats
         public float accuracyStartTime = 1f;
+
         public float accuracyOvertimeStart = 6f;
         public float accuracyOvertimeTime = 12f;
+        public float accuracyOvertime = 1f;
+
+        public float accuracyMovePenalty = 1f;
     }
 }
