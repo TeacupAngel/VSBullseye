@@ -22,6 +22,9 @@ namespace Archery
 
         protected ModelTransform defaultFpHandTransform;
 
+        protected int aimTextureId = -1;
+        protected int aimTextureBlockedId = -1;
+
         public override void OnLoaded(ICoreAPI api)
         {
             // Archery
@@ -36,6 +39,10 @@ namespace Archery
 
             // Archery
             api.Event.RegisterEventBusListener(OnServerFired, 0.5, "archeryRangedWeaponFired");
+
+            ArcheryReticleLoadSystem reticleLoadSystem = api.ModLoader.GetModSystem<ArcheryReticleLoadSystem>();
+            if (weaponStats.aimTexturePath != null) aimTextureId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexturePath);
+            if (weaponStats.aimTextureBlockedPath != null) aimTextureBlockedId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTextureBlockedPath);
             // /Archery
         }
 
@@ -95,6 +102,7 @@ namespace Archery
             if (byEntity.World is IClientWorldAccessor)
             {
                 ArcheryCore.SetClientRangedWeaponStats(weaponStats);
+                ArcheryCore.SetClientRangedWeaponReticleTextures(aimTextureId, aimTextureBlockedId);
             }
 
             byEntity.GetBehavior<EntityBehaviorAimingAccuracy>().SetRangedWeaponStats(weaponStats);

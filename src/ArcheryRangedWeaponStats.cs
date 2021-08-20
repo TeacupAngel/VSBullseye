@@ -27,7 +27,7 @@ namespace Archery
         // General
         public ArcheryRangedWeaponType weaponType = ArcheryRangedWeaponType.Bow;
 
-        // ItemBow stats
+        // ItemRangedWeapon stats
         public float cooldownTime = 0.75f;  
         public float chargeTime = 0.5f;
         public float projectileVelocity = 30f; // Vanilla arrow speed
@@ -45,6 +45,9 @@ namespace Archery
         public long twitchDuration = 300;
         public float twitchMagnitude = 40f;
         public float twitchMax = 5f;
+
+        public string aimTexturePath = null;
+        public string aimTextureBlockedPath = null;
 
         // AimAccuracy EntityBehaviour stats
         public float accuracyStartTime = 1f;

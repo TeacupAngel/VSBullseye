@@ -242,5 +242,10 @@ namespace Archery
             SystemRenderAimPatch.SetRangedWeaponStats(weaponStats);
             ClientMainPatch.SetRangedWeaponStats(weaponStats);
         }
+
+        public static void SetClientRangedWeaponReticleTextures(int aimTextureId, int aimTextureBlockedId)
+        {
+            SystemRenderAimPatch.SetReticleTextures(aimTextureId, aimTextureBlockedId);
+        }
     }
 }

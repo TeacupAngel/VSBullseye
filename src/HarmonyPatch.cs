@@ -32,9 +32,12 @@ namespace Archery
     {
         private static ArcheryRangedWeaponStats weaponStats = new ArcheryRangedWeaponStats();
 
-        private static int aimTextureId;
-        private static int aimTextureYellowId;
-        private static int aimTextureRedId;
+        private static int defaultAimTextureId;
+        //private static int aimTextureYellowId;
+        private static int defaultAimTextureBlockedId;
+
+        private static int currentAimTextureId;
+        private static int currentAimTextureBlockedId;
 
         private static int aimTextureThrowCircleId;
 
@@ -44,9 +47,9 @@ namespace Archery
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
         {
-            aimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged.png"));
-            aimTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_yellow.png"));
-            aimTextureRedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_red.png"));
+            defaultAimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged.png"));
+            //aimTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_yellow.png"));
+            defaultAimTextureBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_red.png"));
 
             aimTextureThrowCircleId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/throw_circle.png"));
             
@@ -60,7 +63,7 @@ namespace Archery
             if (ArcheryCore.aiming)
             {
                 //___game.Render2DTexture(aimRangedTextureYellowId, ___game.Width / 2 - 16 + FreeAimCore.aimX, ___game.Height / 2 - 16 + FreeAimCore.aimY, 32, 32, 10000f);
-                int textureId = readyToShoot ? aimTextureId : aimTextureRedId;
+                int textureId = readyToShoot ? currentAimTextureId : currentAimTextureBlockedId;
                 
                 ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + ArcheryCore.aimX + ArcheryCore.aimOffsetX, ___game.Height / 2 - 16 + ArcheryCore.aimY + ArcheryCore.aimOffsetY, 32, 32, 10000f);
 
@@ -78,6 +81,12 @@ namespace Archery
         public static void SetRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
         {
             SystemRenderAimPatch.weaponStats = weaponStats;
+        }
+
+        public static void SetReticleTextures(int textureId, int blockedTextureId)
+        {
+            currentAimTextureId = textureId >= 0 ? textureId : defaultAimTextureId;
+            currentAimTextureBlockedId = blockedTextureId >= 0 ? blockedTextureId : defaultAimTextureBlockedId;
         }
     }
 
