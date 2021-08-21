@@ -47,9 +47,8 @@ namespace Archery
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
         {
-            defaultAimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged.png"));
-            //aimTextureYellowId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_yellow.png"));
-            defaultAimTextureBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/targetranged_red.png"));
+            defaultAimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/aimdefault.png"));
+            defaultAimTextureBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/aimblockeddefault.png"));
 
             aimTextureThrowCircleId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/throw_circle.png"));
             
