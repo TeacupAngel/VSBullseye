@@ -65,11 +65,10 @@ namespace Archery
         }
 
         // Archery    
-        public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
+        /*public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
         {
             if (byEntity.World is IClientWorldAccessor)
             {
-                // For spear, change it to only show the raising animation
                 float transformFraction;
 
                 if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, weaponStats.cooldownTime))
@@ -77,7 +76,8 @@ namespace Archery
                     float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
                     float transformTime = 0.25f;
 
-                    transformFraction = GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f);
+                    transformFraction = weaponStats.weaponType != ArcheryRangedWeaponType.Throw ? 
+                        GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f) : 1f;
                     transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
                 }
                 else
@@ -86,6 +86,34 @@ namespace Archery
                 }
 
                 FpHandTransform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
+            }
+        }*/
+
+        public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
+        {
+            if (target == EnumItemRenderTarget.HandFp)
+            {
+                //if (capi.World is IClientWorldAccessor)
+                //{
+
+                    float transformFraction;
+
+                    if (!rangedWeaponSystem.HasEntityCooldownPassed(capi.World.Player.Entity.EntityId, weaponStats.cooldownTime))
+                    {
+                        float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(capi.World.Player.Entity.EntityId);
+                        float transformTime = 0.25f;
+
+                        transformFraction = weaponStats.weaponType != ArcheryRangedWeaponType.Throw ? 
+                            GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f) : 1f;
+                        transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
+                    }
+                    else
+                    {
+                        transformFraction = 0;
+                    }
+
+                    renderinfo.Transform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
+                //}
             }
         }
         // /Archery
