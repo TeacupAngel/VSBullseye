@@ -293,10 +293,11 @@ namespace Archery
 
             //Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
-            velocity += byEntity.ServerPos.Motion;
+            // What the heck? Server's SidedPos.Motion is somehow twice that of the client's!
+            velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
             // /Archery
             
-            // Feels awful, might redo later with zeroing
+            // Used in vanilla spears but feels awful, might redo later with zeroing and proper offset to the right
             //entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
             entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
             entity.ServerPos.Motion.Set(velocity);
