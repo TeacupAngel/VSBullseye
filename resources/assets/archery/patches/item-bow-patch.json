@@ -3,16 +3,24 @@
 		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/archeryWeaponStatsByType", value: 
 		{
 			"*-crude": { 
-				twitchMagnitude: 40,
+				twitchMagnitude: 0,
+				driftMagnitude: 0,
+				projectileSpread: 1,
+				cooldownTime: 0,
+				chargeTime: 0.1,
+				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 
 			"*-simple": { 
-				twitchMagnitude: 40,
-				twitchMax: 5
+				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 
 			"*-long": { 
-				twitchMagnitude: 40
+				aimTexturePath: "archery:gui/aimarrow.png"
+			},
+
+			"*-recurve": { 
+				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 		}
 	},

@@ -9,7 +9,9 @@
 			projectileVelocity: 19.5,
 
 			accuracyMovePenalty: 0.2,
-			accuracyOvertime: 0
+			accuracyOvertime: 0,
+
+			aimTexturePath: "archery:gui/aimthrow.png"
 		}
 	},
 ]
