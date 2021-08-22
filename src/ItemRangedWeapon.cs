@@ -65,6 +65,7 @@ namespace Archery
         }
 
         // Archery    
+        // Keeping this as backup in case OnBeforeRender has some hidden flaw
         /*public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
         {
             if (byEntity.World is IClientWorldAccessor)
@@ -93,9 +94,6 @@ namespace Archery
         {
             if (target == EnumItemRenderTarget.HandFp)
             {
-                //if (capi.World is IClientWorldAccessor)
-                //{
-
                     float transformFraction;
 
                     if (!rangedWeaponSystem.HasEntityCooldownPassed(capi.World.Player.Entity.EntityId, weaponStats.cooldownTime))
@@ -113,7 +111,18 @@ namespace Archery
                     }
 
                     renderinfo.Transform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
-                //}
+
+                    if (ArcheryCore.aiming)
+                    {
+                        Vec2f currentAim = ArcheryCore.GetCurrentAim();
+
+                        renderinfo.Transform.Rotation.X = defaultFpHandTransform.Rotation.X - (currentAim.Y / 15f); 
+                        renderinfo.Transform.Rotation.Y = defaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
+                    }
+                    else
+                    {
+                        renderinfo.Transform.Rotation.Set(defaultFpHandTransform.Rotation);
+                    }
             }
         }
         // /Archery
@@ -155,14 +164,6 @@ namespace Archery
             // Archery    
             if (byEntity.World is IClientWorldAccessor)
             {
-                ModelTransform tf = new ModelTransform();
-                tf.EnsureDefaultValues();
-
-                Vec2f currentAim = ArcheryCore.GetCurrentAim();
-
-                tf.Rotation.Set(-currentAim.X / 15f, currentAim.Y / 15f, 0);
-                byEntity.Controls.UsingHeldItemTransformBefore = tf;
-
                 // Show different crosshair if we are ready to shoot
                 SystemRenderAimPatch.readyToShoot = secondsUsed > weaponStats.chargeTime + 0.1f;
             }
@@ -249,7 +250,7 @@ namespace Archery
 
             EntityProperties type = GetProjectileEntityType(byEntity, slot);
 
-            // If we need to damage the projectile by more than 1 durability per shot, do it here, but leave at least 1 durability left
+            // If we need to damage the projectile by more than 1 durability per shot, do it here, but leave at least 1 durability
             if (GetProjectileDamageOnImpact(byEntity, slot) > 1)
             {
                 int durability = slot.Itemstack.Attributes.GetInt("durability", Durability);
