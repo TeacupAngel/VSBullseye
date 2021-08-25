@@ -1,7 +1,12 @@
 [ 
 	{ 
 		file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/archeryWeaponStats", value: 
-		{ 
+		{
+			cooldownTime: 1.5, 
+			accuracyStartTime: 1.5,
+
+			twitchMax: 2.5,
+
 			horizontalLimit: 0,
 			verticalLimit: 0,
         	verticalOffset: 0,
