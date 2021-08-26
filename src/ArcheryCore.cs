@@ -29,14 +29,6 @@ namespace Archery
     {
         public static ArcheryCore clientInstance;
         public static ArcheryCore serverInstance;
-
-        [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-        public class ArcheryPlayerAimData
-        {
-            public double aimX;
-            public double aimY;
-            public double aimZ;
-        }
         
         public override void Start(ICoreAPI api)
         {
@@ -101,19 +93,11 @@ namespace Archery
         }
 
         // Serverside
-        public static Dictionary<long, Vec3d> aimVectors;
-
         long followArrowTickListenerId = -1;
 
         public override void StartServerSide(ICoreServerAPI sapi)
         {
             serverInstance = this;
-
-            sapi.Network.RegisterChannel("archery")
-            .RegisterMessageType<ArcheryPlayerAimData>()
-            .SetMessageHandler<ArcheryPlayerAimData>(ReceivePlayerAimData);
-
-            aimVectors = new Dictionary<long, Vec3d>();
 
             sapi.RegisterCommand("trackarrows", "", "", (IServerPlayer player, int groupId, CmdArgs args) => {
                 if (followArrowTickListenerId == -1)
@@ -129,22 +113,6 @@ namespace Archery
                     player.SendMessage(groupId, "No longer tracking arrows", EnumChatType.Notification);
                 }
             });
-        }
-
-        private void ReceivePlayerAimData(IPlayer fromPlayer, ArcheryPlayerAimData aimData)
-        {
-            Vec3d aimVector;
-
-            if (!aimVectors.TryGetValue(fromPlayer.Entity.EntityId, out aimVector))
-            {
-                aimVectors[fromPlayer.Entity.EntityId] = new Vec3d(aimData.aimX, aimData.aimY, aimData.aimZ);
-            }
-            else
-            {
-                aimVector.X = aimData.aimX;
-                aimVector.Y = aimData.aimY;
-                aimVector.Z = aimData.aimZ;
-            }
         }
 
         // Clientside
@@ -187,11 +155,6 @@ namespace Archery
 
             mvMatrix = Traverse.Create(client).Field<StackMatrix4>("MvMatrix").Value;
             pMatrix = Traverse.Create(client).Field<StackMatrix4>("PMatrix").Value;
-
-            cNetworkChannel = capi.Network.RegisterChannel("archery")
-            .RegisterMessageType<ArcheryPlayerAimData>();
-
-            capi.Event.RegisterGameTickListener(SendAimToServer, 100);
         }
 
         public static Vec2f GetCurrentAim()
@@ -223,19 +186,6 @@ namespace Archery
             targetVec.Y = offsetY;
             targetVec.Z = offsetZ;
 		}
-
-        private void SendAimToServer(float dt)
-        {
-            if (aiming)
-            {
-                cNetworkChannel.SendPacket(new ArcheryPlayerAimData()
-                {
-                    aimX = targetVec.X,
-                    aimY = targetVec.Y,
-                    aimZ = targetVec.Z,
-                });
-            }
-        }
         
         public static void SetClientRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
         {

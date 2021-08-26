@@ -35,27 +35,15 @@ namespace Archery
             weaponStats = Attributes.KeyExists("archeryWeaponStats") ? Attributes?["archeryWeaponStats"].AsObject<ArcheryRangedWeaponStats>() : new ArcheryRangedWeaponStats();
             // /Archery
 
-            if (api.Side != EnumAppSide.Client) return;
-
-            // Archery
-            api.Event.RegisterEventBusListener(OnServerFired, 0.5, "archeryRangedWeaponFired");
-
-            ArcheryReticleLoadSystem reticleLoadSystem = api.ModLoader.GetModSystem<ArcheryReticleLoadSystem>();
-            if (weaponStats.aimTexturePath != null) aimTextureId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexturePath);
-            if (weaponStats.aimTextureBlockedPath != null) aimTextureBlockedId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTextureBlockedPath);
-            // /Archery
-        }
-
-        private void OnServerFired(string eventName, ref EnumHandling handling, IAttribute data)
-        {
-            TreeAttribute tree = data as TreeAttribute;
-            EntityAgent byEntity =  api.World.GetEntityById(tree.GetLong("entityId")) as EntityAgent;
-            int itemId = tree.GetInt("itemId");
-
-            if (itemId == Id)
+            if (api.Side == EnumAppSide.Server)
             {
-                HasShot(byEntity);
-                handling = EnumHandling.PreventSubsequent;
+                api.Event.RegisterEventBusListener(ServerHandleFire, 0.5, "archeryRangedWeaponFire");
+            }
+            else
+            {
+                ArcheryReticleLoadSystem reticleLoadSystem = api.ModLoader.GetModSystem<ArcheryReticleLoadSystem>();
+                if (weaponStats.aimTexturePath != null) aimTextureId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexturePath);
+                if (weaponStats.aimTextureBlockedPath != null) aimTextureBlockedId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTextureBlockedPath);
             }
         }
 
@@ -141,6 +129,10 @@ namespace Archery
                 ArcheryCore.SetClientRangedWeaponStats(weaponStats);
                 ArcheryCore.SetClientRangedWeaponReticleTextures(aimTextureId, aimTextureBlockedId);
             }
+            
+            if (api.Side == EnumAppSide.Server) {
+                rangedWeaponSystem.SetLastEntityRangedChargeData(byEntity.EntityId, slot);
+            }
 
             byEntity.GetBehavior<EntityBehaviorAimingAccuracy>().SetRangedWeaponStats(weaponStats);
             // /Archery
@@ -169,7 +161,12 @@ namespace Archery
             }
             // /Archery
 
-            OnAimingStep(secondsUsed, slot, byEntity);
+            Console.WriteLine(String.Format("{0}: OnHeldInteractSTEP, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
+
+            if (byEntity.Attributes.GetInt("archeryAiming") == 1)
+            {
+                OnAimingStep(secondsUsed, slot, byEntity);
+            }
             
             return true;
         }
@@ -178,7 +175,7 @@ namespace Archery
 
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
-            byEntity.Attributes.SetInt("archeryAiming", 0);  // Archery
+            byEntity.Attributes.SetInt("archeryAiming", 0);
 
             if (cancelReason != EnumItemUseCancelReason.ReleasedMouse)
             {
@@ -229,9 +226,10 @@ namespace Archery
 
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
+            Console.WriteLine(String.Format("{0}: OnHeldInteractStop, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
+
             if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
             byEntity.Attributes.SetInt("archeryAiming", 0);  // Archery
-            byEntity.Attributes.SetInt("shooting", 1);
 
             // Archery
             float chargeNeeded = api.Side == EnumAppSide.Server ? weaponStats.chargeTime : weaponStats.chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
@@ -239,6 +237,22 @@ namespace Archery
             if (secondsUsed < chargeNeeded) return;
             // /Archery
 
+            if (api.Side != EnumAppSide.Client) return;
+
+            Vec3d targetVec = ArcheryCore.targetVec;
+
+            Shoot(slot, byEntity, targetVec);
+
+            rangedWeaponSystem.SendRangedWeaponFirePacket(byEntity.EntityId, Id, targetVec);
+        }
+
+        public void Shoot(ItemSlot slot, EntityAgent byEntity, Vec3d targetVec)
+        {
+            Console.WriteLine(String.Format("{0}: Shoot, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
+
+            byEntity.Attributes.SetInt("archeryAiming", 0);
+
+            // /Archery
             ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot);
             if (ammoSlot == null) return;
 
@@ -278,7 +292,9 @@ namespace Archery
             double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
 
             // New method to generate random spread, works when aimed straight up/straight down
-            Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? ArcheryCore.aimVectors[byEntity.EntityId] : ArcheryCore.targetVec;
+            //Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? ArcheryCore.aimVectors[byEntity.EntityId] : ArcheryCore.targetVec;
+
+            Console.WriteLine(String.Format("{0}: targetVec: {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", targetVec));
 
             Vec3d perp = MathHelper.Vec3GetPerpendicular(targetVec);
             Vec3d perp2 = targetVec.Cross(perp);
@@ -293,7 +309,7 @@ namespace Archery
 
             //Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
-            // What the heck? Server's SidedPos.Motion is somehow twice that of the client's!
+            // What the heck? Server's SidedPos.Motion is somehow twice that of client's!
             velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
             // /Archery
             
@@ -315,14 +331,10 @@ namespace Archery
             {
                 ArcheryCore.serverInstance.SetFollowArrow((EntityProjectile)entity, entityPlayer);
             }
-            
-            OnShotImmediate(secondsUsed, slot, byEntity, blockSel, entitySel);
-            HasShot(byEntity);
 
-            if (api.Side == EnumAppSide.Server)
-            {
-                rangedWeaponSystem.SendRangedWeaponFiredPacket(byEntity.EntityId, Id);
-            }
+            rangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);
+
+            OnShot(slot, byEntity);
 
             int weaponDamage = GetWeaponDamageOnShot(byEntity, slot);
 
@@ -333,20 +345,29 @@ namespace Archery
             // /Archery
         }
 
-        public virtual void OnShotImmediate(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel) {}
+        public virtual void OnShot(ItemSlot slot, EntityAgent byEntity) {}
 
-        public void HasShot(EntityAgent byEntity)
+        private void ServerHandleFire(string eventName, ref EnumHandling handling, IAttribute data)
         {
-            if (byEntity.Attributes.GetInt("shooting") == 1)
+            TreeAttribute tree = data as TreeAttribute;
+            int itemId = tree.GetInt("itemId");
+
+            if (itemId == Id)
             {
-                byEntity.Attributes.SetInt("shooting", 0);
+                long entityId = tree.GetLong("entityId");
 
-                rangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);
+                ItemSlot itemSlot = rangedWeaponSystem.GetLastEntityRangedItemSlot(entityId);
 
-                OnShotConfirmed(byEntity);
+                if (rangedWeaponSystem.GetEntityChargeStart(entityId) + weaponStats.chargeTime < api.World.ElapsedMilliseconds / 1000f && itemSlot != null)
+                {
+                    EntityAgent byEntity =  api.World.GetEntityById(entityId) as EntityAgent;
+                    Vec3d targetVec = new Vec3d(tree.GetDouble("aimX"), tree.GetDouble("aimY"), tree.GetDouble("aimZ"));
+
+                    Shoot(itemSlot, byEntity, targetVec);
+                    
+                    handling = EnumHandling.PreventSubsequent;
+                }
             }
         }
-
-        public virtual void OnShotConfirmed(EntityAgent byEntity) {}
     }
 }

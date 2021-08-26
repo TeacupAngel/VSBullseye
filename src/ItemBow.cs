@@ -156,7 +156,7 @@ namespace Archery
             return 1;
         }
 
-        public override void OnShotImmediate(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
+        public override void OnShot(ItemSlot slot, EntityAgent byEntity) 
         {
             if (byEntity.World is IClientWorldAccessor)
             {
@@ -165,10 +165,7 @@ namespace Archery
 
             slot.Itemstack.Attributes.SetInt("renderVariant", 0);
             (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
-        }
 
-        public override void OnShotConfirmed(EntityAgent byEntity) 
-        {
             IPlayer byPlayer = null;
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
             byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);

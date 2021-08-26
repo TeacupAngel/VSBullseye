@@ -94,18 +94,6 @@ namespace Archery
     {
         private static ArcheryRangedWeaponStats weaponStats = new ArcheryRangedWeaponStats();
 
-        /*static float horizontalLimit = 0.125f;
-        static float verticalLimit = 0.35f;
-        static float verticalOffset = -0.15f;
-
-        static float driftFrequency = 0.001f;
-        static float driftMagnitude = 150f;
-        static float driftMax = 150f;
-
-        static long twitchDuration = 300;
-        static float twitchMagnitude = 40f;
-        static float twitchMax = 5f;*/
-
         public static float driftMultiplier = 1f;
         public static float twitchMultiplier = 1f;
 

@@ -23,10 +23,13 @@ namespace Archery
     public class ArcheryRangedWeaponSystem : ModSystem
     {
         [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-        public class ArcheryRangedWeaponFired
+        public class ArcheryRangedWeaponFire
         {
             public int itemId;
             public long entityId;
+            public double aimX;
+            public double aimY;
+            public double aimZ;
         }
 
         // Server
@@ -35,29 +38,54 @@ namespace Archery
 
         IWorldAccessor world;
 
+        Dictionary<long, ItemSlot> lastRangedSlotByEntityId;
+        Dictionary<long, long> rangedChargeStartByEntityId;
+
         public override void StartServerSide(ICoreServerAPI api)
         {
             sapi = api;
 
             world = api.World;
 
+            lastRangedSlotByEntityId = new Dictionary<long, ItemSlot>();
+            rangedChargeStartByEntityId = new Dictionary<long, long>();
+
             serverNetworkChannel = api.Network.RegisterChannel("archeryitem")
-            .RegisterMessageType<ArcheryRangedWeaponFired>();
+            .RegisterMessageType<ArcheryRangedWeaponFire>()
+            .SetMessageHandler<ArcheryRangedWeaponFire>(OnServerRangedWeaponFire);
         }
 
-        public void SendRangedWeaponFiredPacket(long entityId, int itemId)
+        public void OnServerRangedWeaponFire(IServerPlayer fromPlayer, ArcheryRangedWeaponFire packet)
         {
-            IServerPlayer[] serverPlayer = Array.ConvertAll<IPlayer, IServerPlayer>(sapi.World.AllOnlinePlayers, player => (IServerPlayer)player);
+            TreeAttribute tree = new TreeAttribute();
+            tree.SetLong("entityId", packet.entityId);
+            tree.SetInt("itemId", packet.itemId);
+            tree.SetDouble("aimX", packet.aimX);
+            tree.SetDouble("aimY", packet.aimY);
+            tree.SetDouble("aimZ", packet.aimZ);
 
-            serverNetworkChannel.SendPacket(new ArcheryRangedWeaponFired()
-            {
-                entityId = entityId,
-                itemId = itemId,
-            }, serverPlayer);
+            sapi.Event.PushEvent("archeryRangedWeaponFire", tree);
+        }
+
+        public void SetLastEntityRangedChargeData(long entityId, ItemSlot itemSlot)
+        {
+            lastRangedSlotByEntityId[entityId] = itemSlot;
+            rangedChargeStartByEntityId[entityId] = world.ElapsedMilliseconds;
+        }
+
+        public ItemSlot GetLastEntityRangedItemSlot(long entityId)
+        {
+            return lastRangedSlotByEntityId.ContainsKey(entityId) ? lastRangedSlotByEntityId[entityId] : null;
+        }
+
+        public float GetEntityChargeStart(long entityId)
+        {
+            return rangedChargeStartByEntityId.ContainsKey(entityId) ? rangedChargeStartByEntityId[entityId] / 1000f : 0;
         }
 
         // Client
         ICoreClientAPI capi;
+        IClientNetworkChannel clientNetworkChannel;
 
         public override void StartClientSide(ICoreClientAPI api)
         {
@@ -65,36 +93,38 @@ namespace Archery
 
             world = api.World;
 
-            api.Network.RegisterChannel("archeryitem")
-            .RegisterMessageType<ArcheryRangedWeaponFired>()
-            .SetMessageHandler<ArcheryRangedWeaponFired>(OnClientRangedWeaponFired);
+            clientNetworkChannel = api.Network.RegisterChannel("archeryitem")
+            .RegisterMessageType<ArcheryRangedWeaponFire>();
         }
 
-        public void OnClientRangedWeaponFired(ArcheryRangedWeaponFired packet)
+        public void SendRangedWeaponFirePacket(long entityId, int itemId, Vec3d targetVec)
         {
-            TreeAttribute tree = new TreeAttribute();
-            tree.SetLong("entityId", packet.entityId);
-            tree.SetInt("itemId", packet.itemId);
-
-            capi.Event.PushEvent("archeryRangedWeaponFired", tree);
+            clientNetworkChannel.SendPacket(new ArcheryRangedWeaponFire()
+            {
+                entityId = entityId,
+                itemId = itemId,
+                aimX = targetVec.X,
+                aimY = targetVec.Y,
+                aimZ = targetVec.Z
+            });
         }
 
         // Common
-        Dictionary<long, long> cooldownByEntityID = new Dictionary<long, long>();
+        Dictionary<long, long> cooldownByEntityId = new Dictionary<long, long>();
 
-        public void StartEntityCooldown(long entityID)
+        public void StartEntityCooldown(long entityId)
         {
-            cooldownByEntityID[entityID] = world.ElapsedMilliseconds;
+            cooldownByEntityId[entityId] = world.ElapsedMilliseconds;
         }
 
-        public float GetEntityCooldownTime(long entityID)
+        public float GetEntityCooldownTime(long entityId)
         {
-            return cooldownByEntityID.ContainsKey(entityID) ? (world.ElapsedMilliseconds - cooldownByEntityID[entityID]) / 1000f : 0;
+            return cooldownByEntityId.ContainsKey(entityId) ? (world.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
         }
 
-        public bool HasEntityCooldownPassed(long entityID, double cooldownTime)
+        public bool HasEntityCooldownPassed(long entityId, double cooldownTime)
         {
-            return cooldownByEntityID.ContainsKey(entityID) ? world.ElapsedMilliseconds > cooldownByEntityID[entityID] + (cooldownTime * 1000) : true;
+            return cooldownByEntityId.ContainsKey(entityId) ? world.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
         }
     }
 }

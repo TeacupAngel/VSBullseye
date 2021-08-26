@@ -76,13 +76,10 @@ namespace Archery
             return byEntity.World.GetEntityType(new AssetLocation(Attributes["spearEntityCode"].AsString()));
         }
 
-        public override void OnShotImmediate(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
+        public override void OnShot(ItemSlot slot, EntityAgent byEntity) 
         {
             if (byEntity is EntityPlayer) RefillSlotIfEmpty(slot, byEntity, (itemstack) => itemstack.Collectible is ItemSpear);
-        }
 
-        public override void OnShotConfirmed(EntityAgent byEntity) 
-        {
             byEntity.StopAnimation("aim");
 
             (api as ICoreClientAPI)?.World.AddCameraShake(0.17f);
