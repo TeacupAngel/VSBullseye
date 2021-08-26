@@ -60,15 +60,27 @@
 }
         </ModInfo>
     </PropertyGroup>
-
     <ItemGroup>
         <ModAssets Include="$(MSBuildProjectDirectory)/resources/assets/**/*.*"/>
     </ItemGroup>
     <Target Name="BaseTarget">
         <WriteLinesToFile File="$(MSBuildProjectDirectory)/resources/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
-        <Copy SourceFiles="@(ModAssets)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/%(RecursiveDir)"/>
-        <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
+        <Copy SourceFiles="@(ModAssets)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/%(RecursiveDir)" SkipUnchangedFiles="true"/>
+        
+        <!-- Remove stale staged files (modified from https://stackoverflow.com/questions/46161651/safely-remove-stale-files-with-msbuild)  -->
+        <PropertyGroup>
+            <DirSeparator>$([System.IO.Path]::DirectorySeparatorChar)</DirSeparator>
+        </PropertyGroup>
+        <ItemGroup>
+            <SourceAssets Include="@(ModAssets->'$(MSBuildProjectDirectory)$(DirSeparator)staged$(DirSeparator)$(TargetName)$(DirSeparator)assets$(DirSeparator)%(RecursiveDir)%(Filename)%(Extension)')" />
+            <StagedAssets Include="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/**/*.*"/>
+            <StaleAssets Include="@(StagedAssets)" Exclude="@(SourceAssets)" />
+        </ItemGroup>
+        <Message Text="Deleting Stale Files: @(StaleAssets, '%0A')" Condition="'@(StaleAssets->Count())' > 0" importance="high"/>
+        <Delete Files="@(StaleAssets)"/>   
+
+        <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)" SkipUnchangedFiles="true"/>
     </Target>
     <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Debug'">
         <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
