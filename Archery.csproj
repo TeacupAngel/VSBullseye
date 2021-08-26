@@ -11,33 +11,36 @@
     <ItemGroup>
         <Reference Include="VintagestoryAPI">
             <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="VSEssentials">
             <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="VSSurvivalMod">
             <HintPath>$(VINTAGE_STORY)/Mods/VSSurvivalMod.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="VintagestoryLib">
             <HintPath>$(VINTAGE_STORY)/VintagestoryLib.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="Cairo">
             <HintPath>$(VINTAGE_STORY)/Lib/cairo-sharp.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="protobuf-net" Version="2.1.0">
             <HintPath>$(VINTAGE_STORY)/Lib/protobuf-net.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="0Harmony">
             <HintPath>$(VINTAGE_STORY)/Lib/0Harmony.dll</HintPath>
+            <Private>false</Private>
         </Reference>
     </ItemGroup>
     <ItemGroup>
         <ModResources Include="$(MSBuildProjectDirectory)/resources/**/*.*"/>
     </ItemGroup>
-    <Target Name="Copy" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(VINTAGE_STORY_DATA)/Mods"/>
-        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(VINTAGE_STORY_DATA)/Mods"/>
-    </Target>
     <Target Name="Package" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
         <MakeDir Directories="$(OutputDirectory)release/$(TargetName)" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(OutputDirectory)release/$(TargetName)"/>
