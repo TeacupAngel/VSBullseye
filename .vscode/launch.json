@@ -8,10 +8,9 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}",
-			"--addModPath", "${workspaceFolder}/bin/Debug/net461",
+			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "surviveandbuild",
-			"--openWorld", "Survival Test",
-			"--addOrigin", "${workspaceFolder}/resources/assets"
+			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -24,10 +23,9 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}",
-			"--addModPath", "${workspaceFolder}/bin/Debug/net461",
+			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
-			"--openWorld", "Superflat Test",
-			"--addOrigin", "${workspaceFolder}/resources/assets"
+			"--openWorld", "Superflat ${workspaceFolderBasename}",
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -40,10 +38,9 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}",
-			"--addModPath", "${workspaceFolder}/bin/Debug/net461",
+			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "preset-surviveandbuild",
-			"--openWorld", "Survival Test",
-			"--addOrigin", "${workspaceFolder}/resources/assets"
+			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -56,10 +53,9 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}",
-			"--addModPath", "${workspaceFolder}/bin/Debug/net461",
+			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
-			"--openWorld", "Superflat Test",
-			"--addOrigin", "${workspaceFolder}/resources/assets"
+			"--openWorld", "Superflat ${workspaceFolderBasename}",
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -72,10 +68,9 @@
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}",
-			"--addModPath", "${workspaceFolder}/bin/Debug/net461",
+			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "preset-surviveandbuild",
-			"--openWorld", "Survival Test",
-			"--addOrigin", "${workspaceFolder}/resources/assets"
+			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -88,10 +83,9 @@
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}",
-			"--addModPath", "${workspaceFolder}/bin/Debug/net461",
+			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
-			"--openWorld", "Survival Test",
-			"--addOrigin", "${workspaceFolder}/resources/assets"
+			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"

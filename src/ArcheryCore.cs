@@ -18,11 +18,6 @@ using HarmonyLib;
 
 using Cairo;
 
-[assembly: ModInfo( "Archery",
-	Description = "",
-	Website     = "",
-	Authors     = new []{ "rahjital" } )]
-
 namespace Archery
 {
     public class ArcheryCore : ModSystem
@@ -135,8 +130,6 @@ namespace Archery
 
         StackMatrix4 mvMatrix;
         StackMatrix4 pMatrix;
-
-        IClientNetworkChannel cNetworkChannel;
 
         public override void StartClientSide(ICoreClientAPI capi)
         {

@@ -38,13 +38,40 @@
             <Private>false</Private>
         </Reference>
     </ItemGroup>
+    <PropertyGroup>
+        <ModInfo>
+{
+	"type": "code",
+	"name": "$(AssemblyTitle)",
+	"modid": "$(AssemblyTitle.ToLower())",
+	"version": "$(Version)",
+
+	"description": "$(Description)",
+	"website": "",
+	"authors": [ "$(Authors.ToLower())" ], BeforeTargets="ModInfo"
+
+	"dependencies": {
+		"game": "1.15.3"
+	}
+}
+        </ModInfo>
+    </PropertyGroup>
+
     <ItemGroup>
-        <ModResources Include="$(MSBuildProjectDirectory)/resources/**/*.*"/>
+        <ModAssets Include="$(MSBuildProjectDirectory)/resources/assets/**/*.*"/>
     </ItemGroup>
-    <Target Name="Package" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
-        <MakeDir Directories="$(OutputDirectory)release/$(TargetName)" />
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(OutputDirectory)release/$(TargetName)"/>
-        <Copy SourceFiles="@(ModResources)" DestinationFolder="$(OutputDirectory)release/$(TargetName)/%(RecursiveDir)"/>
-        <ZipDirectory SourceDirectory="$(OutputDirectory)release/$(TargetName)" DestinationFile="$(MSBuildProjectDirectory)/release/$(TargetName).zip" Overwrite="true" />
+    <Target Name="BaseTarget">
+        <WriteLinesToFile File="$(MSBuildProjectDirectory)/resources/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(OutputDirectory)staged/$(TargetName)"/>
+        <Copy SourceFiles="@(ModAssets)" DestinationFolder="$(OutputDirectory)staged/$(TargetName)/assets/%(RecursiveDir)"/>
+        <Copy SourceFiles="$(OutputDirectory)/resources/modinfo.json" DestinationFolder="$(OutputDirectory)staged/$(TargetName)"/>
+    </Target>
+    <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Debug'">
+        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(OutputDirectory)staged/$(TargetName)"/>
+    </Target>
+    <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Release'">
+        <MakeDir Directories="$(OutputDirectory)release/$(Version)" />
+        <Delete Files="$(OutputDirectory)staged/$(TargetName)/$(TargetName).pdb" />
+        <ZipDirectory SourceDirectory="$(OutputDirectory)staged/$(TargetName)" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName).zip" Overwrite="true" />
     </Target>
 </Project>

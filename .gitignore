@@ -7,5 +7,6 @@ TODO_Feedback
 /bin
 /obj
 
-# release packaging folder
+# debug and release packaging folders
+/staged
 /release
