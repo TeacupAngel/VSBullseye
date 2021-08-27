@@ -64,28 +64,37 @@
 		"name": "Launch Survival Server (.NET)",
 		"type": "clr",
 		"request": "launch",
-		"preLaunchTask": "build (Debug)",
+		"preLaunchTask": "Prepare Server (Survival, .NET)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/multi_server",
 			"--addModPath", "${workspaceFolder}/staged",
-			"--playStyle", "preset-surviveandbuild",
-			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
-		"console": "internalConsole",
+		"console": "externalTerminal",
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
 		"name": "Launch Superflat Server (.NET)",
 		"type": "clr",
 		"request": "launch",
-		"preLaunchTask": "build (Debug)",
+		"preLaunchTask": "Prepare Server (Superflat, .NET)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/multi_server",
 			"--addModPath", "${workspaceFolder}/staged",
-			"--playStyle", "creativebuilding",
-			"--openWorld", "Survival ${workspaceFolderBasename}",
+		],
+		"console": "externalTerminal",
+		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Client (.NET)",
+		"type": "clr",
+		"request": "launch",
+		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/multi_client",
+			"--addModPath", "${workspaceFolder}/staged",
+			"--connect", "10.0.1.10"
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"

@@ -13,7 +13,7 @@
             "linux": {
                 "options": {
                     "env": {
-                        "FrameworkPathOverride": "/lib/mono/4.5.2-api/"
+                        "FrameworkPathOverride": "/lib/mono/4.6.1-api/"
                     }
                 }
             },
@@ -36,7 +36,7 @@
             "linux": {
                 "options": {
                     "env": {
-                        "FrameworkPathOverride": "/lib/mono/4.5.2-api/"
+                        "FrameworkPathOverride": "/lib/mono/4.6.1-api/"
                     }
                 }
             },
@@ -61,7 +61,7 @@
             "linux": {
                 "options": {
                     "env": {
-                        "FrameworkPathOverride": "/lib/mono/4.5.2-api/"
+                        "FrameworkPathOverride": "/lib/mono/4.6.1-api/"
                     }
                 }
             },
@@ -70,6 +70,20 @@
                 "-c",
                 "Release"
             ]
+        },
+        {
+            "label": "Prepare Server (Survival, .NET)",
+            "type": "shell",
+            "command": "$path = '\"{WorldConfig:{SaveFileLocation:''${env:VINTAGE_STORY_DATA}/multi_server/Saves/Survival ${workspaceFolderBasename}.vcdbs'',PlayStyle:''surviveandbuild'',WorldType:''standard'',DefaultRoleCode:''suplayer''}}\"'; & '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/multi_server' --setconfig $path.Replace('\\', '/'); exit",
+            "dependsOrder": "sequence",
+            "dependsOn": ["build (Debug)"]
+        },
+        {
+            "label": "Prepare Server (Superflat, .NET)",
+            "type": "shell",
+            "command": "$path = '\"{WorldConfig:{SaveFileLocation:''${env:VINTAGE_STORY_DATA}/multi_server/Saves/Superflat ${workspaceFolderBasename}.vcdbs'',PlayStyle:''creativebuilding'',WorldType:''superflat'',DefaultRoleCode:''crplayer''}}\"'; & '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/multi_server' --setconfig $path.Replace('\\', '/'); exit",
+            "dependsOrder": "sequence",
+            "dependsOn": ["build (Debug)"]
         }
     ]
   }
