@@ -36,16 +36,12 @@ namespace Archery
         ICoreServerAPI sapi;
         IServerNetworkChannel serverNetworkChannel;
 
-        IWorldAccessor world;
-
         Dictionary<long, ItemSlot> lastRangedSlotByEntityId;
         Dictionary<long, long> rangedChargeStartByEntityId;
 
         public override void StartServerSide(ICoreServerAPI api)
         {
             sapi = api;
-
-            world = api.World;
 
             lastRangedSlotByEntityId = new Dictionary<long, ItemSlot>();
             rangedChargeStartByEntityId = new Dictionary<long, long>();
@@ -70,7 +66,7 @@ namespace Archery
         public void SetLastEntityRangedChargeData(long entityId, ItemSlot itemSlot)
         {
             lastRangedSlotByEntityId[entityId] = itemSlot;
-            rangedChargeStartByEntityId[entityId] = world.ElapsedMilliseconds;
+            rangedChargeStartByEntityId[entityId] = sapi.World.ElapsedMilliseconds;
         }
 
         public ItemSlot GetLastEntityRangedItemSlot(long entityId)
@@ -90,8 +86,6 @@ namespace Archery
         public override void StartClientSide(ICoreClientAPI api)
         {
             capi = api;
-
-            world = api.World;
 
             clientNetworkChannel = api.Network.RegisterChannel("archeryitem")
             .RegisterMessageType<ArcheryRangedWeaponFire>();
@@ -114,17 +108,26 @@ namespace Archery
 
         public void StartEntityCooldown(long entityId)
         {
-            cooldownByEntityId[entityId] = world.ElapsedMilliseconds;
+            cooldownByEntityId[entityId] = capi.World.ElapsedMilliseconds;
         }
 
         public float GetEntityCooldownTime(long entityId)
         {
-            return cooldownByEntityId.ContainsKey(entityId) ? (world.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
+            return cooldownByEntityId.ContainsKey(entityId) ? (capi.World.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
         }
 
         public bool HasEntityCooldownPassed(long entityId, double cooldownTime)
         {
-            return cooldownByEntityId.ContainsKey(entityId) ? world.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
+            return cooldownByEntityId.ContainsKey(entityId) ? capi.World.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
+        }
+        
+        public override void Dispose()
+        {
+            sapi = null;
+            serverNetworkChannel = null;
+
+            capi = null;
+            clientNetworkChannel = null;
         }
     }
 }

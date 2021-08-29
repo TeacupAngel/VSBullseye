@@ -53,5 +53,10 @@ namespace Archery
 
             return result;
         }
+
+        public override void Dispose()
+        {
+            capi = null;
+        }
     }
 }

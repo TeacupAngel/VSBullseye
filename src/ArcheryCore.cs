@@ -190,5 +190,19 @@ namespace Archery
         {
             SystemRenderAimPatch.SetReticleTextures(aimTextureId, aimTextureBlockedId);
         }
+
+        public override void Dispose()
+        {
+            serverInstance = null;
+            currentArrow = null;
+            arrowLaunchPos = null;
+            arrowPlayer = null;
+
+            clientInstance = null;
+            client = null;
+            unproject = null;
+            pMatrix = null;
+            mvMatrix = null;
+        }
     }
 }
