@@ -9,7 +9,7 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup>
-        <VSVersion>1.15.3</VSVersion>
+        <VSVersion>1.15.5</VSVersion>
         <ModWebsite></ModWebsite>
     </PropertyGroup>
     <ItemGroup>

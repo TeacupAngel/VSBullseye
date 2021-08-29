@@ -1,0 +1,80 @@
+[ 
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/variantgroups/0/states/-", value: "iron" },
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/variantgroups/0/states/-", value: "meteoriciron" },
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/variantgroups/0/states/-", value: "steel" },
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/shapeByType/spearhead-iron", value: { base: "item/tool/spearhead-metal" } },
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/shapeByType/spearhead-meteoriciron", value: { base: "item/tool/spearhead-metal" } },
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/shapeByType/spearhead-steel", value: { base: "item/tool/spearhead-metal" } },
+
+	{ file: "game:itemtypes/toolhead/spearhead", op: "remove", path: "/guiTransformByType/*"},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/guiTransformByType/@*-(iron|meteoriciron|steel)", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: 43, y: 28, z: -59 },
+			origin: { x: 0.45, y: 0.02, z: 0.5 },
+			scale: 3.51
+		} 
+	},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/guiTransformByType/*", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: -20, y: -130, z: -170 },
+			origin: { x: 1.37, y: 0.07, z: 0.51 },
+			scale: 4.1
+		}
+	},
+
+	{ file: "game:itemtypes/toolhead/spearhead", op: "remove", path: "/fpHandTransformByType/*"},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/fpHandTransformByType/@*-(iron|meteoriciron|steel)", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: -23, y: 127, z: 81 },
+			origin: { x: 0.5, y: 0.06, z: 0.51 },
+			scale: 2.5
+		} 
+	},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/fpHandTransformByType/*", value: 
+		{
+			translation: { x: -0.5, y: 0, z: 0 },
+			rotation: { x: -23, y: 30, z: 79 },
+			origin: { x: 1.28, y: 0, z: 0.52 },
+			scale: 2.5
+		}
+	},
+
+	{ file: "game:itemtypes/toolhead/spearhead", op: "remove", path: "/tpHandTransformByType/*"},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/tpHandTransformByType/@*-(iron|meteoriciron|steel)", value: 
+		{
+			translation: { x: -0.8, y: -0.1, z: -0.6 },
+			rotation: { x: -19, y: -22, z: -22 },
+			origin: { x: 0.5, y: 0, z: 0.5 },
+			scale: 0.82
+		} 
+	},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/tpHandTransformByType/*", value: 
+		{
+			translation: { x: -1.5, y: 0, z: -0.6 },
+			rotation: { x: -51, y: -22, z: -22 },
+			origin: { x: 1.25, y: 0, z: 0.5 },
+			scale: 0.82
+		}
+	},
+
+	{ file: "game:itemtypes/toolhead/spearhead", op: "remove", path: "/groundTransformByType/*"},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/groundTransformByType/@*-(iron|meteoriciron|steel)", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: 90, y: -5, z: 0 },
+			origin: { x: 0.5, y: 0.05, z: 0.52 },
+			scale: 4.63
+		} 
+	},
+	{ file: "game:itemtypes/toolhead/spearhead", op: "add", path: "/groundTransformByType/*", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: 135, y: 0, z: 0 },
+			origin: { x: 1.3, y: 0.05, z: 0.53 },
+			scale: 3.56
+		}
+	},
+]

@@ -1,0 +1,109 @@
+[ 
+	{ 
+		file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/archeryWeaponStats", value: 
+		{
+			cooldownTime: 1.5, 
+			accuracyStartTime: 1.5,
+
+			twitchMax: 2.5,
+
+			horizontalLimit: 0,
+			verticalLimit: 0,
+        	verticalOffset: 0,
+			projectileSpread: 1,
+			projectileVelocity: 19.5,
+
+			accuracyMovePenalty: 0.2,
+			accuracyOvertime: 0,
+
+			aimTexturePath: "archery:gui/aimthrow.png"
+		}
+	},
+
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "iron" },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "meteoriciron" },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "steel" },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/shapeByType/spear-iron", value: { base: "item/tool/spear-copper" } },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/shapeByType/spear-meteoriciron", value: { base: "item/tool/spear-copper" } },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/shapeByType/spear-steel", value: { base: "item/tool/spear-copper" } },
+
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/texturesByType/*", value: { "material": { base: "game:block/metal/ingot/{material}" } } },
+
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-iron", value: 4.5 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-meteoriciron", value: 4.75 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-steel", value: 5 },
+
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-iron", value: 8.5 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-meteoriciron", value: 8.75 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-steel", value: 9 },
+
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-iron", value: 360 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-meteoriciron", value: 420 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-steel", value: 480 },
+
+	{ file: "game:itemtypes/tool/spear", op: "remove", path: "/attributes/toolrackTransformByType/*"},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/toolrackTransformByType/*-iron", value: 
+		{
+			rotation: { x: 90, y: 1, z: -1 },
+			translation: { x: -0.2, y: 0.05, z: 0.5 },
+			scale: 1
+		} 
+	},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/toolrackTransformByType/*-meteoriciron", value: 
+		{
+			rotation: { x: 90, y: 1, z: -1 },
+			translation: { x: -0.2, y: 0.05, z: 0.5 },
+			scale: 1
+		} 
+	},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/toolrackTransformByType/*-steel", value: 
+		{
+			rotation: { x: 90, y: 1, z: -1 },
+			translation: { x: -0.2, y: 0.05, z: 0.5 },
+			scale: 1
+		} 
+	},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/toolrackTransformByType/*", value: 
+		{
+			rotation: { y: 1, z: -1 },
+			translation: { x: -0.35, y: 0.5 },
+			scale: 1
+		}
+	},
+
+	{ file: "game:itemtypes/tool/spear", op: "remove", path: "/guiTransformByType/*"},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/guiTransformByType/@spear-(iron|meteoriciron|steel)", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: -73, y: 53, z: 25 },
+			origin: { x: 0.4, y: 0.1, z: 0.4 },
+			scale: 0.9
+		} 
+	},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/guiTransformByType/*", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: -77, y: 53, z: 25 },
+			origin: { x: 0.4, y: 0, z: 0.4 },
+			scale: 1.17
+		}
+	},
+
+	{ file: "game:itemtypes/tool/spear", op: "remove", path: "/tpHandTransformByType/*"},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/tpHandTransformByType/@spear-(iron|meteoriciron|steel)", value: 
+		{
+			translation: { x: -1.24, y: -0.01, z: -0.56 },
+			rotation: { x: -81, y: 0, z: 0 },
+			origin: { x: 0.6, y: 0, z: 0.5 },
+			scale: 0.8
+		} 
+	},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/tpHandTransformByType/*", value: 
+		{
+			translation: { x: -1.24, y: -0.01, z: -0.56 },
+			rotation: { x: -81, y: 0, z: 0 },
+			origin: { x: 0.5, y: 0, z: 0.5 },
+			scale: 0.8
+		}
+	},
+]

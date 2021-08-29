@@ -7,7 +7,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
@@ -22,7 +22,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",
@@ -37,7 +37,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "preset-surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
@@ -52,7 +52,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",

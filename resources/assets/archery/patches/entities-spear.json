@@ -1,0 +1,14 @@
+[ 
+	{ file: "game:entities/spear", op: "add", path: "/variantgroups/0/states/-", value: "iron" },
+	{ file: "game:entities/spear", op: "add", path: "/variantgroups/0/states/-", value: "meteoriciron" },
+	{ file: "game:entities/spear", op: "add", path: "/variantgroups/0/states/-", value: "steel" },
+
+	{ file: "game:entities/spear", op: "remove", path: "/client/shapeByType/*"},
+	{ file: "game:entities/spear", op: "add", path: "/client/shapeByType/spear-iron", value: { base: "item/tool/spear-copper", offsetX: -0.8125 } },
+	{ file: "game:entities/spear", op: "add", path: "/client/shapeByType/spear-meteoriciron", value: { base: "item/tool/spear-copper", offsetX: -0.8125 } },
+	{ file: "game:entities/spear", op: "add", path: "/client/shapeByType/spear-steel", value: { base: "item/tool/spear-copper", offsetX: -0.8125 } },
+	{ file: "game:entities/spear", op: "add", path: "/client/shapeByType/*", value: { base: "item/tool/spear-stone", offsetX: -0.8125 }	},
+
+	{ file: "game:entities/spear", op: "replace", path: "/client/texturesByType/*", value: { "material": { base: "game:block/metal/ingot/{material}" } } },
+]
+

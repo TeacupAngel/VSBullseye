@@ -1,0 +1,5 @@
+[ 
+	{ file: "game:recipes/smithing/spear", op: "add", path: "/ingredient/allowedVariants/-", value: "iron" },
+	{ file: "game:recipes/smithing/spear", op: "add", path: "/ingredient/allowedVariants/-", value: "meteoriciron" },
+	{ file: "game:recipes/smithing/spear", op: "add", path: "/ingredient/allowedVariants/-", value: "steel" },
+]
