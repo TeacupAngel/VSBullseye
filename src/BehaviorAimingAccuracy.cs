@@ -19,7 +19,7 @@ namespace Archery
 
         List<AccuracyModifier> modifiers = new List<AccuracyModifier>();
 
-        private ArcheryRangedWeaponStats weaponStats; // Archery
+        private ArcheryRangedWeaponStats weaponStats;
 
         public EntityBehaviorAimingAccuracy(Entity entity) : base(entity)
         {
@@ -30,28 +30,24 @@ namespace Archery
             modifiers.Add(new SprintAimingAccuracy(agent));
             modifiers.Add(new OnHurtAimingAccuracy(agent));
 
-            entity.Attributes.RegisterModifiedListener("archeryAiming", OnAimingChanged); // Archery
+            entity.Attributes.RegisterModifiedListener("archeryAiming", OnAimingChanged);
 
             Rand = new Random((int)(entity.EntityId + entity.World.ElapsedMilliseconds));
         }
 
-        // Archery
         public void SetRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
         {
             this.weaponStats = weaponStats;
         }
-        // /Archery
 
         private void OnAimingChanged()
         {
             bool beforeAiming = IsAiming;
-            IsAiming = entity.Attributes.GetInt("archeryAiming") > 0; // Archery
+            IsAiming = entity.Attributes.GetInt("archeryAiming") > 0;
 
             if (beforeAiming == IsAiming) return;
 
             ArcheryCore.aiming = IsAiming;
-            //ArcheryCore.aimX = 0;
-            //ArcheryCore.aimY = 0;
             ArcheryCore.aimOffsetX = 0;
             ArcheryCore.aimOffsetY = 0;
             ClientMainPatch.twitchX = 0;
@@ -59,12 +55,8 @@ namespace Archery
 
             if (IsAiming && entity.World is IServerWorldAccessor)
             {
-                // Archery
-                //double rndpitch = Rand.NextDouble() - 0.5;
-                //double rndyaw = Rand.NextDouble() - 0.5;
                 double rndpitch = Rand.NextDouble();
                 double rndyaw = Rand.NextDouble();
-                // /Archery
                 entity.WatchedAttributes.SetDouble("aimingRandPitch", rndpitch);
                 entity.WatchedAttributes.SetDouble("aimingRandYaw", rndyaw);
             }
@@ -88,19 +80,13 @@ namespace Archery
 
             if (!entity.Alive)
             {
-                entity.Attributes.SetInt("archeryAiming", 0); // Archery
+                entity.Attributes.SetInt("archeryAiming", 0);
             }
-
-            //float accuracy = 0; // Archery
 
             for (int i = 0; i < modifiers.Count; i++)
             {
-                //modifiers[i].Update(deltaTime, ref accuracy); // Archery
                 modifiers[i].Update(deltaTime, weaponStats);
             }
-
-            // Archery
-            //entity.Attributes.SetFloat("aimingAccuracy", accuracy);
         }
 
         public override void OnEntityReceiveDamage(DamageSource damageSource, float damage)
@@ -149,7 +135,6 @@ namespace Archery
 
         public virtual void OnHurt(float damage) { }
 
-        //public virtual void Update(float dt, ref float accuracy) // Archery
         public virtual void Update(float dt, ArcheryRangedWeaponStats weaponStats)
         {
 
@@ -163,38 +148,18 @@ namespace Archery
         {
         }
 
-        //public override void Update(float dt, ref float accuracy) // Archery
         public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
         {
             float rangedAcc = entity.Stats.GetBlended("rangedWeaponsAcc");
             float modspeed = entity.Stats.GetBlended("rangedWeaponsSpeed");
 
-            /*float modacc = 0.93f * rangedAcc;
-            if (rangedAcc >= 1)
-            {
-                // Asymptomatically reach of 100% accuracy
-                modacc = 0.93f + ((1 - 1 / (1 + 3 * rangedAcc)) - 0.5f) * 0.07f;
-            }
-
-            accuracy = GameMath.Clamp((float)Math.Pow(SecondsSinceAimStart * modspeed * 1.1, 1.5), 0, modacc);
-            accuracy *= Math.Max(0.1f, modacc);
-
-            accuracy -= GameMath.Clamp((SecondsSinceAimStart - 3f) / 3, 0, 0.25f);
-
-            if (SecondsSinceAimStart >= 0.75f)
-            {
-                accuracy += GameMath.Sin(SecondsSinceAimStart * 8) / 80f;
-            }*/
-
-            // Archery
             float archeryAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
 
-            float archeryAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
+            float archeryAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
             archeryAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
 
             ClientMainPatch.driftMultiplier = archeryAccuracyMod + archeryAccuracy;
             ClientMainPatch.twitchMultiplier = archeryAccuracyMod + (archeryAccuracy * 3f);
-            // /Archery
         }
     }
 
@@ -209,7 +174,6 @@ namespace Archery
         {
         }
 
-        //public override void Update(float dt, ref float accuracy) // Archery
         public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
         {
             bool sprint = entity.Controls.Sprint;
@@ -222,12 +186,8 @@ namespace Archery
                 accuracyPenalty = GameMath.Clamp(accuracyPenalty - dt / 2f, 0, 0.2f);
             }
 
-            //accuracy -= accuracyPenalty; // Archery
-
-            // Archery
             ClientMainPatch.driftMultiplier += accuracyPenalty * 5f * weaponStats.accuracyMovePenalty;
             ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f * weaponStats.accuracyMovePenalty;
-            // /Archery
         }
     }
 
@@ -243,7 +203,6 @@ namespace Archery
         {
         }
 
-        //public override void Update(float dt, ref float accuracy) // Archery
         public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
         {
             bool sprint = entity.Controls.Sprint;
@@ -257,12 +216,8 @@ namespace Archery
                 accuracyPenalty = GameMath.Clamp(accuracyPenalty - dt / 2f, 0, 0.3f);
             }
 
-            //accuracy -= accuracyPenalty; // Archery
-
-            // Archery
             ClientMainPatch.driftMultiplier += accuracyPenalty * 5f * weaponStats.accuracyMovePenalty;
             ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f * weaponStats.accuracyMovePenalty;
-            // /Archery
         }
     }
 
@@ -274,7 +229,6 @@ namespace Archery
         {
         }
 
-        //public override void Update(float dt, ref float accuracy) // Archery
         public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
         {
             accuracyPenalty = GameMath.Clamp(accuracyPenalty - dt / 3, 0, 0.4f);

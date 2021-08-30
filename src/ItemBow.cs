@@ -96,7 +96,7 @@ namespace Archery
 
             if (cancelReason != EnumItemUseCancelReason.ReleasedMouse)
             {
-                byEntity.AnimManager.StopAnimation("bowaim"); // Archery
+                byEntity.AnimManager.StopAnimation("bowaim");
             }
         }
 

@@ -43,6 +43,8 @@ namespace Archery
         {
             sapi = api;
 
+            world = api.World;
+
             lastRangedSlotByEntityId = new Dictionary<long, ItemSlot>();
             rangedChargeStartByEntityId = new Dictionary<long, long>();
 
@@ -80,12 +82,11 @@ namespace Archery
         }
 
         // Client
-        ICoreClientAPI capi;
         IClientNetworkChannel clientNetworkChannel;
 
         public override void StartClientSide(ICoreClientAPI api)
         {
-            capi = api;
+            world = api.World;
 
             clientNetworkChannel = api.Network.RegisterChannel("archeryitem")
             .RegisterMessageType<ArcheryRangedWeaponFire>();
@@ -104,21 +105,23 @@ namespace Archery
         }
 
         // Common
+        IWorldAccessor world;
+
         Dictionary<long, long> cooldownByEntityId = new Dictionary<long, long>();
 
         public void StartEntityCooldown(long entityId)
         {
-            cooldownByEntityId[entityId] = capi.World.ElapsedMilliseconds;
+            cooldownByEntityId[entityId] = world.ElapsedMilliseconds;
         }
 
         public float GetEntityCooldownTime(long entityId)
         {
-            return cooldownByEntityId.ContainsKey(entityId) ? (capi.World.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
+            return cooldownByEntityId.ContainsKey(entityId) ? (world.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
         }
 
         public bool HasEntityCooldownPassed(long entityId, double cooldownTime)
         {
-            return cooldownByEntityId.ContainsKey(entityId) ? capi.World.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
+            return cooldownByEntityId.ContainsKey(entityId) ? world.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
         }
         
         public override void Dispose()
@@ -126,8 +129,9 @@ namespace Archery
             sapi = null;
             serverNetworkChannel = null;
 
-            capi = null;
             clientNetworkChannel = null;
+
+            world = null;
         }
     }
 }

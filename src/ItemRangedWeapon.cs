@@ -27,13 +27,11 @@ namespace Archery
 
         public override void OnLoaded(ICoreAPI api)
         {
-            // Archery
             rangedWeaponSystem = api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
 
             defaultFpHandTransform = FpHandTransform.Clone();
 
             weaponStats = Attributes.KeyExists("archeryWeaponStats") ? Attributes?["archeryWeaponStats"].AsObject<ArcheryRangedWeaponStats>() : new ArcheryRangedWeaponStats();
-            // /Archery
 
             if (api.Side == EnumAppSide.Server)
             {
@@ -52,7 +50,6 @@ namespace Archery
             return null;
         }
 
-        // Archery    
         // Keeping this as backup in case OnBeforeRender has some hidden flaw
         /*public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
         {
@@ -113,11 +110,9 @@ namespace Archery
                     }
             }
         }
-        // /Archery
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
-            // Archery
             if (!rangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, weaponStats.cooldownTime))
             {
                 handling = EnumHandHandling.NotHandled;
@@ -135,15 +130,13 @@ namespace Archery
             }
 
             byEntity.GetBehavior<EntityBehaviorAimingAccuracy>().SetRangedWeaponStats(weaponStats);
-            // /Archery
 
             ItemSlot invslot = GetNextAmmoSlot(byEntity, slot);
             if (invslot == null) return;
 
             // Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
-            byEntity.Attributes.SetInt("archeryAiming", 1); // Archery
+            byEntity.Attributes.SetInt("archeryAiming", 1);
             byEntity.Attributes.SetInt("aimingCancel", 0);
-            byEntity.AnimManager.StartAnimation("bowaim");
 
             OnAimingStart(slot, byEntity);
             handling = EnumHandHandling.PreventDefault;
@@ -153,13 +146,11 @@ namespace Archery
 
         public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            // Archery    
             if (byEntity.World is IClientWorldAccessor)
             {
                 // Show different crosshair if we are ready to shoot
                 SystemRenderAimPatch.readyToShoot = secondsUsed > weaponStats.chargeTime + 0.1f;
             }
-            // /Archery
 
             Console.WriteLine(String.Format("{0}: OnHeldInteractSTEP, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
 
@@ -226,16 +217,12 @@ namespace Archery
 
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            Console.WriteLine(String.Format("{0}: OnHeldInteractStop, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
-
             if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
-            byEntity.Attributes.SetInt("archeryAiming", 0);  // Archery
+            byEntity.Attributes.SetInt("archeryAiming", 0);
 
-            // Archery
             float chargeNeeded = api.Side == EnumAppSide.Server ? weaponStats.chargeTime : weaponStats.chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
 
             if (secondsUsed < chargeNeeded) return;
-            // /Archery
 
             if (api.Side != EnumAppSide.Client) return;
 
@@ -248,11 +235,8 @@ namespace Archery
 
         public void Shoot(ItemSlot slot, EntityAgent byEntity, Vec3d targetVec)
         {
-            Console.WriteLine(String.Format("{0}: Shoot, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
-
             byEntity.Attributes.SetInt("archeryAiming", 0);
 
-            // /Archery
             ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot);
             if (ammoSlot == null) return;
 
@@ -286,15 +270,12 @@ namespace Archery
             entity.DamageStackOnImpact = damageStackOnImpact;
             entity.Weight = weight;
 
-            // Archery
             // Might as well reuse these for now
             double spreadAngle = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1);
             double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
 
             // New method to generate random spread, works when aimed straight up/straight down
             //Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? ArcheryCore.aimVectors[byEntity.EntityId] : ArcheryCore.targetVec;
-
-            Console.WriteLine(String.Format("{0}: targetVec: {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", targetVec));
 
             Vec3d perp = MathHelper.Vec3GetPerpendicular(targetVec);
             Vec3d perp2 = targetVec.Cross(perp);
@@ -311,7 +292,6 @@ namespace Archery
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             // What the heck? Server's SidedPos.Motion is somehow twice that of client's!
             velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
-            // /Archery
             
             // Used in vanilla spears but feels awful, might redo later with zeroing and proper offset to the right
             //entity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
@@ -324,7 +304,6 @@ namespace Archery
 
             byEntity.World.SpawnEntity(entity);
 
-            // Archery
             EntityPlayer entityPlayer = byEntity as EntityPlayer;
 
             if (byEntity.World.Side == EnumAppSide.Server && entityPlayer != null)
@@ -342,7 +321,6 @@ namespace Archery
             {
                 slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, weaponDamage);
             }
-            // /Archery
         }
 
         public virtual void OnShot(ItemSlot slot, EntityAgent byEntity) {}
