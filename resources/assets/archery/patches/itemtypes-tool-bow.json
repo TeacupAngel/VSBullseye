@@ -22,6 +22,15 @@
 			"*-recurve": { 
 				aimTexturePath: "archery:gui/aimarrow.png"
 			},
+		},
+	},
+
+	{ file: "game:itemtypes/tool/bow", op: "remove", path: "/attributes/damageByType" },
+
+	{
+		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/damagePercentByType", value: 
+		{
+			"*-long": 0.3
 		}
 	},
 ]

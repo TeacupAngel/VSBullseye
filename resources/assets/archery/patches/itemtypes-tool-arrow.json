@@ -1,0 +1,18 @@
+[ 
+	{ 
+		file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType", value: 
+		{
+			"*-crude": -0.75,
+			"*-flint": 3.5,
+			"*-copper": 0,
+			"*-tinbronze": 1,
+			"*-gold": 1,
+			"*-silver": 1,
+			"*-bismuthbronze": 1,
+			"*-blackbronze": 1.5,
+			"*-iron": 2,
+			"*-meteoriciron": 2.25,
+			"*-steel": 2.5
+		}
+	},
+]
