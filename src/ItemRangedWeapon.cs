@@ -79,35 +79,35 @@ namespace Archery
         {
             if (target == EnumItemRenderTarget.HandFp)
             {
-                    float transformFraction;
+                float transformFraction;
 
-                    if (!rangedWeaponSystem.HasEntityCooldownPassed(capi.World.Player.Entity.EntityId, weaponStats.cooldownTime))
-                    {
-                        float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(capi.World.Player.Entity.EntityId);
-                        float transformTime = 0.25f;
+                if (!rangedWeaponSystem.HasEntityCooldownPassed(capi.World.Player.Entity.EntityId, weaponStats.cooldownTime))
+                {
+                    float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(capi.World.Player.Entity.EntityId);
+                    float transformTime = 0.25f;
 
-                        transformFraction = weaponStats.weaponType != ArcheryRangedWeaponType.Throw ? 
-                            GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f) : 1f;
-                        transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
-                    }
-                    else
-                    {
-                        transformFraction = 0;
-                    }
+                    transformFraction = weaponStats.weaponType != ArcheryRangedWeaponType.Throw ? 
+                        GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f) : 1f;
+                    transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
+                }
+                else
+                {
+                    transformFraction = 0;
+                }
 
-                    renderinfo.Transform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
+                renderinfo.Transform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
 
-                    if (ArcheryCore.aiming)
-                    {
-                        Vec2f currentAim = ArcheryCore.GetCurrentAim();
+                if (ArcheryCore.aiming)
+                {
+                    Vec2f currentAim = ArcheryCore.GetCurrentAim();
 
-                        renderinfo.Transform.Rotation.X = defaultFpHandTransform.Rotation.X - (currentAim.Y / 15f); 
-                        renderinfo.Transform.Rotation.Y = defaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
-                    }
-                    else
-                    {
-                        renderinfo.Transform.Rotation.Set(defaultFpHandTransform.Rotation);
-                    }
+                    renderinfo.Transform.Rotation.X = defaultFpHandTransform.Rotation.X - (currentAim.Y / 15f); 
+                    renderinfo.Transform.Rotation.Y = defaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
+                }
+                else
+                {
+                    renderinfo.Transform.Rotation.Set(defaultFpHandTransform.Rotation);
+                }
             }
         }
 

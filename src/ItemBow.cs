@@ -17,6 +17,7 @@ namespace Archery
         WorldInteraction[] interactions;
 
         ItemSlot currentArrowSlot;
+        float currentArrowDamage;
 
         public override void OnLoaded(ICoreAPI api)
         {
@@ -138,13 +139,26 @@ namespace Archery
                 damage += weaponSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
             }
             
+            currentArrowDamage = damage;
+
             return damage;
         }
 
         public override float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot)
         {
             float breakChance = 0.5f;
-            if (currentArrowSlot.Itemstack.ItemAttributes != null) breakChance = currentArrowSlot.Itemstack.ItemAttributes["breakChanceOnImpact"].AsFloat(0.5f);
+
+            if (currentArrowSlot.Itemstack.ItemAttributes != null) {
+                if (currentArrowSlot.Itemstack.ItemAttributes.KeyExists("averageLifetimeDamage"))
+                {
+                   breakChance = 1f / (currentArrowSlot.Itemstack.ItemAttributes["averageLifetimeDamage"].AsFloat() / currentArrowDamage);
+                }
+                else
+                {
+                    breakChance = currentArrowSlot.Itemstack.ItemAttributes["breakChanceOnImpact"].AsFloat(0.5f);
+                }
+            }
+
             return 1f - breakChance;
         }
 

@@ -13,6 +13,14 @@
 			"*-iron": 2,
 			"*-meteoriciron": 2.25,
 			"*-steel": 2.5
+		},
+	},
+
+	{
+		file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/averageLifetimeDamageByType", value: 
+		{
+			"*-flint": 11,
+			"*-steel": 400
 		}
 	},
 ]
