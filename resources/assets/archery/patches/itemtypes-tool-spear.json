@@ -20,6 +20,79 @@
 		}
 	},
 
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-iron", value: 4.25 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-meteoriciron", value: 4.5 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-steel", value: 4.5 },
+
+	{ 
+		file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype", value: 
+		{
+			"spear-chert": 24,
+			"spear-granite": 24,
+			"spear-andesite": 24,
+			"spear-basalt": 24,
+			"spear-peridotite": 24,
+			"spear-flint": 48,
+			"spear-obsidian": 68,
+			"spear-scrap": 120,
+			"spear-copper": 210,
+			"spear-bismuthbronze": 440,
+			"spear-tinbronze": 370,
+			"spear-blackbronze": 450,
+			"spear-ornate-gold": 480,
+			"spear-ornate-silver": 480,
+			"spear-iron": 750,
+			"spear-meteoriciron": 900,
+			"spear-steel": 1650
+		},
+	},
+
+	{ 
+		file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType", value: 
+		{
+			"*-chert": 5,
+			"*-granite": 5,
+			"*-andesite": 5,
+			"*-basalt": 5,
+			"*-peridotite": 5,
+			"*-flint": 5.5,
+			"*-obsidian": 6.25,
+			"*-scrap": 7.5,
+			"*-copper": 7.5,
+			"*-bismuthbronze": 8.25,
+			"*-tinbronze": 8.5,
+			"*-blackbronze": 8.75,
+			"*-ornate-gold": 9,
+			"*-ornate-silver": 9,
+			"*-iron": 9,
+			"*-meteoriciron": 9.25,
+			"*-steel": 9.25
+		},
+	},
+
+	{ 
+		file: "game:itemtypes/tool/spear", op: "add", path: "/tooltierbytype", value: 
+		{
+			"*-chert": 1,
+			"*-granite": 1,
+			"*-andesite": 1,
+			"*-basalt": 1,
+			"*-peridotite": 1,
+			"*-flint": 1,
+			"*-obsidian": 1,
+			"*-scrap": 2,
+			"*-copper": 2,
+			"*-bismuthbronze": 3,
+			"*-tinbronze": 3,
+			"*-blackbronze": 3,
+			"*-ornate-gold": 3,
+			"*-ornate-silver": 3,
+			"*-iron": 4,
+			"*-meteoriciron": 4,
+			"*-steel": 5
+		},
+	},
+
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "iron" },
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "meteoriciron" },
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "steel" },
@@ -28,18 +101,6 @@
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/shapeByType/spear-steel", value: { base: "item/tool/spear-copper" } },
 
 	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/texturesByType/*", value: { "material": { base: "game:block/metal/ingot/{material}" } } },
-
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-iron", value: 4.5 },
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-meteoriciron", value: 4.75 },
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-steel", value: 5 },
-
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-iron", value: 8.5 },
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-meteoriciron", value: 8.75 },
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-steel", value: 9 },
-
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-iron", value: 360 },
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-meteoriciron", value: 420 },
-	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-steel", value: 480 },
 
 	{ file: "game:itemtypes/tool/spear", op: "remove", path: "/attributes/toolrackTransformByType/*"},
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/toolrackTransformByType/*-iron", value: 

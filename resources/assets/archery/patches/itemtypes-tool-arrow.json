@@ -2,24 +2,33 @@
 	{ 
 		file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType", value: 
 		{
-			"*-crude": -0.75,
+			"*-crude": 3,
 			"*-flint": 3.5,
-			"*-copper": 0,
-			"*-tinbronze": 1,
-			"*-gold": 1,
-			"*-silver": 1,
-			"*-bismuthbronze": 1,
-			"*-blackbronze": 1.5,
-			"*-iron": 2,
-			"*-meteoriciron": 2.25,
-			"*-steel": 2.5
+			"*-copper": 5,
+			"*-bismuthbronze": 5.5,
+			"*-tinbronze": 5.75,
+			"*-blackbronze": 6,
+			"*-gold": 6.25,
+			"*-silver": 6.25,
+			"*-iron": 6.5,
+			"*-meteoriciron": 6.75,
+			"*-steel": 7
 		},
 	},
 
 	{
 		file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/averageLifetimeDamageByType", value: 
 		{
+			"*-crude": 8,
 			"*-flint": 11,
+			"*-copper": 32,
+			"*-bismuthbronze": 80,
+			"*-tinbronze": 75,
+			"*-blackbronze": 100,
+			"*-gold": 110,
+			"*-silver": 110,
+			"*-iron": 175,
+			"*-meteoriciron": 225,
 			"*-steel": 400
 		}
 	},
