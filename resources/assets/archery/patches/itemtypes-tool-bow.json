@@ -2,24 +2,49 @@
 	{ 
 		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/archeryWeaponStatsByType", value: 
 		{
-			"*-crude": { 
-				twitchMagnitude: 0,
-				driftMagnitude: 0,
-				projectileSpread: 1,
-				cooldownTime: 0,
-				chargeTime: 0.1,
+			"*-crude": {
+				twitchMagnitude: 35,
+				twitchMax: 5,
+				driftMagnitude: 130,
+				driftMax: 150,
+				accuracyOvertimeStart: 8,
+				projectileSpread: 2,
 				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 
-			"*-simple": { 
+			"*-simple": {
+				twitchMagnitude: 35,
+				twitchMax: 5,
+				driftMagnitude: 130,
+				driftMax: 150,
+				accuracyOvertimeStart: 8,
+				projectileSpread: 0,
 				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 
-			"*-long": { 
+			"*-long": {
+				projectileVelocity: 39,
+				chargeTime: 1.25,
+				accuracyStartTime: 1.75,
+				twitchMagnitude: 45,
+				twitchMax: 6,
+				driftMagnitude: 150,
+				driftMax: 170,
+				accuracyOvertimeStart: 8,
+				projectileSpread: 0,
 				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 
 			"*-recurve": { 
+				projectileVelocity: 33,
+				chargeTime: 1,
+				accuracyStartTime: 1.5,
+				twitchMagnitude: 38,
+				twitchMax: 6,
+				driftMagnitude: 190,
+				driftMax: 190,
+				accuracyOvertimeStart: 8,
+				projectileSpread: 0,
 				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 		},
@@ -30,7 +55,9 @@
 	{
 		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/damagePercentByType", value: 
 		{
-			"*-long": 0.3
+			"*-crude": -0.05,
+			"*-long": 0.4,
+			"*-recurve": 0.5
 		}
 	},
 ]

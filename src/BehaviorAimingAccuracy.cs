@@ -156,7 +156,7 @@ namespace Archery
             float archeryAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
 
             float archeryAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
-            archeryAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
+            archeryAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
 
             ClientMainPatch.driftMultiplier = archeryAccuracyMod + archeryAccuracy;
             ClientMainPatch.twitchMultiplier = archeryAccuracyMod + (archeryAccuracy * 3f);
