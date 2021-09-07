@@ -6,3 +6,5 @@ A Vintage Story mod aiming to overhaul and rebalance ranged weapons in a vanilla
 * Iron and steel spears, casting spearheads from molten metal
 * Comprehensive rebalance to make each weapon relevant without dominating
 * Throw your spears with a running start to make them go farther!
+
+Download the archive at the Vintage Story ModDB page: https://mods.vintagestory.at/archery
