@@ -7,7 +7,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
@@ -22,7 +22,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",
@@ -37,7 +37,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "preset-surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
@@ -52,7 +52,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/single",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",
@@ -67,7 +67,7 @@
 		"preLaunchTask": "Prepare Server (Survival, .NET)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/multi_server",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
 			"--addModPath", "${workspaceFolder}/staged",
 		],
 		"console": "externalTerminal",
@@ -80,7 +80,7 @@
 		"preLaunchTask": "Prepare Server (Superflat, .NET)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/multi_server",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
 			"--addModPath", "${workspaceFolder}/staged",
 		],
 		"console": "externalTerminal",
@@ -92,7 +92,7 @@
 		"request": "launch",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/multi_client",
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
 			"--addModPath", "${workspaceFolder}/staged",
 			"--connect", "10.0.1.10"
 		],

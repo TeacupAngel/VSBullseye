@@ -3,14 +3,14 @@
         <AssemblyTitle>Archery</AssemblyTitle>
         <Authors>Rahjital</Authors>
         <Version>2.0.0</Version>
-        <Description></Description>
-        <RepositoryUrl/>
+        <Description>A vanilla-friendly rebalance and overhaul of ranged weapons.</Description>
+        <RepositoryUrl>https://github.com/Rahjital/VSArchery</RepositoryUrl>
         <TargetFramework>net461</TargetFramework>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup>
         <VSVersion>1.15.5</VSVersion>
-        <ModWebsite></ModWebsite>
+        <ModWebsite>https://mods.vintagestory.at/archery</ModWebsite>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="VintagestoryAPI">
@@ -52,7 +52,7 @@
 
 	"description": "$(Description)",
 	"website": "$(ModWebsite)",
-	"authors": [ "$(Authors.ToLower())" ],
+	"authors": [ "$(Authors)" ],
 
 	"dependencies": {
 		"game": "$(VSVersion)"
@@ -88,6 +88,6 @@
     <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Release'">
         <MakeDir Directories="$(MSBuildProjectDirectory)/release/$(Version)" />
         <Delete Files="$(MSBuildProjectDirectory)/staged/$(TargetName)/$(TargetName).pdb" />
-        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/staged/$(TargetName)" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName).zip" Overwrite="true" />
+        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/staged/$(TargetName)/" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName).zip" Overwrite="true" />
     </Target>
 </Project>

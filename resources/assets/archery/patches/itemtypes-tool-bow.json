@@ -41,8 +41,8 @@
 				accuracyStartTime: 1.5,
 				twitchMagnitude: 38,
 				twitchMax: 6,
-				driftMagnitude: 190,
-				driftMax: 190,
+				driftMagnitude: 200,
+				driftMax: 200,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
 				aimTexturePath: "archery:gui/aimarrow.png"

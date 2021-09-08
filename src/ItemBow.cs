@@ -201,7 +201,7 @@ namespace Archery
             if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
 
             float dmgPercent = inSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0) * 100f;
-            if (dmgPercent != 0) dsc.AppendLine(Lang.Get("archery:weapon-bonus-damage-ranged", dmgPercent));
+            if (dmgPercent != 0) dsc.AppendLine((dmgPercent > 0 ? "+" : "") + Lang.Get("archery:weapon-bonus-damage-ranged", dmgPercent));
         }
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
