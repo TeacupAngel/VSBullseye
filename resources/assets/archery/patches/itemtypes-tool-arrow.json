@@ -19,17 +19,17 @@
 	{
 		file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/averageLifetimeDamageByType", value: 
 		{
-			"*-crude": 8,
+			"*-crude": 6,
 			"*-flint": 11,
 			"*-copper": 32,
-			"*-bismuthbronze": 80,
-			"*-tinbronze": 75,
-			"*-blackbronze": 100,
-			"*-gold": 110,
-			"*-silver": 110,
-			"*-iron": 175,
-			"*-meteoriciron": 225,
-			"*-steel": 400
+			"*-bismuthbronze": 70,
+			"*-tinbronze": 65,
+			"*-blackbronze": 80,
+			"*-gold": 90,
+			"*-silver": 90,
+			"*-iron": 120,
+			"*-meteoriciron": 160,
+			"*-steel": 310
 		}
 	},
 ]
