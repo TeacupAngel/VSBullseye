@@ -7,7 +7,7 @@ A Vintage Story mod aiming to overhaul and rebalance ranged weapons in a vanilla
 * Comprehensive rebalance to make each weapon relevant without dominating
 * Throw your spears with a running start to make them go farther!
 
-For a more thorough guide through the changes, [be sure to check out the wiki!](https://github.com/Rahjital/VSArchery/wiki)
+For a more information on the changes, [you can check out the project's wiki](https://github.com/Rahjital/VSArchery/wiki).
 
 All feedback is greatly appreciated and helps improve the mod. Let me know in an issue or in [the Vintage Story forums thread!](https://github.com/Rahjital/VSArchery#SorryNothingHereYet)
 
