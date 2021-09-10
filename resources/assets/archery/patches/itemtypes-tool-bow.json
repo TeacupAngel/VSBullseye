@@ -8,7 +8,7 @@
 				driftMagnitude: 130,
 				driftMax: 150,
 				accuracyOvertimeStart: 8,
-				projectileSpread: 2,
+				projectileSpread: 1,
 				aimTexturePath: "archery:gui/aimarrow.png"
 			},
 
