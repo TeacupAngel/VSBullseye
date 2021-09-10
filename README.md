@@ -9,6 +9,6 @@ A Vintage Story mod aiming to overhaul and rebalance ranged weapons in a vanilla
 
 For a more information on the changes, [you can check out the project's wiki](https://github.com/Rahjital/VSArchery/wiki).
 
-All feedback is greatly appreciated and helps improve the mod. Let me know in an issue or in [the Vintage Story forums thread!](https://github.com/Rahjital/VSArchery#SorryNothingHereYet)
+All feedback is greatly appreciated and helps improve the mod. Let me know in an issue or in [the Vintage Story forums thread!](https://www.vintagestory.at/forums/topic/5537-archery-vanilla-friendly-ranged-weapon-overhaul/)
 
 Download the archive at the Vintage Story ModDB page: https://mods.vintagestory.at/archery
