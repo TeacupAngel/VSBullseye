@@ -1,0 +1,33 @@
+[ 
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
+
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "remove", path: "/texturesByType/*"},
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/texturesByType/arrowhead-obsidian", value: 
+		{
+			"material": { base: "block/stone/rock/{material}1" }
+		}
+	},
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/texturesByType/*", value: 
+		{
+			"material": { base: "block/metal/ingot/{material}" }
+		}
+	},
+
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "remove", path: "/guiTransformByType/*"},
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/guiTransformByType/arrowhead-obsidian", value: 
+		{
+			translation: { x: 0, y: 2, z: -100 },
+			rotation: { x: -56, y: 32, z: 0 },
+			origin: { x: 0.81, y: 0.76, z: 0.09 },
+			scale: 5.46
+		} 
+	},
+	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/guiTransformByType/*", value: 
+		{
+			translation: { x: 0, y: 0, z: 0 },
+			rotation: { x: -55, y: 27, z: 0 },
+			origin: { x: 0.54, y: 0.06, z: 0.48 },
+			scale: 4.85
+		}
+	}
+]

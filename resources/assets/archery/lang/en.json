@@ -10,6 +10,9 @@
 	"game:item-spearhead-meteoriciron": "Meteoric iron spear head",
 	"game:item-spearhead-steel": "Steel spear head",
 
+	"game:item-arrow-obsidian": "Obsidian arrow",
+	"game:item-arrowhead-obsidian": "Obsidian arrow head",
+
 	"game:itemdesc-bow-crude": "Does not always shoot straight, but still serviceable.",
 	"game:itemdesc-bow-long": "Far reaching, though slow to draw.",
 	"game:itemdesc-bow-recurve": "A powerful, hard to handle bow.",

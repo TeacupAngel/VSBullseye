@@ -4,6 +4,7 @@
 		{
 			"*-crude": 3,
 			"*-flint": 3.5,
+			"*-obsidian": 4,
 			"*-copper": 5,
 			"*-bismuthbronze": 5.5,
 			"*-tinbronze": 5.75,
@@ -21,6 +22,7 @@
 		{
 			"*-crude": 6,
 			"*-flint": 11,
+			"*-obsidian": 15,
 			"*-copper": 32,
 			"*-bismuthbronze": 70,
 			"*-tinbronze": 65,
@@ -30,6 +32,24 @@
 			"*-iron": 120,
 			"*-meteoriciron": 160,
 			"*-steel": 310
+		}
+	},
+
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
+
+	{ file: "game:itemtypes/tool/arrow", op: "remove", path: "/shapeByType/*"},
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/shapeByType/arrow-obsidian", value: { base: "item/tool/arrow-stone" } },
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/shapeByType/*", value: { base: "item/tool/arrow-copper" } },
+
+	{ file: "game:itemtypes/tool/arrow", op: "remove", path: "/texturesByType/*"},
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/texturesByType/*-obsidian", value:
+		{
+			"material": { base: "block/stone/rock/{material}1" }
+		}
+	},
+	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/texturesByType/*", value: 
+		{
+			"material": { base: "block/metal/ingot/{material}" }
 		}
 	},
 ]

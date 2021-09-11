@@ -21,6 +21,8 @@ namespace Archery
 
         private ArcheryRangedWeaponStats weaponStats;
 
+        protected ArcheryRangedWeaponSystem rangedWeaponSystem;
+
         public EntityBehaviorAimingAccuracy(Entity entity) : base(entity)
         {
             EntityAgent agent = entity as EntityAgent;
@@ -31,6 +33,8 @@ namespace Archery
             modifiers.Add(new OnHurtAimingAccuracy(agent));
 
             entity.Attributes.RegisterModifiedListener("archeryAiming", OnAimingChanged);
+
+            rangedWeaponSystem = entity.Api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
 
             Rand = new Random((int)(entity.EntityId + entity.World.ElapsedMilliseconds));
         }
@@ -52,6 +56,12 @@ namespace Archery
             ArcheryCore.aimOffsetY = 0;
             ClientMainPatch.twitchX = 0;
             ClientMainPatch.twitchY = 0;
+
+            if (rangedWeaponSystem.GetEntityCooldownTime(entity.EntityId) > 15f)
+            {
+                ArcheryCore.aimX = 0f;
+                ArcheryCore.aimY = 0f;
+            }
 
             if (IsAiming && entity.World is IServerWorldAccessor)
             {
