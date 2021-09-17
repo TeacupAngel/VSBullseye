@@ -18,9 +18,9 @@ using HarmonyLib;
 
 using Cairo;
 
-namespace Archery
+namespace Bullseye
 {
-    public class ArcheryReticleLoadSystem : ModSystem
+    public class BullseyeReticleLoadSystem : ModSystem
     {
         Dictionary<string, int> reticleTextureIdByPath = new Dictionary<string, int>();
 

@@ -7,7 +7,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 
-namespace Archery
+namespace Bullseye
 {
     public class ItemSpear : ItemRangedWeapon
     {
@@ -15,7 +15,7 @@ namespace Archery
         {
             base.OnLoaded(api);
 
-            weaponStats.weaponType = ArcheryRangedWeaponType.Throw;
+            weaponStats.weaponType = BullseyeRangedWeaponType.Throw;
         }
 
         public override void OnAimingStart(ItemSlot slot, EntityAgent byEntity)

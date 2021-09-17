@@ -1,6 +1,6 @@
 [ 
 	{ 
-		file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/archeryWeaponStats", value: 
+		file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
 		{
 			cooldownTime: 1.5, 
 			accuracyStartTime: 1.5,
@@ -16,7 +16,7 @@
 			accuracyMovePenalty: 0.2,
 			accuracyOvertime: 0,
 
-			aimTexturePath: "archery:gui/aimthrow.png"
+			aimTexturePath: "bullseye:gui/aimthrow.png"
 		}
 	},
 

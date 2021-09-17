@@ -10,7 +10,7 @@ using Vintagestory.API.Server;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.MathTools;
 
-namespace Archery
+namespace Bullseye
 {
     public class EntityBehaviorAimingAccuracy : EntityBehavior
     {
@@ -19,9 +19,9 @@ namespace Archery
 
         List<AccuracyModifier> modifiers = new List<AccuracyModifier>();
 
-        private ArcheryRangedWeaponStats weaponStats;
+        private BullseyeRangedWeaponStats weaponStats;
 
-        protected ArcheryRangedWeaponSystem rangedWeaponSystem;
+        protected BullseyeRangedWeaponSystem rangedWeaponSystem;
 
         public EntityBehaviorAimingAccuracy(Entity entity) : base(entity)
         {
@@ -32,14 +32,14 @@ namespace Archery
             modifiers.Add(new SprintAimingAccuracy(agent));
             modifiers.Add(new OnHurtAimingAccuracy(agent));
 
-            entity.Attributes.RegisterModifiedListener("archeryAiming", OnAimingChanged);
+            entity.Attributes.RegisterModifiedListener("bullseyeAiming", OnAimingChanged);
 
-            rangedWeaponSystem = entity.Api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
+            rangedWeaponSystem = entity.Api.ModLoader.GetModSystem<BullseyeRangedWeaponSystem>();
 
             Rand = new Random((int)(entity.EntityId + entity.World.ElapsedMilliseconds));
         }
 
-        public void SetRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
+        public void SetRangedWeaponStats(BullseyeRangedWeaponStats weaponStats)
         {
             this.weaponStats = weaponStats;
         }
@@ -47,20 +47,20 @@ namespace Archery
         private void OnAimingChanged()
         {
             bool beforeAiming = IsAiming;
-            IsAiming = entity.Attributes.GetInt("archeryAiming") > 0;
+            IsAiming = entity.Attributes.GetInt("bullseyeAiming") > 0;
 
             if (beforeAiming == IsAiming) return;
 
-            ArcheryCore.aiming = IsAiming;
-            ArcheryCore.aimOffsetX = 0;
-            ArcheryCore.aimOffsetY = 0;
+            BullseyeCore.aiming = IsAiming;
+            BullseyeCore.aimOffsetX = 0;
+            BullseyeCore.aimOffsetY = 0;
             ClientMainPatch.twitchX = 0;
             ClientMainPatch.twitchY = 0;
 
             if (rangedWeaponSystem.GetEntityCooldownTime(entity.EntityId) > 15f)
             {
-                ArcheryCore.aimX = 0f;
-                ArcheryCore.aimY = 0f;
+                BullseyeCore.aimX = 0f;
+                BullseyeCore.aimY = 0f;
             }
 
             if (IsAiming && entity.World is IServerWorldAccessor)
@@ -90,7 +90,7 @@ namespace Archery
 
             if (!entity.Alive)
             {
-                entity.Attributes.SetInt("archeryAiming", 0);
+                entity.Attributes.SetInt("bullseyeAiming", 0);
             }
 
             for (int i = 0; i < modifiers.Count; i++)
@@ -113,7 +113,7 @@ namespace Archery
 
         public override string PropertyName()
         {
-            return "archery.aimingaccuracy";
+            return "bullseye.aimingaccuracy";
         }
     }
 
@@ -145,7 +145,7 @@ namespace Archery
 
         public virtual void OnHurt(float damage) { }
 
-        public virtual void Update(float dt, ArcheryRangedWeaponStats weaponStats)
+        public virtual void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
 
         }
@@ -158,18 +158,18 @@ namespace Archery
         {
         }
 
-        public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
+        public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
             float rangedAcc = entity.Stats.GetBlended("rangedWeaponsAcc");
             float modspeed = entity.Stats.GetBlended("rangedWeaponsSpeed");
 
-            float archeryAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
+            float bullseyeAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
 
-            float archeryAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
-            archeryAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
+            float bullseyeAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
+            bullseyeAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
 
-            ClientMainPatch.driftMultiplier = archeryAccuracyMod + archeryAccuracy;
-            ClientMainPatch.twitchMultiplier = archeryAccuracyMod + (archeryAccuracy * 3f);
+            ClientMainPatch.driftMultiplier = bullseyeAccuracyMod + bullseyeAccuracy;
+            ClientMainPatch.twitchMultiplier = bullseyeAccuracyMod + (bullseyeAccuracy * 3f);
         }
     }
 
@@ -184,7 +184,7 @@ namespace Archery
         {
         }
 
-        public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
+        public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
             bool sprint = entity.Controls.Sprint;
 
@@ -213,7 +213,7 @@ namespace Archery
         {
         }
 
-        public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
+        public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
             bool sprint = entity.Controls.Sprint;
 
@@ -239,7 +239,7 @@ namespace Archery
         {
         }
 
-        public override void Update(float dt, ArcheryRangedWeaponStats weaponStats)
+        public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
             accuracyPenalty = GameMath.Clamp(accuracyPenalty - dt / 3, 0, 0.4f);
 

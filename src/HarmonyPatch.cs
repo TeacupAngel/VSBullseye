@@ -14,7 +14,7 @@ using HarmonyLib;
 
 using Cairo;
 
-namespace Archery
+namespace Bullseye
 {
     /*[HarmonyPatch(typeof(SystemRenderPlayerAimAcc))]
     class SystemRenderPlayerAimAccPatch
@@ -30,7 +30,7 @@ namespace Archery
     [HarmonyPatch(typeof(SystemRenderAim))]
     class SystemRenderAimPatch
     {
-        private static ArcheryRangedWeaponStats weaponStats = new ArcheryRangedWeaponStats();
+        private static BullseyeRangedWeaponStats weaponStats = new BullseyeRangedWeaponStats();
 
         private static int defaultAimTextureId;
         //private static int aimTextureYellowId;
@@ -47,10 +47,10 @@ namespace Archery
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
         {
-            defaultAimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/aimdefault.png"));
-            defaultAimTextureBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/aimblockeddefault.png"));
+            defaultAimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimdefault.png"));
+            defaultAimTextureBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimblockeddefault.png"));
 
-            aimTextureThrowCircleId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("archery", "gui/throw_circle.png"));
+            aimTextureThrowCircleId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/throw_circle.png"));
             
             return true;
         }
@@ -59,14 +59,14 @@ namespace Archery
         [HarmonyPatch("DrawAim")]
         static bool DrawAimPrefix(int ___aimTextureId, ClientMain ___game)
         {
-            if (ArcheryCore.aiming)
+            if (BullseyeCore.aiming)
             {
                 //___game.Render2DTexture(aimRangedTextureYellowId, ___game.Width / 2 - 16 + FreeAimCore.aimX, ___game.Height / 2 - 16 + FreeAimCore.aimY, 32, 32, 10000f);
                 int textureId = readyToShoot ? currentAimTextureId : currentAimTextureBlockedId;
                 
-                ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + ArcheryCore.aimX + ArcheryCore.aimOffsetX, ___game.Height / 2 - 16 + ArcheryCore.aimY + ArcheryCore.aimOffsetY, 32, 32, 10000f);
+                ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + BullseyeCore.aimX + BullseyeCore.aimOffsetX, ___game.Height / 2 - 16 + BullseyeCore.aimY + BullseyeCore.aimOffsetY, 32, 32, 10000f);
 
-                if (weaponStats.weaponType == ArcheryRangedWeaponType.Throw)
+                if (weaponStats.weaponType == BullseyeRangedWeaponType.Throw)
                 {
                     ___game.Render2DTexture(aimTextureThrowCircleId, ___game.Width / 2 - 160, ___game.Height / 2 - 160, 320, 320, 10001f);
                 }
@@ -77,7 +77,7 @@ namespace Archery
             return true;
         }
 
-        public static void SetRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
+        public static void SetRangedWeaponStats(BullseyeRangedWeaponStats weaponStats)
         {
             SystemRenderAimPatch.weaponStats = weaponStats;
         }
@@ -92,7 +92,7 @@ namespace Archery
     [HarmonyPatch(typeof(ClientMain))]
     class ClientMainPatch
     {
-        private static ArcheryRangedWeaponStats weaponStats = new ArcheryRangedWeaponStats();
+        private static BullseyeRangedWeaponStats weaponStats = new BullseyeRangedWeaponStats();
 
         public static float driftMultiplier = 1f;
         public static float twitchMultiplier = 1f;
@@ -118,17 +118,17 @@ namespace Archery
             ClientPlatformAbstract ___Platform,
             float dt)
         {
-            if (ArcheryCore.aiming)
+            if (BullseyeCore.aiming)
             {
                 // = Aiming system #3 - simpler, Receiver-inspired =
                 // Aim drift
-                //ArcheryCore.aimOffsetX += ((float)noisegen.Noise(__instance.ElapsedMilliseconds * driftFrequency, 1000f) - 0.5f) * driftMagnitude * dt;
-                //ArcheryCore.aimOffsetY += ((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * driftFrequency) - 0.5f) * driftMagnitude * dt;
+                //BullseyeCore.aimOffsetX += ((float)noisegen.Noise(__instance.ElapsedMilliseconds * driftFrequency, 1000f) - 0.5f) * driftMagnitude * dt;
+                //BullseyeCore.aimOffsetY += ((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * driftFrequency) - 0.5f) * driftMagnitude * dt;
 
                 float fovRatio = __instance.Width / 1920f;
 
-                ArcheryCore.aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.driftFrequency, 1000f) - 0.5f) - ArcheryCore.aimOffsetX / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
-                ArcheryCore.aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.driftFrequency) - 0.5f) - ArcheryCore.aimOffsetY / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
+                BullseyeCore.aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.driftFrequency, 1000f) - 0.5f) - BullseyeCore.aimOffsetX / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
+                BullseyeCore.aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.driftFrequency) - 0.5f) - BullseyeCore.aimOffsetY / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
 
                 if (__instance.Api.World.ElapsedMilliseconds > twitchLastChangeMilliseconds + weaponStats.twitchDuration)
                 {
@@ -140,8 +140,8 @@ namespace Archery
                         random = new Random((int)(__instance.EntityPlayer.EntityId + __instance.Api.World.ElapsedMilliseconds));
                     }
 
-                    twitchX = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - ArcheryCore.aimOffsetX / (weaponStats.twitchMax * twitchMultiplier);
-                    twitchY = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - ArcheryCore.aimOffsetY / (weaponStats.twitchMax * twitchMultiplier);
+                    twitchX = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - BullseyeCore.aimOffsetX / (weaponStats.twitchMax * twitchMultiplier);
+                    twitchY = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - BullseyeCore.aimOffsetY / (weaponStats.twitchMax * twitchMultiplier);
 
                     twitchLength = GameMath.Sqrt(twitchX * twitchX + twitchY * twitchY);
 
@@ -154,11 +154,11 @@ namespace Archery
 
                 float stepSize = ((1f - lastStep) * (1f - lastStep)) - ((1f - currentStep) * (1f - currentStep));
 
-                //ArcheryCore.aimOffsetX += twitchX * stepSize * twitchMagnitude * dt;
-                //ArcheryCore.aimOffsetY += twitchY * stepSize * twitchMagnitude * dt;
+                //BullseyeCore.aimOffsetX += twitchX * stepSize * twitchMagnitude * dt;
+                //BullseyeCore.aimOffsetY += twitchY * stepSize * twitchMagnitude * dt;
 
-                ArcheryCore.aimOffsetX += twitchX * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
-                ArcheryCore.aimOffsetY += twitchY * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
+                BullseyeCore.aimOffsetX += twitchX * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
+                BullseyeCore.aimOffsetY += twitchY * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
 
                 twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 
@@ -170,33 +170,33 @@ namespace Archery
                 float deltaX = (float)(___MouseDeltaX - ___DelayedMouseDeltaX);
                 float deltaY = (float)(___MouseDeltaY - ___DelayedMouseDeltaY);
 
-                if (Math.Abs(ArcheryCore.aimX + deltaX) > horizontalAimLimit)
+                if (Math.Abs(BullseyeCore.aimX + deltaX) > horizontalAimLimit)
                 {
-                    ArcheryCore.aimX = ArcheryCore.aimX > 0 ? horizontalAimLimit : -horizontalAimLimit;
+                    BullseyeCore.aimX = BullseyeCore.aimX > 0 ? horizontalAimLimit : -horizontalAimLimit;
                 }
                 else
                 {
-                    ArcheryCore.aimX += deltaX;
+                    BullseyeCore.aimX += deltaX;
                     ___DelayedMouseDeltaX = ___MouseDeltaX;
                 }
 
-                if (Math.Abs(ArcheryCore.aimY + deltaY - verticalAimOffset) > verticalAimLimit)
+                if (Math.Abs(BullseyeCore.aimY + deltaY - verticalAimOffset) > verticalAimLimit)
                 {
-                    ArcheryCore.aimY = (ArcheryCore.aimY > 0 ? verticalAimLimit : -verticalAimLimit) + verticalAimOffset;
+                    BullseyeCore.aimY = (BullseyeCore.aimY > 0 ? verticalAimLimit : -verticalAimLimit) + verticalAimOffset;
                 }
                 else
                 {
-                    ArcheryCore.aimY += deltaY;
+                    BullseyeCore.aimY += deltaY;
                     ___DelayedMouseDeltaY = ___MouseDeltaY;
                 }
 
-                ArcheryCore.clientInstance.SetAim();
+                BullseyeCore.clientInstance.SetAim();
             }
             
             return true;
         }
 
-        public static void SetRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
+        public static void SetRangedWeaponStats(BullseyeRangedWeaponStats weaponStats)
         {
             ClientMainPatch.weaponStats = weaponStats;
         }

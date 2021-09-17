@@ -14,7 +14,7 @@ using HarmonyLib;
 
 using Cairo;
 
-namespace Archery
+namespace Bullseye
 {
     public static class MathHelper
     {

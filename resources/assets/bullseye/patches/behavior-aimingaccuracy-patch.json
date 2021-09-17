@@ -3,12 +3,12 @@
 		file: "game:entities/humanoid/player", 
 		op: "add", 
 		path: "/client/behaviors/0", 
-		value: { code: "archery.aimingaccuracy" }
+		value: { code: "bullseye.aimingaccuracy" }
 	},
 	{ 
 		file: "game:entities/humanoid/player", 
 		op: "add", 
 		path: "/server/behaviors/0", 
-		value: { code: "archery.aimingaccuracy" }
+		value: { code: "bullseye.aimingaccuracy" }
 	}
 ]

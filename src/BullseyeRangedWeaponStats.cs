@@ -14,18 +14,18 @@ using HarmonyLib;
 
 using Cairo;
 
-namespace Archery
+namespace Bullseye
 {
-    public enum ArcheryRangedWeaponType
+    public enum BullseyeRangedWeaponType
     {
         Bow,
         Throw
     }
 
-    public class ArcheryRangedWeaponStats
+    public class BullseyeRangedWeaponStats
     {
         // General
-        public ArcheryRangedWeaponType weaponType = ArcheryRangedWeaponType.Bow;
+        public BullseyeRangedWeaponType weaponType = BullseyeRangedWeaponType.Bow;
 
         // ItemRangedWeapon stats
         public float cooldownTime = 0.75f;  

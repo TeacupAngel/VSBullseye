@@ -18,12 +18,12 @@ using HarmonyLib;
 
 using Cairo;
 
-namespace Archery
+namespace Bullseye
 {
-    public class ArcheryCore : ModSystem
+    public class BullseyeCore : ModSystem
     {
-        public static ArcheryCore clientInstance;
-        public static ArcheryCore serverInstance;
+        public static BullseyeCore clientInstance;
+        public static BullseyeCore serverInstance;
         
         public override void Start(ICoreAPI api)
         {
@@ -36,17 +36,17 @@ namespace Archery
 
         private void RegisterItems(ClassRegistry classRegistry)
         {
-            classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Archery.ItemBow);
-            classRegistry.ItemClassToTypeMapping["ItemSpear"] = typeof(Archery.ItemSpear);
+            classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Bullseye.ItemBow);
+            classRegistry.ItemClassToTypeMapping["ItemSpear"] = typeof(Bullseye.ItemSpear);
         }
 
         private void RegisterEntityBehaviors(ClassRegistry classRegistry)
         {
-            //classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Archery.EntityBehaviorAimingAccuracy);
-            //classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Archery.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
+            //classRegistry.entityBehaviorClassNameToTypeMapping["aimingaccuracy"] = typeof(Bullseye.EntityBehaviorAimingAccuracy);
+            //classRegistry.entityBehaviorTypeToClassNameMapping[typeof(Bullseye.EntityBehaviorAimingAccuracy)] = "aimingaccuracy";
 
             // Not replacing the vanilla AimingAccuracy behaviour for compatibility
-            classRegistry.RegisterentityBehavior("archery.aimingaccuracy", typeof(Archery.EntityBehaviorAimingAccuracy));
+            classRegistry.RegisterentityBehavior("bullseye.aimingaccuracy", typeof(Bullseye.EntityBehaviorAimingAccuracy));
         }
 
         private EntityProjectile currentArrow;
@@ -135,7 +135,7 @@ namespace Archery
         {
             clientInstance = this;
 
-            Harmony harmony = new Harmony("vs.archery");
+            Harmony harmony = new Harmony("vs.bullseye");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             client = capi.World as ClientMain;
@@ -180,7 +180,7 @@ namespace Archery
             targetVec.Z = offsetZ;
 		}
         
-        public static void SetClientRangedWeaponStats(ArcheryRangedWeaponStats weaponStats)
+        public static void SetClientRangedWeaponStats(BullseyeRangedWeaponStats weaponStats)
         {
             SystemRenderAimPatch.SetRangedWeaponStats(weaponStats);
             ClientMainPatch.SetRangedWeaponStats(weaponStats);

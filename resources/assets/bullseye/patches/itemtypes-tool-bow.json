@@ -1,6 +1,6 @@
 [ 
 	{ 
-		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/archeryWeaponStatsByType", value: 
+		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/bullseyeWeaponStatsByType", value: 
 		{
 			"*-crude": {
 				twitchMagnitude: 35,
@@ -9,7 +9,7 @@
 				driftMax: 150,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 1,
-				aimTexturePath: "archery:gui/aimarrow.png"
+				aimTexturePath: "bullseye:gui/aimarrow.png"
 			},
 
 			"*-simple": {
@@ -19,7 +19,7 @@
 				driftMax: 150,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
-				aimTexturePath: "archery:gui/aimarrow.png"
+				aimTexturePath: "bullseye:gui/aimarrow.png"
 			},
 
 			"*-long": {
@@ -32,7 +32,7 @@
 				driftMax: 170,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
-				aimTexturePath: "archery:gui/aimarrow.png"
+				aimTexturePath: "bullseye:gui/aimarrow.png"
 			},
 
 			"*-recurve": { 
@@ -45,7 +45,7 @@
 				driftMax: 200,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
-				aimTexturePath: "archery:gui/aimarrow.png"
+				aimTexturePath: "bullseye:gui/aimarrow.png"
 			},
 		},
 	},

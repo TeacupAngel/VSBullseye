@@ -13,12 +13,12 @@ using Vintagestory.GameContent;
 
 using System.Globalization;
 
-namespace Archery
+namespace Bullseye
 {
     public class ItemRangedWeapon : Item
     {
-        protected ArcheryRangedWeaponSystem rangedWeaponSystem;
-        protected ArcheryRangedWeaponStats weaponStats;
+        protected BullseyeRangedWeaponSystem rangedWeaponSystem;
+        protected BullseyeRangedWeaponStats weaponStats;
 
         protected ModelTransform defaultFpHandTransform;
 
@@ -27,19 +27,19 @@ namespace Archery
 
         public override void OnLoaded(ICoreAPI api)
         {
-            rangedWeaponSystem = api.ModLoader.GetModSystem<ArcheryRangedWeaponSystem>();
+            rangedWeaponSystem = api.ModLoader.GetModSystem<BullseyeRangedWeaponSystem>();
 
             defaultFpHandTransform = FpHandTransform.Clone();
 
-            weaponStats = Attributes.KeyExists("archeryWeaponStats") ? Attributes?["archeryWeaponStats"].AsObject<ArcheryRangedWeaponStats>() : new ArcheryRangedWeaponStats();
+            weaponStats = Attributes.KeyExists("bullseyeWeaponStats") ? Attributes?["bullseyeWeaponStats"].AsObject<BullseyeRangedWeaponStats>() : new BullseyeRangedWeaponStats();
 
             if (api.Side == EnumAppSide.Server)
             {
-                api.Event.RegisterEventBusListener(ServerHandleFire, 0.5, "archeryRangedWeaponFire");
+                api.Event.RegisterEventBusListener(ServerHandleFire, 0.5, "bullseyeRangedWeaponFire");
             }
             else
             {
-                ArcheryReticleLoadSystem reticleLoadSystem = api.ModLoader.GetModSystem<ArcheryReticleLoadSystem>();
+                BullseyeReticleLoadSystem reticleLoadSystem = api.ModLoader.GetModSystem<BullseyeReticleLoadSystem>();
                 if (weaponStats.aimTexturePath != null) aimTextureId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexturePath);
                 if (weaponStats.aimTextureBlockedPath != null) aimTextureBlockedId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTextureBlockedPath);
             }
@@ -62,7 +62,7 @@ namespace Archery
                     float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(byEntity.EntityId);
                     float transformTime = 0.25f;
 
-                    transformFraction = weaponStats.weaponType != ArcheryRangedWeaponType.Throw ? 
+                    transformFraction = weaponStats.weaponType != BullseyeRangedWeaponType.Throw ? 
                         GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f) : 1f;
                     transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
                 }
@@ -86,7 +86,7 @@ namespace Archery
                     float cooldownRemaining = weaponStats.cooldownTime - rangedWeaponSystem.GetEntityCooldownTime(capi.World.Player.Entity.EntityId);
                     float transformTime = 0.25f;
 
-                    transformFraction = weaponStats.weaponType != ArcheryRangedWeaponType.Throw ? 
+                    transformFraction = weaponStats.weaponType != BullseyeRangedWeaponType.Throw ? 
                         GameMath.Clamp((weaponStats.cooldownTime - cooldownRemaining) / transformTime, 0f, 1f) : 1f;
                     transformFraction -= GameMath.Clamp((transformTime - cooldownRemaining) / transformTime, 0f, 1f);
                 }
@@ -97,9 +97,9 @@ namespace Archery
 
                 renderinfo.Transform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
 
-                if (ArcheryCore.aiming)
+                if (BullseyeCore.aiming)
                 {
-                    Vec2f currentAim = ArcheryCore.GetCurrentAim();
+                    Vec2f currentAim = BullseyeCore.GetCurrentAim();
 
                     renderinfo.Transform.Rotation.X = defaultFpHandTransform.Rotation.X - (currentAim.Y / 15f); 
                     renderinfo.Transform.Rotation.Y = defaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
@@ -121,8 +121,8 @@ namespace Archery
 
             if (byEntity.World is IClientWorldAccessor)
             {
-                ArcheryCore.SetClientRangedWeaponStats(weaponStats);
-                ArcheryCore.SetClientRangedWeaponReticleTextures(aimTextureId, aimTextureBlockedId);
+                BullseyeCore.SetClientRangedWeaponStats(weaponStats);
+                BullseyeCore.SetClientRangedWeaponReticleTextures(aimTextureId, aimTextureBlockedId);
             }
             
             if (api.Side == EnumAppSide.Server) {
@@ -135,7 +135,7 @@ namespace Archery
             if (invslot == null) return;
 
             // Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
-            byEntity.Attributes.SetInt("archeryAiming", 1);
+            byEntity.Attributes.SetInt("bullseyeAiming", 1);
             byEntity.Attributes.SetInt("aimingCancel", 0);
 
             OnAimingStart(slot, byEntity);
@@ -152,9 +152,7 @@ namespace Archery
                 SystemRenderAimPatch.readyToShoot = secondsUsed > weaponStats.chargeTime + 0.1f;
             }
 
-            Console.WriteLine(String.Format("{0}: OnHeldInteractSTEP, archeryAiming {1}", api.Side == EnumAppSide.Server ? "Server" : "Client", byEntity.Attributes.GetInt("archeryAiming")));
-
-            if (byEntity.Attributes.GetInt("archeryAiming") == 1)
+            if (byEntity.Attributes.GetInt("bullseyeAiming") == 1)
             {
                 OnAimingStep(secondsUsed, slot, byEntity);
             }
@@ -166,7 +164,7 @@ namespace Archery
 
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
-            byEntity.Attributes.SetInt("archeryAiming", 0);
+            byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
             if (cancelReason != EnumItemUseCancelReason.ReleasedMouse)
             {
@@ -218,7 +216,7 @@ namespace Archery
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
             if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
-            byEntity.Attributes.SetInt("archeryAiming", 0);
+            byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
             float chargeNeeded = api.Side == EnumAppSide.Server ? weaponStats.chargeTime : weaponStats.chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
 
@@ -226,7 +224,7 @@ namespace Archery
 
             if (api.Side != EnumAppSide.Client) return;
 
-            Vec3d targetVec = ArcheryCore.targetVec;
+            Vec3d targetVec = BullseyeCore.targetVec;
 
             Shoot(slot, byEntity, targetVec);
 
@@ -235,7 +233,7 @@ namespace Archery
 
         public void Shoot(ItemSlot slot, EntityAgent byEntity, Vec3d targetVec)
         {
-            byEntity.Attributes.SetInt("archeryAiming", 0);
+            byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
             ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot);
             if (ammoSlot == null) return;
@@ -275,7 +273,7 @@ namespace Archery
             double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
 
             // New method to generate random spread, works when aimed straight up/straight down
-            //Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? ArcheryCore.aimVectors[byEntity.EntityId] : ArcheryCore.targetVec;
+            //Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? BullseyeCore.aimVectors[byEntity.EntityId] : BullseyeCore.targetVec;
 
             Vec3d perp = MathHelper.Vec3GetPerpendicular(targetVec);
             Vec3d perp2 = targetVec.Cross(perp);
@@ -308,7 +306,7 @@ namespace Archery
 
             if (byEntity.World.Side == EnumAppSide.Server && entityPlayer != null)
             {
-                ArcheryCore.serverInstance.SetFollowArrow((EntityProjectile)entity, entityPlayer);
+                BullseyeCore.serverInstance.SetFollowArrow((EntityProjectile)entity, entityPlayer);
             }
 
             rangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);

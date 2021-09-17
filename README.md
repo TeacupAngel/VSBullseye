@@ -1,4 +1,4 @@
-# Archery
+# Bullseye
 A Vintage Story mod aiming to overhaul and rebalance ranged weapons in a vanilla-friendly way.
 
 * A completely new, more engaging aiming system
@@ -7,8 +7,8 @@ A Vintage Story mod aiming to overhaul and rebalance ranged weapons in a vanilla
 * Comprehensive rebalance to make each weapon relevant without dominating
 * Throw your spears with a running start to make them go farther!
 
-For a more information on the changes, [you can check out the project's wiki](https://github.com/Rahjital/VSArchery/wiki).
+For a more information on the changes, [you can check out the project's wiki](https://github.com/Rahjital/VSBullseye/wiki).
 
 All feedback is greatly appreciated and helps improve the mod. Let me know in an issue or in [the Vintage Story forums thread!](https://www.vintagestory.at/forums/topic/5537-archery-vanilla-friendly-ranged-weapon-overhaul/)
 
-Download the archive at the Vintage Story ModDB page: https://mods.vintagestory.at/archery
+Download the archive at the Vintage Story ModDB page: https://mods.vintagestory.at/bullseye

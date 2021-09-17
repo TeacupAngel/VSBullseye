@@ -1,6 +1,6 @@
 {
-    "archery:block-toolmold-raw-spear": "Raw spear mold",
-	"archery:block-toolmold-burned-spear": "Spear mold",
+    "bullseye:block-toolmold-raw-spear": "Raw spear mold",
+	"bullseye:block-toolmold-burned-spear": "Spear mold",
 
 	"game:item-spear-iron": "Iron spear",
     "game:item-spear-meteoriciron": "Meteoric iron spear",
@@ -17,5 +17,5 @@
 	"game:itemdesc-bow-long": "Far reaching, though slow to draw.",
 	"game:itemdesc-bow-recurve": "A powerful, hard to handle bow.",
 
-	"archery:weapon-bonus-damage-ranged": "{0}% piercing damage",
+	"bullseye:weapon-bonus-damage-ranged": "{0}% piercing damage",
 }

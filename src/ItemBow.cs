@@ -10,7 +10,7 @@ using Vintagestory.API.Util;
 
 using System.Globalization;
 
-namespace Archery
+namespace Bullseye
 {
     public class ItemBow : ItemRangedWeapon
     {
@@ -23,7 +23,7 @@ namespace Archery
         {
             base.OnLoaded(api);
 
-            weaponStats.weaponType = ArcheryRangedWeaponType.Bow;
+            weaponStats.weaponType = BullseyeRangedWeaponType.Bow;
 
             if (api.Side != EnumAppSide.Client) return;
             ICoreClientAPI capi = api as ICoreClientAPI;
@@ -201,7 +201,7 @@ namespace Archery
             if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
 
             float dmgPercent = inSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0) * 100f;
-            if (dmgPercent != 0) dsc.AppendLine((dmgPercent > 0 ? "+" : "") + Lang.Get("archery:weapon-bonus-damage-ranged", dmgPercent));
+            if (dmgPercent != 0) dsc.AppendLine((dmgPercent > 0 ? "+" : "") + Lang.Get("bullseye:weapon-bonus-damage-ranged", dmgPercent));
         }
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)

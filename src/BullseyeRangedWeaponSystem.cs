@@ -18,12 +18,12 @@ using HarmonyLib;
 
 using Cairo;
 
-namespace Archery
+namespace Bullseye
 {
-    public class ArcheryRangedWeaponSystem : ModSystem
+    public class BullseyeRangedWeaponSystem : ModSystem
     {
         [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-        public class ArcheryRangedWeaponFire
+        public class BullseyeRangedWeaponFire
         {
             public int itemId;
             public long entityId;
@@ -48,12 +48,12 @@ namespace Archery
             lastRangedSlotByEntityId = new Dictionary<long, ItemSlot>();
             rangedChargeStartByEntityId = new Dictionary<long, long>();
 
-            serverNetworkChannel = api.Network.RegisterChannel("archeryitem")
-            .RegisterMessageType<ArcheryRangedWeaponFire>()
-            .SetMessageHandler<ArcheryRangedWeaponFire>(OnServerRangedWeaponFire);
+            serverNetworkChannel = api.Network.RegisterChannel("bullseyeitem")
+            .RegisterMessageType<BullseyeRangedWeaponFire>()
+            .SetMessageHandler<BullseyeRangedWeaponFire>(OnServerRangedWeaponFire);
         }
 
-        public void OnServerRangedWeaponFire(IServerPlayer fromPlayer, ArcheryRangedWeaponFire packet)
+        public void OnServerRangedWeaponFire(IServerPlayer fromPlayer, BullseyeRangedWeaponFire packet)
         {
             TreeAttribute tree = new TreeAttribute();
             tree.SetLong("entityId", packet.entityId);
@@ -62,7 +62,7 @@ namespace Archery
             tree.SetDouble("aimY", packet.aimY);
             tree.SetDouble("aimZ", packet.aimZ);
 
-            sapi.Event.PushEvent("archeryRangedWeaponFire", tree);
+            sapi.Event.PushEvent("bullseyeRangedWeaponFire", tree);
         }
 
         public void SetLastEntityRangedChargeData(long entityId, ItemSlot itemSlot)
@@ -88,13 +88,13 @@ namespace Archery
         {
             world = api.World;
 
-            clientNetworkChannel = api.Network.RegisterChannel("archeryitem")
-            .RegisterMessageType<ArcheryRangedWeaponFire>();
+            clientNetworkChannel = api.Network.RegisterChannel("bullseyeitem")
+            .RegisterMessageType<BullseyeRangedWeaponFire>();
         }
 
         public void SendRangedWeaponFirePacket(long entityId, int itemId, Vec3d targetVec)
         {
-            clientNetworkChannel.SendPacket(new ArcheryRangedWeaponFire()
+            clientNetworkChannel.SendPacket(new BullseyeRangedWeaponFire()
             {
                 entityId = entityId,
                 itemId = itemId,
