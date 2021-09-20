@@ -1,7 +1,9 @@
 = 2.1.0 =
 
-- Added obsidian arrows 
-- Aim resets to the center of the screens after 15 seconds of not shooting
+- Renamed mod to Bullseye
+- Added obsidian arrows
+- Arrows can be crafted from bamboo in place of sticks, each bamboo bundle crafts 3 arrows
+- Aim resets to the center of the screen after 15 seconds of not shooting
 
 = 2.0.0 =
 

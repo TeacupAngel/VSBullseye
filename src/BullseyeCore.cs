@@ -90,24 +90,41 @@ namespace Bullseye
         // Serverside
         long followArrowTickListenerId = -1;
 
+        private void CommandTrackArrows(ICoreServerAPI sapi, IServerPlayer player, int groupId, CmdArgs args)
+        {
+            if (followArrowTickListenerId == -1)
+            {
+                currentArrow = null;
+                followArrowTickListenerId = sapi.Event.RegisterGameTickListener(FollowArrow, 100);
+                player.SendMessage(groupId, "Now tracking arrows", EnumChatType.Notification);
+            }
+            else
+            {
+                sapi.Event.UnregisterGameTickListener(followArrowTickListenerId);
+                followArrowTickListenerId = -1;
+                player.SendMessage(groupId, "No longer tracking arrows", EnumChatType.Notification);
+            }
+        }
+
         public override void StartServerSide(ICoreServerAPI sapi)
         {
             serverInstance = this;
 
-            sapi.RegisterCommand("trackarrows", "", "", (IServerPlayer player, int groupId, CmdArgs args) => {
-                if (followArrowTickListenerId == -1)
+            sapi.RegisterCommand("bullseye", "", "", (IServerPlayer player, int groupId, CmdArgs args) => {
+                if (args.Length > 0)
                 {
-                    currentArrow = null;
-                    followArrowTickListenerId = sapi.Event.RegisterGameTickListener(FollowArrow, 100);
-                    player.SendMessage(groupId, "Now tracking arrows", EnumChatType.Notification);
+                    string cmd = args.PopWord();
+
+                    switch (cmd)
+                    {
+                        case "track":
+                            CommandTrackArrows(sapi, player, groupId, args);
+                            return;
+                    }
                 }
-                else
-                {
-                    sapi.Event.UnregisterGameTickListener(followArrowTickListenerId);
-                    followArrowTickListenerId = -1;
-                    player.SendMessage(groupId, "No longer tracking arrows", EnumChatType.Notification);
-                }
-            });
+
+                player.SendMessage(groupId, "/bullseye [track|setting]", EnumChatType.CommandError);
+            }, Privilege.controlserver);
         }
 
         // Clientside
