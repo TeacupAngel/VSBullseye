@@ -94,7 +94,7 @@
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
 			"--addModPath", "${workspaceFolder}/staged",
-			"--connect", "10.0.1.10"
+			"--connect", "127.0.0.1"
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"

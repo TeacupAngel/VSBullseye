@@ -93,6 +93,11 @@ namespace Bullseye
             byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.5f);
         }
 
+        public override void OnShotCancelled(ItemSlot slot, EntityAgent byEntity) 
+        {
+            byEntity.StopAnimation("aim");
+        }
+
         // Spear melee specific
         public override void OnHeldAttackStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandHandling handling)
         {

@@ -220,9 +220,18 @@ namespace Bullseye
 
             float chargeNeeded = api.Side == EnumAppSide.Server ? weaponStats.chargeTime : weaponStats.chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
 
-            if (secondsUsed < chargeNeeded) return;
+            if (secondsUsed < chargeNeeded)
+            {
+                OnShotCancelled(slot, byEntity);
+                return;
+            }
 
-            if (api.Side != EnumAppSide.Client) return;
+            if (api.Side != EnumAppSide.Client) 
+            {
+                // Just to make sure animations etc. get stopped if a shot looks legit on the server but was stopped on the client
+                api.Event.RegisterCallback((ms) => {if (byEntity.Attributes.GetInt("bullseyeAiming") == 0) OnShotCancelled(slot, byEntity);}, 500);
+                return;
+            }
 
             Vec3d targetVec = BullseyeCore.targetVec;
 
@@ -322,6 +331,7 @@ namespace Bullseye
         }
 
         public virtual void OnShot(ItemSlot slot, EntityAgent byEntity) {}
+        public virtual void OnShotCancelled(ItemSlot slot, EntityAgent byEntity) {}
 
         private void ServerHandleFire(string eventName, ref EnumHandling handling, IAttribute data)
         {

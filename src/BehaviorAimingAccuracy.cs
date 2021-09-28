@@ -51,26 +51,6 @@ namespace Bullseye
 
             if (beforeAiming == IsAiming) return;
 
-            BullseyeCore.aiming = IsAiming;
-            BullseyeCore.aimOffsetX = 0;
-            BullseyeCore.aimOffsetY = 0;
-            ClientMainPatch.twitchX = 0;
-            ClientMainPatch.twitchY = 0;
-
-            if (rangedWeaponSystem.GetEntityCooldownTime(entity.EntityId) > 15f)
-            {
-                BullseyeCore.aimX = 0f;
-                BullseyeCore.aimY = 0f;
-            }
-
-            if (IsAiming && entity.World is IServerWorldAccessor)
-            {
-                double rndpitch = Rand.NextDouble();
-                double rndyaw = Rand.NextDouble();
-                entity.WatchedAttributes.SetDouble("aimingRandPitch", rndpitch);
-                entity.WatchedAttributes.SetDouble("aimingRandYaw", rndyaw);
-            }
-
             for (int i = 0; i < modifiers.Count; i++)
             {
                 if (IsAiming)
@@ -80,6 +60,32 @@ namespace Bullseye
                 else
                 {
                     modifiers[i].EndAim();
+                }
+            }
+
+            if (entity.World is IServerWorldAccessor && IsAiming)
+            {
+                double rndpitch = Rand.NextDouble();
+                double rndyaw = Rand.NextDouble();
+                entity.WatchedAttributes.SetDouble("aimingRandPitch", rndpitch);
+                entity.WatchedAttributes.SetDouble("aimingRandYaw", rndyaw);
+            }
+            else if (entity.World is IClientWorldAccessor cWorld && cWorld.Player.Entity.EntityId == entity.EntityId)
+            {
+                BullseyeCore.aiming = IsAiming;
+
+                if (IsAiming)
+                {
+                    BullseyeCore.aimOffsetX = 0;
+                    BullseyeCore.aimOffsetY = 0;
+                    ClientMainPatch.twitchX = 0;
+                    ClientMainPatch.twitchY = 0;
+
+                    if (rangedWeaponSystem.GetEntityCooldownTime(entity.EntityId) > 15f)
+                    {
+                        BullseyeCore.aimX = 0f;
+                        BullseyeCore.aimY = 0f;
+                    }
                 }
             }
         }

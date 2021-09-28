@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyTitle>Bullseye</AssemblyTitle>
         <Authors>Rahjital</Authors>
-        <Version>2.1.0</Version>
+        <Version>2.1.1</Version>
         <Description>A vanilla-friendly rebalance and overhaul of ranged weapons.</Description>
         <RepositoryUrl>https://github.com/Rahjital/VSBullseye</RepositoryUrl>
         <TargetFramework>net461</TargetFramework>
@@ -88,6 +88,6 @@
     <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Release'">
         <MakeDir Directories="$(MSBuildProjectDirectory)/release/$(Version)" />
         <Delete Files="$(MSBuildProjectDirectory)/staged/$(TargetName)/$(TargetName).pdb" />
-        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/staged/$(TargetName)/" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName).zip" Overwrite="true" />
+        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/staged/$(TargetName)/" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName) $(Version).zip" Overwrite="true" />
     </Target>
 </Project>

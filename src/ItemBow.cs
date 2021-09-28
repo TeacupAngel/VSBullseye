@@ -26,7 +26,6 @@ namespace Bullseye
             weaponStats.weaponType = BullseyeRangedWeaponType.Bow;
 
             if (api.Side != EnumAppSide.Client) return;
-            ICoreClientAPI capi = api as ICoreClientAPI;
 
             interactions = ObjectCacheUtil.GetOrCreate(api, "bowInteractions", () =>
             {
@@ -102,9 +101,56 @@ namespace Bullseye
             }
         }
 
+        /*public override SkillItem[] GetToolModes(ItemSlot slot, IClientPlayer forPlayer, BlockSelection blockSel)
+        {
+            SkillItem[] mats = new SkillItem[be.MaterialIds.Length];
+            for (int i = 0; i < mats.Length; i++)
+            {
+                Block block = api.World.GetBlock(be.MaterialIds[i]);
+                ItemStack stack = new ItemStack(block);
+                mats[i] = new SkillItem()
+                {
+                    Code = block.Code,
+                    Data = be.MaterialIds[i],
+                    Linebreak = i==0,
+                    Name = block.GetHeldItemName(stack),
+                    RenderHandler = (AssetLocation code, float dt, double atPosX, double atPosY) =>
+                    {
+                        float wdt = (float)GuiElement.scaled(GuiElementPassiveItemSlot.unscaledSlotSize);
+                        ICoreClientAPI capi = api as ICoreClientAPI;
+                        capi.Render.RenderItemstackToGui(stack, atPosX + wdt/2, atPosY + wdt/2, 50, wdt/2, ColorUtil.WhiteArgb, true, false, false);
+                    }
+                };
+            }
+
+            return mats;
+        }
+
+        public override int GetToolMode(ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
+        {
+            return slot.Itemstack.Attributes.GetInt("toolMode");
+        }
+
+        public override void SetToolMode(ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, int toolMode)
+        {
+            if (toolMode > 6)
+            {
+                slot.Itemstack.Attributes.SetInt("materialNum", toolMode - 7);
+                return;
+            }
+
+            slot.Itemstack.Attributes.SetInt("toolMode", toolMode);
+        }*/
+
         public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot)
         {
             ItemSlot arrowSlot = null;
+
+            /*if (byEntity is EntityPlayer entityPlayer)
+            {
+                //entityPlayer.LeftHandItemSlot
+            }*/
+
             byEntity.WalkInventory((invslot) =>
             {
                 if (invslot is ItemSlotCreative) return true;
@@ -151,7 +197,7 @@ namespace Bullseye
             if (currentArrowSlot.Itemstack.ItemAttributes != null) {
                 if (currentArrowSlot.Itemstack.ItemAttributes.KeyExists("averageLifetimeDamage"))
                 {
-                   breakChance = 1f / (currentArrowSlot.Itemstack.ItemAttributes["averageLifetimeDamage"].AsFloat() / currentArrowDamage);
+                    breakChance = 1f / (currentArrowSlot.Itemstack.ItemAttributes["averageLifetimeDamage"].AsFloat() / currentArrowDamage);
                 }
                 else
                 {
@@ -189,6 +235,19 @@ namespace Bullseye
             byEntity.AnimManager.StartAnimation("bowhit");
 
             api.Event.RegisterCallback((ms) => {byEntity.AnimManager.StopAnimation("bowaim");}, 500);
+        }
+
+        public override void OnShotCancelled(ItemSlot slot, EntityAgent byEntity) 
+        {
+            if (byEntity.World is IClientWorldAccessor)
+            {
+                slot.Itemstack.TempAttributes.RemoveAttribute("renderVariant");
+            }
+
+            slot.Itemstack.Attributes.SetInt("renderVariant", 0);
+            (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
+            
+            byEntity.AnimManager.StopAnimation("bowaim");
         }
 
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
