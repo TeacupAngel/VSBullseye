@@ -9,7 +9,9 @@
 				driftMax: 150,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 1,
-				aimTexturePath: "bullseye:gui/aimarrow.png"
+				zeroingAngle: 1.5,
+				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
+				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png"
 			},
 
 			"*-simple": {
@@ -19,7 +21,9 @@
 				driftMax: 150,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
-				aimTexturePath: "bullseye:gui/aimarrow.png"
+				zeroingAngle: 1.5,
+				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
+				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png"
 			},
 
 			"*-long": {
@@ -32,7 +36,10 @@
 				driftMax: 170,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
-				aimTexturePath: "bullseye:gui/aimarrow.png"
+				zeroingAngle: 1,
+				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
+				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+				aimFullChargeLeeway: 0.6,
 			},
 
 			"*-recurve": { 
@@ -45,7 +52,10 @@
 				driftMax: 200,
 				accuracyOvertimeStart: 8,
 				projectileSpread: 0,
-				aimTexturePath: "bullseye:gui/aimarrow.png"
+				zeroingAngle: 1.5,
+				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
+				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+				aimFullChargeLeeway: 0.5,
 			},
 		},
 	},

@@ -30,25 +30,36 @@ namespace Bullseye
     [HarmonyPatch(typeof(SystemRenderAim))]
     class SystemRenderAimPatch
     {
+        public static BullseyeCoreClientSystem coreClientSystem;
+
         private static BullseyeRangedWeaponStats weaponStats = new BullseyeRangedWeaponStats();
 
-        private static int defaultAimTextureId;
-        //private static int aimTextureYellowId;
-        private static int defaultAimTextureBlockedId;
+        private static int defaultAimTexPartChargeId;
+        private static int defaultAimTexFullChargeId;
+        private static int defaultAimTexBlockedId;
 
-        private static int currentAimTextureId;
-        private static int currentAimTextureBlockedId;
+        private static int currentAimTexPartChargeId;
+        private static int currentAimTexFullChargeId;
+        private static int currentAimTexBlockedId;
 
         private static int aimTextureThrowCircleId;
 
-        public static bool readyToShoot = false;
+        public enum ReadinessState
+        {
+            Blocked,
+            PartCharge,
+            FullCharge
+        }
+
+        public static ReadinessState readinessState = ReadinessState.Blocked;
 
         [HarmonyPrefix]
         [HarmonyPatch("OnBlockTexturesLoaded")]
         static bool OnBlockTexturesLoadedPrefix(ClientMain ___game)
         {
-            defaultAimTextureId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimdefault.png"));
-            defaultAimTextureBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimblockeddefault.png"));
+            defaultAimTexPartChargeId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimdefaultpart.png"));
+            defaultAimTexFullChargeId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimdefaultfull.png"));
+            defaultAimTexBlockedId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/aimblockeddefault.png"));
 
             aimTextureThrowCircleId = (___game.Api as ICoreClientAPI).Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/throw_circle.png"));
             
@@ -59,12 +70,19 @@ namespace Bullseye
         [HarmonyPatch("DrawAim")]
         static bool DrawAimPrefix(int ___aimTextureId, ClientMain ___game)
         {
-            if (BullseyeCore.aiming)
+            if (coreClientSystem == null)
             {
-                //___game.Render2DTexture(aimRangedTextureYellowId, ___game.Width / 2 - 16 + FreeAimCore.aimX, ___game.Height / 2 - 16 + FreeAimCore.aimY, 32, 32, 10000f);
-                int textureId = readyToShoot ? currentAimTextureId : currentAimTextureBlockedId;
+                return true;
+            }
+
+            if (coreClientSystem.aiming)
+            {
+                Vec2f currentAim = coreClientSystem.GetCurrentAim();
+
+                int textureId = readinessState == ReadinessState.FullCharge ? currentAimTexFullChargeId : 
+                                (readinessState == ReadinessState.PartCharge ? currentAimTexPartChargeId : currentAimTexBlockedId);
                 
-                ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + BullseyeCore.aimX + BullseyeCore.aimOffsetX, ___game.Height / 2 - 16 + BullseyeCore.aimY + BullseyeCore.aimOffsetY, 32, 32, 10000f);
+                ___game.Render2DTexture(textureId, ___game.Width / 2 - 16 + currentAim.X, ___game.Height / 2 - 16 + currentAim.Y, 32, 32, 10000f);
 
                 if (weaponStats.weaponType == BullseyeRangedWeaponType.Throw)
                 {
@@ -82,16 +100,24 @@ namespace Bullseye
             SystemRenderAimPatch.weaponStats = weaponStats;
         }
 
-        public static void SetReticleTextures(int textureId, int blockedTextureId)
+        public static void SetReticleTextures(int partChargeTexId, int fullChargeTexId, int blockedTexId)
         {
-            currentAimTextureId = textureId >= 0 ? textureId : defaultAimTextureId;
-            currentAimTextureBlockedId = blockedTextureId >= 0 ? blockedTextureId : defaultAimTextureBlockedId;
+            currentAimTexPartChargeId = partChargeTexId >= 0 ? partChargeTexId : defaultAimTexPartChargeId;
+            currentAimTexFullChargeId = fullChargeTexId >= 0 ? fullChargeTexId : defaultAimTexFullChargeId;
+            currentAimTexBlockedId = blockedTexId >= 0 ? blockedTexId : defaultAimTexBlockedId;
+        }
+
+        public static void SetShootReadinessState(ReadinessState state)
+        {
+            readinessState = state;
         }
     }
 
     [HarmonyPatch(typeof(ClientMain))]
     class ClientMainPatch
     {
+        public static BullseyeCoreClientSystem coreClientSystem;
+
         private static BullseyeRangedWeaponStats weaponStats = new BullseyeRangedWeaponStats();
 
         public static float driftMultiplier = 1f;
@@ -118,17 +144,18 @@ namespace Bullseye
             ClientPlatformAbstract ___Platform,
             float dt)
         {
-            if (BullseyeCore.aiming)
+            if (coreClientSystem == null)
+            {
+                return true;
+            }
+
+            if (coreClientSystem.aiming)
             {
                 // = Aiming system #3 - simpler, Receiver-inspired =
-                // Aim drift
-                //BullseyeCore.aimOffsetX += ((float)noisegen.Noise(__instance.ElapsedMilliseconds * driftFrequency, 1000f) - 0.5f) * driftMagnitude * dt;
-                //BullseyeCore.aimOffsetY += ((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * driftFrequency) - 0.5f) * driftMagnitude * dt;
-
                 float fovRatio = __instance.Width / 1920f;
 
-                BullseyeCore.aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.driftFrequency, 1000f) - 0.5f) - BullseyeCore.aimOffsetX / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
-                BullseyeCore.aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.driftFrequency) - 0.5f) - BullseyeCore.aimOffsetY / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
+                coreClientSystem.aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.driftFrequency, 1000f) - 0.5f) - coreClientSystem.aimOffsetX / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
+                coreClientSystem.aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.driftFrequency) - 0.5f) - coreClientSystem.aimOffsetY / (weaponStats.driftMax * driftMultiplier)) * weaponStats.driftMagnitude * driftMultiplier * dt * fovRatio;
 
                 if (__instance.Api.World.ElapsedMilliseconds > twitchLastChangeMilliseconds + weaponStats.twitchDuration)
                 {
@@ -140,8 +167,8 @@ namespace Bullseye
                         random = new Random((int)(__instance.EntityPlayer.EntityId + __instance.Api.World.ElapsedMilliseconds));
                     }
 
-                    twitchX = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - BullseyeCore.aimOffsetX / (weaponStats.twitchMax * twitchMultiplier);
-                    twitchY = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - BullseyeCore.aimOffsetY / (weaponStats.twitchMax * twitchMultiplier);
+                    twitchX = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - coreClientSystem.aimOffsetX / (weaponStats.twitchMax * twitchMultiplier);
+                    twitchY = (((float)random.NextDouble() - 0.5f) * 2f) * (weaponStats.twitchMax * twitchMultiplier) - coreClientSystem.aimOffsetY / (weaponStats.twitchMax * twitchMultiplier);
 
                     twitchLength = GameMath.Sqrt(twitchX * twitchX + twitchY * twitchY);
 
@@ -157,8 +184,8 @@ namespace Bullseye
                 //BullseyeCore.aimOffsetX += twitchX * stepSize * twitchMagnitude * dt;
                 //BullseyeCore.aimOffsetY += twitchY * stepSize * twitchMagnitude * dt;
 
-                BullseyeCore.aimOffsetX += twitchX * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
-                BullseyeCore.aimOffsetY += twitchY * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
+                coreClientSystem.aimOffsetX += twitchX * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
+                coreClientSystem.aimOffsetY += twitchY * stepSize * (weaponStats.twitchMagnitude * twitchMultiplier * dt) * (weaponStats.twitchDuration / 20) * fovRatio;
 
                 twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 
@@ -170,27 +197,27 @@ namespace Bullseye
                 float deltaX = (float)(___MouseDeltaX - ___DelayedMouseDeltaX);
                 float deltaY = (float)(___MouseDeltaY - ___DelayedMouseDeltaY);
 
-                if (Math.Abs(BullseyeCore.aimX + deltaX) > horizontalAimLimit)
+                if (Math.Abs(coreClientSystem.aimX + deltaX) > horizontalAimLimit)
                 {
-                    BullseyeCore.aimX = BullseyeCore.aimX > 0 ? horizontalAimLimit : -horizontalAimLimit;
+                    coreClientSystem.aimX = coreClientSystem.aimX > 0 ? horizontalAimLimit : -horizontalAimLimit;
                 }
                 else
                 {
-                    BullseyeCore.aimX += deltaX;
+                    coreClientSystem.aimX += deltaX;
                     ___DelayedMouseDeltaX = ___MouseDeltaX;
                 }
 
-                if (Math.Abs(BullseyeCore.aimY + deltaY - verticalAimOffset) > verticalAimLimit)
+                if (Math.Abs(coreClientSystem.aimY + deltaY - verticalAimOffset) > verticalAimLimit)
                 {
-                    BullseyeCore.aimY = (BullseyeCore.aimY > 0 ? verticalAimLimit : -verticalAimLimit) + verticalAimOffset;
+                    coreClientSystem.aimY = (coreClientSystem.aimY > 0 ? verticalAimLimit : -verticalAimLimit) + verticalAimOffset;
                 }
                 else
                 {
-                    BullseyeCore.aimY += deltaY;
+                    coreClientSystem.aimY += deltaY;
                     ___DelayedMouseDeltaY = ___MouseDeltaY;
                 }
 
-                BullseyeCore.clientInstance.SetAim();
+                coreClientSystem.SetAim();
             }
             
             return true;

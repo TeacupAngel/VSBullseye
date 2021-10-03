@@ -16,7 +16,8 @@
 			accuracyMovePenalty: 0.2,
 			accuracyOvertime: 0,
 
-			aimTexturePath: "bullseye:gui/aimthrow.png"
+			aimTexPartChargePath: "bullseye:gui/aimthrowpart.png",
+			aimTexFullChargePath: "bullseye:gui/aimthrowfull.png"
 		}
 	},
 

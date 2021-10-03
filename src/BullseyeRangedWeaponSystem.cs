@@ -23,7 +23,7 @@ namespace Bullseye
     public class BullseyeRangedWeaponSystem : ModSystem
     {
         [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
-        public class BullseyeRangedWeaponFire
+        public class BullseyeRangedWeaponFirePacket
         {
             public int itemId;
             public long entityId;
@@ -49,11 +49,11 @@ namespace Bullseye
             rangedChargeStartByEntityId = new Dictionary<long, long>();
 
             serverNetworkChannel = api.Network.RegisterChannel("bullseyeitem")
-            .RegisterMessageType<BullseyeRangedWeaponFire>()
-            .SetMessageHandler<BullseyeRangedWeaponFire>(OnServerRangedWeaponFire);
+            .RegisterMessageType<BullseyeRangedWeaponFirePacket>()
+            .SetMessageHandler<BullseyeRangedWeaponFirePacket>(OnServerRangedWeaponFire);
         }
 
-        public void OnServerRangedWeaponFire(IServerPlayer fromPlayer, BullseyeRangedWeaponFire packet)
+        public void OnServerRangedWeaponFire(IServerPlayer fromPlayer, BullseyeRangedWeaponFirePacket packet)
         {
             TreeAttribute tree = new TreeAttribute();
             tree.SetLong("entityId", packet.entityId);
@@ -89,12 +89,12 @@ namespace Bullseye
             world = api.World;
 
             clientNetworkChannel = api.Network.RegisterChannel("bullseyeitem")
-            .RegisterMessageType<BullseyeRangedWeaponFire>();
+            .RegisterMessageType<BullseyeRangedWeaponFirePacket>();
         }
 
         public void SendRangedWeaponFirePacket(long entityId, int itemId, Vec3d targetVec)
         {
-            clientNetworkChannel.SendPacket(new BullseyeRangedWeaponFire()
+            clientNetworkChannel.SendPacket(new BullseyeRangedWeaponFirePacket()
             {
                 entityId = entityId,
                 itemId = itemId,

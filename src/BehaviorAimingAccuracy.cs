@@ -21,7 +21,8 @@ namespace Bullseye
 
         private BullseyeRangedWeaponStats weaponStats;
 
-        protected BullseyeRangedWeaponSystem rangedWeaponSystem;
+        private BullseyeRangedWeaponSystem rangedWeaponSystem;
+        private BullseyeCoreClientSystem coreClientSystem;
 
         public EntityBehaviorAimingAccuracy(Entity entity) : base(entity)
         {
@@ -35,6 +36,11 @@ namespace Bullseye
             entity.Attributes.RegisterModifiedListener("bullseyeAiming", OnAimingChanged);
 
             rangedWeaponSystem = entity.Api.ModLoader.GetModSystem<BullseyeRangedWeaponSystem>();
+
+            if (entity.Api.Side == EnumAppSide.Client)
+            {
+                coreClientSystem = entity.Api.ModLoader.GetModSystem<BullseyeCoreClientSystem>();
+            }
 
             Rand = new Random((int)(entity.EntityId + entity.World.ElapsedMilliseconds));
         }
@@ -72,19 +78,19 @@ namespace Bullseye
             }
             else if (entity.World is IClientWorldAccessor cWorld && cWorld.Player.Entity.EntityId == entity.EntityId)
             {
-                BullseyeCore.aiming = IsAiming;
+                coreClientSystem.aiming = IsAiming;
 
                 if (IsAiming)
                 {
-                    BullseyeCore.aimOffsetX = 0;
-                    BullseyeCore.aimOffsetY = 0;
+                    coreClientSystem.aimOffsetX = 0;
+                    coreClientSystem.aimOffsetY = 0;
                     ClientMainPatch.twitchX = 0;
                     ClientMainPatch.twitchY = 0;
 
                     if (rangedWeaponSystem.GetEntityCooldownTime(entity.EntityId) > 15f)
                     {
-                        BullseyeCore.aimX = 0f;
-                        BullseyeCore.aimY = 0f;
+                        coreClientSystem.aimX = 0f;
+                        coreClientSystem.aimY = 0f;
                     }
                 }
             }
@@ -166,10 +172,11 @@ namespace Bullseye
 
         public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
-            float rangedAcc = entity.Stats.GetBlended("rangedWeaponsAcc");
+            //float rangedAcc = entity.Stats.GetBlended("rangedWeaponsAcc");
             float modspeed = entity.Stats.GetBlended("rangedWeaponsSpeed");
 
-            float bullseyeAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
+            //float bullseyeAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
+            float bullseyeAccuracyMod = 1f;
 
             float bullseyeAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
             bullseyeAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long

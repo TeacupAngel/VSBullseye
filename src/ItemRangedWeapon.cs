@@ -17,13 +17,16 @@ namespace Bullseye
 {
     public class ItemRangedWeapon : Item
     {
+        protected BullseyeCoreClientSystem coreClientSystem;
+        protected BullseyeCoreServerSystem coreServerSystem;
         protected BullseyeRangedWeaponSystem rangedWeaponSystem;
         protected BullseyeRangedWeaponStats weaponStats;
 
         protected ModelTransform defaultFpHandTransform;
 
-        protected int aimTextureId = -1;
-        protected int aimTextureBlockedId = -1;
+        protected int aimTexPartChargeId = -1;
+        protected int aimTexFullChargeId = -1;
+        protected int aimTexBlockedId = -1;
 
         public override void OnLoaded(ICoreAPI api)
         {
@@ -35,13 +38,18 @@ namespace Bullseye
 
             if (api.Side == EnumAppSide.Server)
             {
+                coreServerSystem = api.ModLoader.GetModSystem<BullseyeCoreServerSystem>();
+
                 api.Event.RegisterEventBusListener(ServerHandleFire, 0.5, "bullseyeRangedWeaponFire");
             }
             else
             {
+                coreClientSystem = api.ModLoader.GetModSystem<BullseyeCoreClientSystem>();
+
                 BullseyeReticleLoadSystem reticleLoadSystem = api.ModLoader.GetModSystem<BullseyeReticleLoadSystem>();
-                if (weaponStats.aimTexturePath != null) aimTextureId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexturePath);
-                if (weaponStats.aimTextureBlockedPath != null) aimTextureBlockedId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTextureBlockedPath);
+                if (weaponStats.aimTexPartChargePath != null) aimTexPartChargeId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexPartChargePath);
+                if (weaponStats.aimTexFullChargePath != null) aimTexFullChargeId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexFullChargePath);
+                if (weaponStats.aimTexBlockedPath != null) aimTexBlockedId = reticleLoadSystem.GetReticleTextureId(weaponStats.aimTexBlockedPath);
             }
         }
 
@@ -97,9 +105,9 @@ namespace Bullseye
 
                 renderinfo.Transform.Translation.Y = defaultFpHandTransform.Translation.Y - (float)(transformFraction * 1.5);
 
-                if (BullseyeCore.aiming)
+                if (coreClientSystem.aiming)
                 {
-                    Vec2f currentAim = BullseyeCore.GetCurrentAim();
+                    Vec2f currentAim = coreClientSystem.GetCurrentAim();
 
                     renderinfo.Transform.Rotation.X = defaultFpHandTransform.Rotation.X - (currentAim.Y / 15f); 
                     renderinfo.Transform.Rotation.Y = defaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
@@ -121,8 +129,8 @@ namespace Bullseye
 
             if (byEntity.World is IClientWorldAccessor)
             {
-                BullseyeCore.SetClientRangedWeaponStats(weaponStats);
-                BullseyeCore.SetClientRangedWeaponReticleTextures(aimTextureId, aimTextureBlockedId);
+                coreClientSystem.SetClientRangedWeaponStats(weaponStats);
+                coreClientSystem.SetClientRangedWeaponReticleTextures(aimTexPartChargeId, aimTexFullChargeId, aimTexBlockedId);
             }
             
             if (api.Side == EnumAppSide.Server) {
@@ -146,15 +154,19 @@ namespace Bullseye
 
         public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            if (byEntity.World is IClientWorldAccessor)
-            {
-                // Show different crosshair if we are ready to shoot
-                SystemRenderAimPatch.readyToShoot = secondsUsed > weaponStats.chargeTime + 0.1f;
-            }
-
             if (byEntity.Attributes.GetInt("bullseyeAiming") == 1)
             {
                 OnAimingStep(secondsUsed, slot, byEntity);
+
+                if (byEntity.World is IClientWorldAccessor)
+                {
+                    // Show different reticle if we are ready to shoot
+                    // - Show white "full charge" reticle if the accuracy is fully calmed down, + 0.25 seconds to let the reticle calm down fully
+                    // - Show yellow "partial charge" reticle if the bow is ready for a snap shot, but accuracy is still poor
+                    // - Show red "blocked" reticle if the bow can't shoot yet                 
+                    SystemRenderAimPatch.readinessState = secondsUsed < weaponStats.chargeTime + 0.1f ? SystemRenderAimPatch.ReadinessState.Blocked : 
+                                                        (secondsUsed < weaponStats.accuracyStartTime + weaponStats.aimFullChargeLeeway ? SystemRenderAimPatch.ReadinessState.PartCharge : SystemRenderAimPatch.ReadinessState.FullCharge);
+                }
             }
             
             return true;
@@ -233,7 +245,7 @@ namespace Bullseye
                 return;
             }
 
-            Vec3d targetVec = BullseyeCore.targetVec;
+            Vec3d targetVec = coreClientSystem.targetVec;
 
             Shoot(slot, byEntity, targetVec);
 
@@ -281,11 +293,26 @@ namespace Bullseye
             double spreadAngle = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1);
             double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
 
-            // New method to generate random spread, works when aimed straight up/straight down
-            //Vec3d targetVec = byEntity.World.Side == EnumAppSide.Server ? BullseyeCore.aimVectors[byEntity.EntityId] : BullseyeCore.targetVec;
+            //Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
 
-            Vec3d perp = MathHelper.Vec3GetPerpendicular(targetVec);
-            Vec3d perp2 = targetVec.Cross(perp);
+            // RotateY - rotates correctly to the side
+            //Vec3d groundVec = new Vec3d(targetVec.X, 0, targetVec.Z).Normalize();
+            Vec3d groundVec = new Vec3d(GameMath.Cos(byEntity.SidedPos.Yaw), 0, GameMath.Sin(targetVec.Z)).Normalize();
+            Vec3d up = new Vec3d(0, 1, 0);
+
+            Vec3d horizAxis = groundVec.Cross(up);
+
+            double[] matrix = Mat4d.Create();
+            Mat4d.Rotate(matrix, matrix, weaponStats.zeroingAngle * GameMath.DEG2RAD, new double[] {horizAxis.X, horizAxis.Y, horizAxis.Z});
+            double[] matrixVec = new double[] {targetVec.X, targetVec.Y, targetVec.Z, 0};
+            matrixVec = Mat4d.MulWithVec4(matrix, matrixVec);
+
+            Vec3d zeroedTargetVec = new Vec3d(matrixVec[0], matrixVec[1], matrixVec[2]);
+
+            //Vec3d velocity = newTargetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
+
+            Vec3d perp = MathHelper.Vec3GetPerpendicular(zeroedTargetVec);
+            Vec3d perp2 = zeroedTargetVec.Cross(perp);
 
             double angle = spreadAngle * (GameMath.PI * 2f);
             double offsetAngle = spreadMagnitude *  weaponStats.projectileSpread * GameMath.DEG2RAD;
@@ -293,10 +320,10 @@ namespace Bullseye
             double magnitude = GameMath.Tan(offsetAngle);
 
             Vec3d deviation = magnitude * perp * GameMath.Cos(angle) + magnitude * perp2 * GameMath.Sin(angle);
-            Vec3d newAngle = (targetVec + deviation) * (targetVec.Length() / (targetVec.Length() + deviation.Length()));
+            Vec3d newAngle = (zeroedTargetVec + deviation) * (zeroedTargetVec.Length() / (zeroedTargetVec.Length() + deviation.Length()));
 
-            //Vec3d velocity = targetVec * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
             Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (weaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
+
             // What the heck? Server's SidedPos.Motion is somehow twice that of client's!
             velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
             
@@ -315,7 +342,7 @@ namespace Bullseye
 
             if (byEntity.World.Side == EnumAppSide.Server && entityPlayer != null)
             {
-                BullseyeCore.serverInstance.SetFollowArrow((EntityProjectile)entity, entityPlayer);
+                coreServerSystem.SetFollowArrow((EntityProjectile)entity, entityPlayer);
             }
 
             rangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);

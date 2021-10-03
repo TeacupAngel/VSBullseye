@@ -31,7 +31,8 @@ namespace Bullseye
         public float cooldownTime = 0.75f;  
         public float chargeTime = 0.5f;
         public float projectileVelocity = 30f; // Vanilla arrow speed
-        public float projectileSpread = 1f; // In degrees
+        public float projectileSpread = 0f; // In degrees
+        public float zeroingAngle = 0f;
 
         // Harmony client patch stats
         public float horizontalLimit = 0.125f;
@@ -46,8 +47,11 @@ namespace Bullseye
         public float twitchMagnitude = 40f;
         public float twitchMax = 5f;
 
-        public string aimTexturePath = null;
-        public string aimTextureBlockedPath = null;
+        public string aimTexPartChargePath = null;
+        public string aimTexFullChargePath = null;
+        public string aimTexBlockedPath = null;
+
+        public float aimFullChargeLeeway = 0.25f;
 
         // AimAccuracy EntityBehaviour stats
         public float accuracyStartTime = 1f;
