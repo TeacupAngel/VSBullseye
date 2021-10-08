@@ -1,3 +1,19 @@
+= 2.2.0 =
+
+- Fixed multiplayer crash bug related to bows running out of durability
+- Added server-side setting 'globalAccuracy' to control how difficult it is to aim
+--- use command `/bullseye set globalAccuracy 0.8` to reduce reticle sway to 80%, and so on
+- QoL: Added zeroing to bows - arrows fly slightly above the crosshair, for more intuitive point blank aiming without affecting long-range shooting
+- QoL: Crosshair now changes to orange when it is possible to shoot, but accuracy is still low
+- Accuracy stat calculation redone; Hunter class is now guaranteed to be exactly 30% more accurate
+- Major code refactor
+
+
+= 2.1.1 =
+
+- Hopefully fixes a bug where one player trying to to aim would put every player in aiming mode
+- Multiple animation bug fixes
+
 = 2.1.0 =
 
 - Renamed mod to Bullseye

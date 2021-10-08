@@ -107,8 +107,6 @@ namespace Bullseye
         private void OnServerConfigPacket(BullseyeServerConfigPacket packet)
         {
             serverConfig = JsonUtil.FromString<BullseyeServerConfig>(packet.data);
-
-            capi.ShowChatMessage("Bullseye: received server config data");
         }
 
         // Common        
