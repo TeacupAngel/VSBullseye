@@ -2,16 +2,28 @@
     <PropertyGroup>
         <AssemblyTitle>Bullseye</AssemblyTitle>
         <Authors>Rahjital</Authors>
-        <Version>2.2.0</Version>
+        <Version>2.2.4</Version>
         <Description>A vanilla-friendly rebalance and overhaul of ranged weapons.</Description>
         <RepositoryUrl>https://github.com/Rahjital/VSBullseye</RepositoryUrl>
         <TargetFramework>net461</TargetFramework>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup>
-        <VSVersion>1.15.6</VSVersion>
+        <ModId>bullseye</ModId>
+        <VSVersion>1.16.0-rc.7</VSVersion>
         <ModWebsite>https://mods.vintagestory.at/bullseye</ModWebsite>
     </PropertyGroup>
+    <ItemGroup>
+        <ModInfoAuthors Include='Rahjital'/>
+    </ItemGroup>
+    <ItemGroup>
+        <Dependencies Include='game'>
+            <Version>$(VSVersion)</Version>
+        </Dependencies>
+        <Dependencies Include='survival'>
+            <Version>$(VSVersion)</Version>
+        </Dependencies>
+    </ItemGroup>
     <ItemGroup>
         <Reference Include="VintagestoryAPI">
             <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
@@ -42,38 +54,40 @@
             <Private>false</Private>
         </Reference>
     </ItemGroup>
-    <PropertyGroup>
-        <ModInfo>
-{
-	"type": "code",
-	"name": "$(AssemblyTitle)",
-	"modid": "$(AssemblyTitle.ToLower())",
-	"version": "$(Version)",
-
-	"description": "$(Description)",
-	"website": "$(ModWebsite)",
-	"authors": [ "$(Authors)" ],
-
-	"dependencies": {
-		"game": "$(VSVersion)"
-	}
-}
-        </ModInfo>
-    </PropertyGroup>
     <ItemGroup>
         <ModAssets Include="$(MSBuildProjectDirectory)/resources/assets/**/*.*"/>
     </ItemGroup>
     <Target Name="BaseTarget">
+        <PropertyGroup>
+            <ModInfo>
+{
+    "type": "code",
+    "name": "$(AssemblyTitle)",
+    "modid": "$(ModId)",
+    "version": "$(Version)",
+
+    "description": "$(Description)",
+    "website": "$(ModWebsite)",
+    "authors": [ @(ModInfoAuthors->'"%(Identity)"', ', ') ],
+
+    "dependencies": {
+        @(Dependencies->'"%(Identity)": "%(Version)"', ', ')
+    }
+}
+            </ModInfo>
+        </PropertyGroup>
+
         <WriteLinesToFile File="$(MSBuildProjectDirectory)/resources/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
+        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
         <Copy SourceFiles="@(ModAssets)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/%(RecursiveDir)" SkipUnchangedFiles="true"/>
         
         <!-- Remove stale staged files (modified from https://stackoverflow.com/questions/46161651/safely-remove-stale-files-with-msbuild)  -->
         <PropertyGroup>
-            <DirSeparator>$([System.IO.Path]::DirectorySeparatorChar)</DirSeparator>
+            <DSChar>$([System.IO.Path]::DirectorySeparatorChar)</DSChar>
         </PropertyGroup>
         <ItemGroup>
-            <SourceAssets Include="@(ModAssets->'$(MSBuildProjectDirectory)$(DirSeparator)staged$(DirSeparator)$(TargetName)$(DirSeparator)assets$(DirSeparator)%(RecursiveDir)%(Filename)%(Extension)')" />
+            <SourceAssets Include="@(ModAssets->'$(MSBuildProjectDirectory)$(DSChar)staged$(DSChar)$(TargetName)$(DSChar)assets$(DSChar)%(RecursiveDir)%(Filename)%(Extension)')" />
             <StagedAssets Include="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/**/*.*"/>
             <StaleAssets Include="@(StagedAssets)" Exclude="@(SourceAssets)" />
         </ItemGroup>
@@ -82,12 +96,9 @@
 
         <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)" SkipUnchangedFiles="true"/>
     </Target>
-    <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Debug'">
-        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
-    </Target>
+    <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Debug'"></Target>
     <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Release'">
         <MakeDir Directories="$(MSBuildProjectDirectory)/release/$(Version)" />
-        <Delete Files="$(MSBuildProjectDirectory)/staged/$(TargetName)/$(TargetName).pdb" />
         <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/staged/$(TargetName)/" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName) $(Version).zip" Overwrite="true" />
     </Target>
 </Project>

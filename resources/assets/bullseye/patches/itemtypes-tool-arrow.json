@@ -37,19 +37,15 @@
 
 	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
 
-	{ file: "game:itemtypes/tool/arrow", op: "remove", path: "/shapeByType/*"},
+	{ file: "game:itemtypes/tool/arrow", op: "move", frompath: "/shapeByType/*", path: "/move-temp"},
 	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/shapeByType/arrow-obsidian", value: { base: "item/tool/arrow-stone" } },
-	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/shapeByType/*", value: { base: "item/tool/arrow-copper" } },
+	{ file: "game:itemtypes/tool/arrow", op: "move", frompath: "/move-temp", path: "/shapeByType/*"},
 
-	{ file: "game:itemtypes/tool/arrow", op: "remove", path: "/texturesByType/*"},
+	{ file: "game:itemtypes/tool/arrow", op: "move", frompath: "/texturesByType/*", path: "/move-temp"},
 	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/texturesByType/*-obsidian", value:
 		{
 			"material": { base: "block/stone/rock/{material}1" }
 		}
 	},
-	{ file: "game:itemtypes/tool/arrow", op: "add", path: "/texturesByType/*", value: 
-		{
-			"material": { base: "block/metal/ingot/{material}" }
-		}
-	},
+	{ file: "game:itemtypes/tool/arrow", op: "move", frompath: "/move-temp", path: "/texturesByType/*"},
 ]

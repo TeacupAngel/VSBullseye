@@ -25,30 +25,31 @@ namespace Bullseye
 
             weaponStats.weaponType = BullseyeRangedWeaponType.Bow;
 
-            if (api.Side != EnumAppSide.Client) return;
-
-            interactions = ObjectCacheUtil.GetOrCreate(api, "bowInteractions", () =>
+            if (api is ICoreClientAPI capi)
             {
-                List<ItemStack> stacks = new List<ItemStack>();
-
-                foreach (CollectibleObject obj in api.World.Collectibles)
+                interactions = ObjectCacheUtil.GetOrCreate(api, "bowInteractions", () =>
                 {
-                    if (obj.Code.Path.StartsWith("arrow-"))
-                    {
-                        stacks.Add(new ItemStack(obj));
-                    }
-                }
+                    List<ItemStack> stacks = new List<ItemStack>();
 
-                return new WorldInteraction[]
-                {
-                    new WorldInteraction()
+                    foreach (CollectibleObject obj in api.World.Collectibles)
                     {
-                        ActionLangCode = "heldhelp-chargebow",
-                        MouseButton = EnumMouseButton.Right,
-                        Itemstacks = stacks.ToArray()
+                        if (obj.Code.Path.StartsWith("arrow-"))
+                        {
+                            stacks.Add(new ItemStack(obj));
+                        }
                     }
-                };
-            });
+
+                    return new WorldInteraction[]
+                    {
+                        new WorldInteraction()
+                        {
+                            ActionLangCode = "heldhelp-chargebow",
+                            MouseButton = EnumMouseButton.Right,
+                            Itemstacks = stacks.ToArray()
+                        }
+                    };
+                });
+            } 
         }
 
         public override void OnAimingStart(ItemSlot slot, EntityAgent byEntity)
@@ -101,19 +102,48 @@ namespace Bullseye
             }
         }
 
-        /*public override SkillItem[] GetToolModes(ItemSlot slot, IClientPlayer forPlayer, BlockSelection blockSel)
+        /*public HashSet<int> GetAvailableAmmoTypes(EntityAgent byEntity, ItemSlot weaponSlot)
         {
-            SkillItem[] mats = new SkillItem[be.MaterialIds.Length];
-            for (int i = 0; i < mats.Length; i++)
+            HashSet<int> ammoIds = new HashSet<int>();
+
+            byEntity.WalkInventory((invslot) =>
             {
-                Block block = api.World.GetBlock(be.MaterialIds[i]);
-                ItemStack stack = new ItemStack(block);
-                mats[i] = new SkillItem()
+                if (invslot is ItemSlotCreative) return true;
+
+                if (invslot.Itemstack != null && invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-"))
                 {
-                    Code = block.Code,
-                    Data = be.MaterialIds[i],
-                    Linebreak = i==0,
-                    Name = block.GetHeldItemName(stack),
+                    ammoIds.Add(invslot.Itemstack.Id);
+                }
+
+                return true;
+            });
+
+            return ammoIds;
+        }
+
+        public override SkillItem[] GetToolModes(ItemSlot slot, IClientPlayer forPlayer, BlockSelection blockSel)
+        {
+            HashSet<int> ammoIds = GetAvailableAmmoTypes(forPlayer.Entity, slot);
+
+            if (ammoIds.Count <= 0)
+            {
+                return null;
+            }
+
+            SkillItem[] modes = new SkillItem[ammoIds.Count];
+
+            int modeNum = 0;
+
+            foreach (int ammoId in ammoIds)
+            {
+                Item item = api.World.GetItem(ammoId);
+                ItemStack stack = new ItemStack(item);
+                modes[modeNum] = new SkillItem()
+                {
+                    Code = item.Code,
+                    Data = null,
+                    Linebreak = modeNum > 0 && modeNum % 8 == 0,
+                    Name = item.GetHeldItemName(stack),
                     RenderHandler = (AssetLocation code, float dt, double atPosX, double atPosY) =>
                     {
                         float wdt = (float)GuiElement.scaled(GuiElementPassiveItemSlot.unscaledSlotSize);
@@ -121,25 +151,21 @@ namespace Bullseye
                         capi.Render.RenderItemstackToGui(stack, atPosX + wdt/2, atPosY + wdt/2, 50, wdt/2, ColorUtil.WhiteArgb, true, false, false);
                     }
                 };
+
+                modeNum++;
             }
 
-            return mats;
+            return modes;
         }
 
         public override int GetToolMode(ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel)
         {
-            return slot.Itemstack.Attributes.GetInt("toolMode");
+            return slot.Itemstack.Attributes.GetInt("currentAmmoType");
         }
 
         public override void SetToolMode(ItemSlot slot, IPlayer byPlayer, BlockSelection blockSel, int toolMode)
         {
-            if (toolMode > 6)
-            {
-                slot.Itemstack.Attributes.SetInt("materialNum", toolMode - 7);
-                return;
-            }
-
-            slot.Itemstack.Attributes.SetInt("toolMode", toolMode);
+            slot.Itemstack.Attributes.SetInt("currentAmmoType", toolMode);
         }*/
 
         public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot)
@@ -173,17 +199,11 @@ namespace Bullseye
             float damage = 0f;
 
             // Arrow damage
-            if (currentArrowSlot.Itemstack.Collectible.Attributes != null)
-            {
-                damage += currentArrowSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
-            }
+            damage += currentArrowSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
 
             // Bow damage
-            if (weaponSlot.Itemstack.Collectible.Attributes != null)
-            {
-                damage *= 1f + weaponSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0);
-                damage += weaponSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
-            }
+            damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
+            damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
             
             currentArrowDamage = damage;
 

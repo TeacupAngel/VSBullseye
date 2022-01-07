@@ -1,0 +1,4 @@
+[ 
+	{ "file": "game:itemtypes/tool/arrow.json", dependsOn: [{ "modid": "lichen" }], "op": "add", "path": "/attributes/damageByType/arrow-antler", "value": 3.5 },
+	{ "file": "game:itemtypes/tool/arrow.json", dependsOn: [{ "modid": "lichen" }], "op": "add", "path": "/attributes/averageLifetimeDamageByType/arrow-antler", "value": 11 },
+]

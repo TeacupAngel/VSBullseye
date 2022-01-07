@@ -1,19 +1,15 @@
 [ 
 	{ file: "game:entities/arrow", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
 
-	{ file: "game:entities/arrow", op: "remove", path: "/client/shapeByType/*"},
+	{ file: "game:entities/arrow", op: "move", frompath: "/client/shapeByType/*", path: "/move-temp"},
 	{ file: "game:entities/arrow", op: "add", path: "/client/shapeByType/arrow-obsidian", value: { base: "entity/arrow/stone" } },
-	{ file: "game:entities/arrow", op: "add", path: "/client/shapeByType/*", value: { base: "entity/arrow/copper" }	},
+	{ file: "game:entities/arrow", op: "move", frompath: "/move-temp", path: "/client/shapeByType/*"},
 
-	{ file: "game:entities/arrow", op: "remove", path: "/client/texturesByType/*"},
+	{ file: "game:entities/arrow", op: "move", frompath: "/client/texturesByType/*", path: "/move-temp"},
 	{ file: "game:entities/arrow", op: "add", path: "/client/texturesByType/arrow-obsidian", value: 
 		{
 			"material": { base: "block/stone/rock/{material}1" }
 		},
 	},
-	{ file: "game:entities/arrow", op: "add", path: "/client/texturesByType/*", value: 
-		{
-			"material": { base: "block/metal/ingot/{material}" }
-		}
-	},
+	{ file: "game:entities/arrow", op: "move", frompath: "/move-temp", path: "/client/texturesByType/*"},
 ]

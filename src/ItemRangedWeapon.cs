@@ -232,7 +232,9 @@ namespace Bullseye
 
             float chargeNeeded = api.Side == EnumAppSide.Server ? weaponStats.chargeTime : weaponStats.chargeTime + 0.1f; // slightly longer charge on client, for safety in case of desync
 
-            if (secondsUsed < chargeNeeded)
+            EntityPlayer entityPlayer = byEntity as EntityPlayer;
+
+            if (!byEntity.Alive || secondsUsed < chargeNeeded)
             {
                 OnShotCancelled(slot, byEntity);
                 return;
@@ -370,10 +372,10 @@ namespace Bullseye
                 long entityId = tree.GetLong("entityId");
 
                 ItemSlot itemSlot = rangedWeaponSystem.GetLastEntityRangedItemSlot(entityId);
+                EntityAgent byEntity =  api.World.GetEntityById(entityId) as EntityAgent;
 
-                if (rangedWeaponSystem.GetEntityChargeStart(entityId) + weaponStats.chargeTime < api.World.ElapsedMilliseconds / 1000f && itemSlot != null)
+                if (rangedWeaponSystem.GetEntityChargeStart(entityId) + weaponStats.chargeTime < api.World.ElapsedMilliseconds / 1000f && byEntity.Alive && itemSlot != null)
                 {
-                    EntityAgent byEntity =  api.World.GetEntityById(entityId) as EntityAgent;
                     Vec3d targetVec = new Vec3d(tree.GetDouble("aimX"), tree.GetDouble("aimY"), tree.GetDouble("aimZ"));
 
                     Shoot(itemSlot, byEntity, targetVec);

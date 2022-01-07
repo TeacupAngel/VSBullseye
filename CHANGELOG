@@ -1,3 +1,23 @@
+= 2.2.4 =
+
+- Fixed crashes in patching
+- Brought up-to-date with 1.16 changes to spears
+- Less intrusive patching (with idea from Craluminum2413 <3)
+- Fixed issues with and added stats for hacking spear
+- Compatibility with Lichen
+
+= 2.2.3 =
+
+- Recompiled for 1.16.0-pre.9
+
+= 2.2.2 =
+
+- Fixed crash when killed while throwing a spear
+
+= 2.2.1 =
+
+- Fixed an uncommon multiplayer crash related to thrown spears breaking
+
 = 2.2.0 =
 
 - Fixed multiplayer crash bug related to bows running out of durability

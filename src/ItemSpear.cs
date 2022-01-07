@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Text;
+using Vintagestory.API.Server;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
+using Vintagestory.GameContent;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
@@ -25,17 +27,16 @@ namespace Bullseye
 
         public override void OnAimingStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity)
         {
-            if (byEntity.World is IClientWorldAccessor)
+			if (byEntity.World is IClientWorldAccessor)
             {
                 ModelTransform tf = new ModelTransform();
                 tf.EnsureDefaultValues();
 
-                float offset = GameMath.Clamp(secondsUsed * 4f, 0, 2f);
+                float offset = GameMath.Serp(0, 2, GameMath.Clamp(secondsUsed * 4f, 0, 2f) / 2f);
 
-                tf.Translation.Set(-offset/3, 0, offset / 3);
-                tf.Rotation.Set(0, -offset * 15, 0);
-
-                byEntity.Controls.UsingHeldItemTransformBefore = tf;
+                tf.Translation.Set(0, offset / 5, offset / 3);
+                tf.Rotation.Set(offset * 10, 0, 0);
+                byEntity.Controls.UsingHeldItemTransformAfter = tf;
             }
         }
 
@@ -51,14 +52,7 @@ namespace Bullseye
 
         public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot)
         {
-            float damage = 0f;
-
-            if (weaponSlot.Itemstack.Collectible.Attributes != null)
-            {
-                damage = weaponSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
-            }
-
-            return damage;
+            return weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
         }
 
         public override float GetProjectileWeight(EntityAgent byEntity, ItemSlot weaponSlot)
@@ -124,8 +118,8 @@ namespace Bullseye
 
         public override bool OnHeldAttackStep(float secondsPassed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSelection, EntitySelection entitySel)
         {
-            float backwards = -Math.Min(0.35f, 2 * secondsPassed);
-            float stab = Math.Min(1.2f, 20 * Math.Max(0, secondsPassed - 0.35f)); // + Math.Max(0, 5*(secondsPassed - 0.5f));
+            float backwards = -Math.Min(0.8f, 3 * secondsPassed);
+            float stab = Math.Min(1.2f, 20 * Math.Max(0, secondsPassed - 0.25f));
 
             if (byEntity.World.Side == EnumAppSide.Client)
             {
@@ -133,17 +127,19 @@ namespace Bullseye
                 ModelTransform tf = new ModelTransform();
                 tf.EnsureDefaultValues();
 
+              
                 float sum = stab + backwards;
                 float ztranslation = Math.Min(0.2f, 1.5f * secondsPassed);
-                float easeout = Math.Max(0, 10 * (secondsPassed - 1));
+                float easeout = Math.Max(0, 2 * (secondsPassed - 1));
 
                 if (secondsPassed > 0.4f) sum = Math.Max(0, sum - easeout);
                 ztranslation = Math.Max(0, ztranslation - easeout);
 
-                tf.Translation.Set(sum * 0.8f, 2.5f * sum / 3, -ztranslation);
-                tf.Rotation.Set(sum * 10, sum * 2, sum * 25);
+                tf.Translation.Set(-0.5f * sum, ztranslation * 0.4f, -sum * 0.8f * 2.6f);
+                tf.Rotation.Set(-sum * 9, sum * 10, -sum*10);
 
-                byEntity.Controls.UsingHeldItemTransformBefore = tf;
+                byEntity.Controls.UsingHeldItemTransformAfter = tf;
+                
 
                 if (stab > 1.15f && byEntity.Attributes.GetInt("didattack") == 0)
                 {
@@ -151,9 +147,74 @@ namespace Bullseye
                     byEntity.Attributes.SetInt("didattack", 1);
                     world.AddCameraShake(0.25f);
                 }
+            } else
+            {
+                if (stab > 1.15f && byEntity.Attributes.GetInt("didattack") == 0 && entitySel != null)
+                {
+                    byEntity.Attributes.SetInt("didattack", 1);
+
+                    bool canhackEntity =
+                        entitySel.Entity.Properties.Attributes?["hackedEntity"].Exists == true
+                        && slot.Itemstack.ItemAttributes.IsTrue("hacking") == true && api.ModLoader.GetModSystem<CharacterSystem>().HasTrait((byEntity as EntityPlayer).Player, "technical")
+                    ;
+                    ICoreServerAPI sapi = api as ICoreServerAPI;
+
+                    if (canhackEntity)
+                    {
+                        sapi.World.PlaySoundAt(new AssetLocation("sounds/player/hackingspearhit.ogg"), entitySel.Entity, null);
+                    }
+
+                    if (api.World.Rand.NextDouble() < 0.15 && canhackEntity)
+                    {
+                        SpawnEntityInPlaceOf(entitySel.Entity, entitySel.Entity.Properties.Attributes["hackedEntity"].AsString(), byEntity);
+                        sapi.World.DespawnEntity(entitySel.Entity, new EntityDespawnReason() { reason = EnumDespawnReason.Removed });
+                    }
+                }
             }
 
             return secondsPassed < 1.2f;
+        }
+
+
+        private void SpawnEntityInPlaceOf(Entity byEntity, string code, EntityAgent causingEntity)
+        {
+            AssetLocation location = AssetLocation.Create(code, byEntity.Code.Domain);
+            EntityProperties type = byEntity.World.GetEntityType(location);
+            if (type == null)
+            {
+                byEntity.World.Logger.Error("ItemCreature: No such entity - {0}", location);
+                if (api.World.Side == EnumAppSide.Client)
+                {
+                    (api as ICoreClientAPI).TriggerIngameError(this, "nosuchentity", string.Format("No such entity loaded - '{0}'.", location));
+                }
+                return;
+            }
+
+            Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
+
+            if (entity != null)
+            {
+                entity.ServerPos.X = byEntity.ServerPos.X;
+                entity.ServerPos.Y = byEntity.ServerPos.Y;
+                entity.ServerPos.Z = byEntity.ServerPos.Z;
+                entity.ServerPos.Motion.X = byEntity.ServerPos.Motion.X;
+                entity.ServerPos.Motion.Y = byEntity.ServerPos.Motion.Y;
+                entity.ServerPos.Motion.Z = byEntity.ServerPos.Motion.Z;
+                entity.ServerPos.Yaw = byEntity.ServerPos.Yaw;
+
+                entity.Pos.SetFrom(entity.ServerPos);
+                entity.PositionBeforeFalling.Set(entity.ServerPos.X, entity.ServerPos.Y, entity.ServerPos.Z);
+
+                entity.Attributes.SetString("origin", "playerplaced");
+                
+                entity.WatchedAttributes.SetLong("guardedEntityId", byEntity.EntityId);
+                if (causingEntity is EntityPlayer eplr)
+                {
+                    entity.WatchedAttributes.SetString("guardedPlayerUid", eplr.PlayerUID);
+                }
+
+                byEntity.World.SpawnEntity(entity);
+            }
         }
 
         public override void OnHeldAttackStop(float secondsPassed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSelection, EntitySelection entitySel)

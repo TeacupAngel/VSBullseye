@@ -87,7 +87,7 @@
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
-		"name": "Launch Client (.NET)",
+		"name": "Launch Multiplayer Client (.NET)",
 		"type": "clr",
 		"request": "launch",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
