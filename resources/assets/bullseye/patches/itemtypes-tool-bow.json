@@ -3,59 +3,85 @@
 		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/bullseyeWeaponStatsByType", value: 
 		{
 			"*-crude": {
-				twitchMagnitude: 35,
-				twitchMax: 5,
-				driftMagnitude: 130,
-				driftMax: 150,
+				aimDrift: 130,
+				aimTwitch: 32,
+
+				projectileVelocity: 30,
+
 				accuracyOvertimeStart: 8,
+				accuracyMovePenalty: 1,
+
 				projectileSpread: 1,
 				zeroingAngle: 1.5,
+
 				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
-				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png"
+				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+
+				allowSprint: false,
+				moveSpeedPenalty: 0.4
 			},
 
 			"*-simple": {
-				twitchMagnitude: 35,
-				twitchMax: 5,
-				driftMagnitude: 130,
-				driftMax: 150,
+				aimDrift: 130,
+				aimTwitch: 32,
+
+				projectileVelocity: 30,
+
 				accuracyOvertimeStart: 8,
+				accuracyMovePenalty: 1,
+
 				projectileSpread: 0,
 				zeroingAngle: 1.5,
+
 				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
-				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png"
+				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+
+				allowSprint: false,
+				moveSpeedPenalty: 0.4
 			},
 
 			"*-long": {
+				aimDrift: 150,
+				aimTwitch: 45,
+
 				projectileVelocity: 39,
 				chargeTime: 1.25,
+
 				accuracyStartTime: 1.75,
-				twitchMagnitude: 45,
-				twitchMax: 6,
-				driftMagnitude: 150,
-				driftMax: 170,
 				accuracyOvertimeStart: 8,
+				accuracyMovePenalty: 1.3,
+
 				projectileSpread: 0,
 				zeroingAngle: 1,
+
 				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
 				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+
 				aimFullChargeLeeway: 0.6,
+				allowSprint: false,
+				moveSpeedPenalty: 0.7
 			},
 
-			"*-recurve": { 
+			"*-recurve": {
+				aimDrift: 180,
+				aimTwitch: 35,
+
 				projectileVelocity: 33,
-				chargeTime: 1,
-				accuracyStartTime: 1.5,
-				twitchMagnitude: 38,
-				twitchMax: 6,
-				driftMagnitude: 200,
-				driftMax: 200,
+				chargeTime: 0.85,
+
+				accuracyStartTime: 1.25,
 				accuracyOvertimeStart: 8,
+				accuracyMovePenalty: 0.6,
+
 				projectileSpread: 0,
 				zeroingAngle: 1.5,
+
 				aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
 				aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+
 				aimFullChargeLeeway: 0.5,
+				allowSprint: false,
+				moveSpeedPenalty: 0
 			},
 		},
 	},
@@ -65,9 +91,31 @@
 	{
 		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/damagePercentByType", value: 
 		{
-			"*-crude": -0.05,
-			"*-long": 0.4,
-			"*-recurve": 0.5
+			"*-crude": -0.1,
+			"*-long": 0.6,
+			"*-recurve": 0.35
 		}
+	},
+
+	{
+		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/arrowScaleByType", value: 
+		{
+			"*-long": 1.2,
+			"*-recurve": 1.5
+		}
+	},
+
+	{ file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-chargebow" },
+	{ file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/interactionCollectibleCode", value: "arrow-" },
+
+	{
+		file: "game:itemtypes/tool/bow", op: "add", path: "/behaviors", value: 
+		[{
+			name: "AnimatableWithAttach",
+			properties: {
+				animatedShape: "bullseye:item/tool/bow/{type}-animated",
+				onlyWhenAnimating: false
+			}
+		}]
 	},
 ]

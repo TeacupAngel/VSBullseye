@@ -1,0 +1,14 @@
+[
+	{ file: "game:itemtypes/resource/stone", op: "add", path: "/attributes", value: {} },
+	{ file: "game:itemtypes/resource/stone", op: "add", path: "/attributes/damage", value: 4 },
+	{ file: "game:itemtypes/resource/stone", op: "add", path: "/attributes/benefitsFromClass", value: false },
+
+	// Disabled, because CollectibleBehaviors prepend text to items, but we want to append. Done with a Harmony patch instead
+	/*{ file: "game:itemtypes/resource/stone", op: "add", path: "/behaviors", value: [] },
+	{ 
+		file: "game:itemtypes/resource/stone", 
+		op: "add", 
+		path: "/behaviors/-", 
+		value: { name: "bullseye.StoneDescription" }
+	},*/
+]

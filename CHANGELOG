@@ -1,3 +1,37 @@
+= 2.3.0 =
+
+New Features
+- Basic sling implementation
+- Smoother first person sling animation
+- Fully animated bows in first person view
+- Bows show the arrow you are shooting
+- Ability to choose ammo type for bows and slings (press F to select)
+- Support for shooting while mounted
+
+Rebalance
+- Spears have greater accuracy difference between
+- Spears have less vertical aim sway, to make distance judging when throwing easier
+- Spears no longer have any random spread
+- Slightly reduced aim sway for simple and crude bows
+- Increased longbow damage bonus to +60%
+- Increased longbow movement accuracy penalty to 130%
+- Reduced recurve bow damage bonus to +35%, but made it draw slightly faster (still has the best sustained damage of all bows)
+- Reduced recurve bow movement accuracy penalty to 50%
+- Reduced aim sway of recurve bow
+- Can no longer sprint when shooting a bow
+- Shooting bows slows you down (depending on the bow used)
+
+Other
+- Compatibility with Lichen improved
+- Now also compatible with Ore Crystals, Useful Stuff, Feverstone Horses, and ViesCraft Machines
+- "globalAccuracy" setting renamed to "aimDifficulty" (can still use "globalAccuracy" to set this)
+- Large code refactor
+- Fix: less intrusive patching of arrow and spear damage
+- Fix: now respects armour ranged penalties properly
+- Fix: texture leak related to crosshairs
+- Fix: removed old world migration from version 2.1.0 popping up for everyone
+
+
 = 2.2.4 =
 
 - Fixed crashes in patching

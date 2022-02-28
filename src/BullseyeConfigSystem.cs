@@ -14,8 +14,6 @@ using Vintagestory.GameContent;
 using ProtoBuf;
 using System.Reflection;
 
-using HarmonyLib;
-
 using Cairo;
 
 namespace Bullseye
@@ -37,8 +35,8 @@ namespace Bullseye
         }
 
         // Server
-        ICoreServerAPI sapi;
-        IServerNetworkChannel serverNetworkChannel;
+        private ICoreServerAPI sapi;
+        private IServerNetworkChannel serverNetworkChannel;
 
         public override void StartServerSide(ICoreServerAPI api)
         {
@@ -53,15 +51,27 @@ namespace Bullseye
             {
                 serverConfig = api.LoadModConfig<BullseyeServerConfig>("BullseyeConfig.json");
 
+				bool saveConfig = false;
+
                 if (serverConfig == null)
                 {
+					saveConfig = true;
+
                     serverConfig = new BullseyeServerConfig();
-                    api.StoreModConfig<BullseyeServerConfig>(serverConfig, "BullseyeConfig.json");
+					serverConfig.MakeLatest();
                 }
+
+				saveConfig |= serverConfig.ApplyMigrations();
+
+				if (saveConfig)
+				{
+					sapi.StoreModConfig<BullseyeServerConfig>(serverConfig, "BullseyeConfig.json");
+				}
             }
             catch
             {
                 serverConfig = new BullseyeServerConfig();
+				serverConfig.MakeLatest();
                 sapi.SendMessageToGroup(GlobalConstants.ServerInfoChatGroup, "Bullseye: failed to load server config file BullseyeConfig.json! Please check for typos or anything else that could make it fail", EnumChatType.Notification);
             }
         }
@@ -92,8 +102,8 @@ namespace Bullseye
         }
 
         // Client
-        ICoreClientAPI capi;
-        IClientNetworkChannel clientNetworkChannel;
+        private ICoreClientAPI capi;
+        private IClientNetworkChannel clientNetworkChannel;
 
         public override void StartClientSide(ICoreClientAPI api)
         {

@@ -3,18 +3,22 @@
 		file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
 		{
 			cooldownTime: 1.5, 
-			accuracyStartTime: 1.5,
 
-			twitchMax: 2.5,
+			aimDrift: 160,
+			aimTwitch: 35,
+			aimTwitchDuration: 450,
 
 			horizontalLimit: 0,
 			verticalLimit: 0,
         	verticalOffset: 0,
-			projectileSpread: 1,
+			projectileSpread: 0,
 			projectileVelocity: 19.5,
 
-			accuracyMovePenalty: 0.2,
+			verticalAccuracyMult: 0.7,
+			accuracyStart: 0.8,
+			accuracyStartTime: 1.5,
 			accuracyOvertime: 0,
+			accuracyMovePenalty: 0.3,
 
 			aimTexPartChargePath: "bullseye:gui/aimthrowpart.png",
 			aimTexFullChargePath: "bullseye:gui/aimthrowfull.png"
@@ -25,53 +29,45 @@
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-meteoriciron", value: 4.5 },
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attackpowerbytype/spear-steel", value: 4.5 },
 
-	{ 
-		file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype", value: 
-		{
-			"spear-chert": 20,
-			"spear-granite": 20,
-			"spear-andesite": 20,
-			"spear-basalt": 20,
-			"spear-peridotite": 20,
-			"spear-flint": 40,
-			"spear-obsidian": 56,
-			"spear-scrap": 100,
-			"spear-copper": 175,
-			"spear-bismuthbronze": 360,
-			"spear-tinbronze": 310,
-			"spear-blackbronze": 375,
-			"spear-ornate-gold": 400,
-			"spear-ornate-silver": 400,
-			"spear-iron": 550,
-			"spear-meteoriciron": 700,
-			"spear-steel": 1350,
-			"spear-hacking": 310,
-		},
-	},
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-chert", value: 20 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-granite", value: 20 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-andesite", value: 20 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-basalt", value: 20 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-peridotite", value: 20 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-flint", value: 40 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-obsidian", value: 56 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-scrap", value: 100 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-copper", value: 175 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-bismuthbronze", value: 360 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-tinbronze", value: 310 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-blackbronze", value: 375 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-ornate-gold", value: 400 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-ornate-silver", value: 400 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/durabilitybytype/spear-hacking", value: 310 },
 
-	{ 
-		file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType", value: 
-		{
-			"*-chert": 5,
-			"*-granite": 5,
-			"*-andesite": 5,
-			"*-basalt": 5,
-			"*-peridotite": 5,
-			"*-flint": 5.5,
-			"*-obsidian": 6.25,
-			"*-scrap": 7.5,
-			"*-copper": 7.5,
-			"*-bismuthbronze": 8,
-			"*-tinbronze": 8.5,
-			"*-blackbronze": 8.75,
-			"*-ornate-gold": 9,
-			"*-ornate-silver": 9,
-			"*-iron": 9,
-			"*-meteoriciron": 9.25,
-			"*-steel": 9.25,
-			"*-hacking": 8.25
-		},
-	},
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-iron", value: 550 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-meteoriciron", value: 700 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/durabilitybytype/spear-steel", value: 1350 },
+
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-chert", value: 5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-granite", value: 5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-andesite", value: 5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-basalt", value: 5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-peridotite", value: 5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-flint", value: 5.5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-obsidian", value: 6.25 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-scrap", value: 7.5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-copper", value: 7.5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-bismuthbronze", value: 8 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-tinbronze", value: 8.5 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-blackbronze", value: 8.75 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-ornate-gold", value: 9 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-ornate-silver", value: 9 },
+	{ file: "game:itemtypes/tool/spear", op: "replace", path: "/attributes/damageByType/*-hacking", value: 8.25 },
+
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-iron", value: 9 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-meteoriciron", value: 9.25 },
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/damageByType/*-steel", value: 9.25 },
 
 	{ 
 		file: "game:itemtypes/tool/spear", op: "add", path: "/tooltierbytype", value: 
@@ -96,6 +92,8 @@
 			"*-hacking": 4
 		},
 	},
+
+	{ file: "game:itemtypes/tool/spear", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-throw" },
 
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "iron" },
 	{ file: "game:itemtypes/tool/spear", op: "add", path: "/variantgroups/0/states/-", value: "meteoriciron" },

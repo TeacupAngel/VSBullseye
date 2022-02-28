@@ -1,0 +1,38 @@
+[
+	{ 
+		file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		{
+			cooldownTime: 1.5, 
+
+			aimDrift: 1,
+			aimTwitch: 10,
+
+			horizontalLimit: 0.15,
+			verticalLimit: 0.05,
+        	verticalOffset: 0,
+
+			projectileVelocity: 27.5,
+
+			chargeTime: 0.9,
+			accuracyStartTime: 1.5,
+
+			accuracyOvertimeStart: 8,
+			accuracyOvertimeTime: 6,
+			accuracyMovePenalty: 1.5,
+
+			projectileSpread: 0,
+			zeroingAngle: 1.5,
+
+			aimTexPartChargePath: "bullseye:gui/aimthrowpart.png",
+			aimTexFullChargePath: "bullseye:gui/aimthrowfull.png",
+
+			allowSprint: false,
+			moveSpeedPenalty: 0.5
+		}
+	},
+
+	{ file: "game:itemtypes/tool/sling", op: "replace", path: "/attributes/damage", value: 0 },
+
+	{ file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-chargesling" },
+	{ file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/interactionCollectibleCode", value: "stone-" },
+]

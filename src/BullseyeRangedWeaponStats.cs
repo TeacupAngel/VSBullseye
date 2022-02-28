@@ -19,6 +19,7 @@ namespace Bullseye
     public enum BullseyeRangedWeaponType
     {
         Bow,
+		Sling,
         Throw
     }
 
@@ -34,18 +35,22 @@ namespace Bullseye
         public float projectileSpread = 0f; // In degrees
         public float zeroingAngle = 0f;
 
-        // Harmony client patch stats
+		public bool allowSprint = true;
+		public float moveSpeedPenalty = 0f;
+
+        // Client aiming modsystem stats
         public float horizontalLimit = 0.125f;
         public float verticalLimit = 0.35f;
         public float verticalOffset = -0.15f;
 
-        public float driftFrequency = 0.001f;
-        public float driftMagnitude = 150f;
-        public float driftMax = 150f;
+		public float verticalAccuracyMult = 1f;
+		public float horizontalAccuracyMult = 1f;
 
-        public long twitchDuration = 300;
-        public float twitchMagnitude = 40f;
-        public float twitchMax = 5f;
+        public float aimDriftFrequency = 0.001f;
+        public float aimDrift = 150f;
+
+        public long aimTwitchDuration = 300;
+        public float aimTwitch = 40f;
 
         public string aimTexPartChargePath = null;
         public string aimTexFullChargePath = null;
@@ -55,6 +60,7 @@ namespace Bullseye
 
         // AimAccuracy EntityBehaviour stats
         public float accuracyStartTime = 1f;
+		public float accuracyStart = 2.5f;
 
         public float accuracyOvertimeStart = 6f;
         public float accuracyOvertimeTime = 12f;

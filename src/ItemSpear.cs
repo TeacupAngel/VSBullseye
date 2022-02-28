@@ -4,10 +4,10 @@ using Vintagestory.API.Server;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
-using Vintagestory.GameContent;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
+using Vintagestory.GameContent;
 
 namespace Bullseye
 {
@@ -17,7 +17,7 @@ namespace Bullseye
         {
             base.OnLoaded(api);
 
-            weaponStats.weaponType = BullseyeRangedWeaponType.Throw;
+            WeaponStats.weaponType = BullseyeRangedWeaponType.Throw;
         }
 
         public override void OnAimingStart(ItemSlot slot, EntityAgent byEntity)
@@ -45,32 +45,32 @@ namespace Bullseye
             byEntity.StopAnimation("aim");
         }
 
-        public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot, bool isStartCheck = false)
         {
             return weaponSlot;
         }
 
-        public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
         {
             return weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
         }
 
-        public override float GetProjectileWeight(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override float GetProjectileWeight(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
         {
             return 0.3f;
         }
 
-        public override int GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override int GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
         {
             return 3;
         }
 
-        public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot)
+        public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
         {
             return byEntity.World.GetEntityType(new AssetLocation(Attributes["spearEntityCode"].AsString()));
         }
 
-        public override void OnShot(ItemSlot slot, EntityAgent byEntity) 
+        public override void OnShot(ItemSlot slot, Entity projectileEntity, EntityAgent byEntity) 
         {
             if (byEntity is EntityPlayer) RefillSlotIfEmpty(slot, byEntity, (itemstack) => itemstack.Collectible is ItemSpear);
 
@@ -87,14 +87,11 @@ namespace Bullseye
             byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.5f);
         }
 
-        public override void OnShotCancelled(ItemSlot slot, EntityAgent byEntity) 
-        {
-            byEntity.StopAnimation("aim");
-        }
-
         // Spear melee specific
         public override void OnHeldAttackStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandHandling handling)
         {
+			base.OnHeldAttackStart(slot, byEntity, blockSel, entitySel, ref handling);
+
             byEntity.Attributes.SetInt("didattack", 0);
 
             byEntity.World.RegisterCallback((dt) =>
@@ -113,11 +110,13 @@ namespace Bullseye
 
         public override bool OnHeldAttackCancel(float secondsPassed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSelection, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
-            return false;
+            return base.OnHeldAttackCancel(secondsPassed, slot, byEntity, blockSelection, entitySel, cancelReason);
         }
 
         public override bool OnHeldAttackStep(float secondsPassed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSelection, EntitySelection entitySel)
         {
+			base.OnHeldAttackStep(secondsPassed, slot, byEntity, blockSelection, entitySel);
+
             float backwards = -Math.Min(0.8f, 3 * secondsPassed);
             float stab = Math.Min(1.2f, 20 * Math.Max(0, secondsPassed - 0.25f));
 
@@ -175,7 +174,6 @@ namespace Bullseye
             return secondsPassed < 1.2f;
         }
 
-
         private void SpawnEntityInPlaceOf(Entity byEntity, string code, EntityAgent causingEntity)
         {
             AssetLocation location = AssetLocation.Create(code, byEntity.Code.Domain);
@@ -219,7 +217,7 @@ namespace Bullseye
 
         public override void OnHeldAttackStop(float secondsPassed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSelection, EntitySelection entitySel)
         {
-
+			base.OnHeldAttackStop(secondsPassed, slot, byEntity, blockSelection, entitySel);
         }
 
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
@@ -235,17 +233,6 @@ namespace Bullseye
             }
 
             dsc.AppendLine(damage + Lang.Get("piercing-damage-thrown"));
-        }
-
-        public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
-        {
-            return new WorldInteraction[] {
-                new WorldInteraction()
-                {
-                    ActionLangCode = "heldhelp-throw",
-                    MouseButton = EnumMouseButton.Right,
-                }
-            }.Append(base.GetHeldInteractionHelp(inSlot));
         }
     }
 }

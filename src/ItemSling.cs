@@ -9,19 +9,17 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 using Vintagestory.GameContent;
 
-using AnimatableCollectibleSimple;
-
 namespace Bullseye
 {
-    public class ItemBow : ItemRangedWeapon
+    public class ItemSling : ItemRangedWeapon
     {
-		public override string AmmoCategory => "arrow";
+		public override string AmmoCategory => "slingbullet";
 
         public override void OnLoaded(ICoreAPI api)
         {
             base.OnLoaded(api);
 
-            WeaponStats.weaponType = BullseyeRangedWeaponType.Bow;
+            WeaponStats.weaponType = BullseyeRangedWeaponType.Sling;
         }
 
         public override void OnAimingStart(ItemSlot slot, EntityAgent byEntity)
@@ -29,20 +27,11 @@ namespace Bullseye
             if (byEntity.World is IClientWorldAccessor)
             {
                 slot.Itemstack.TempAttributes.SetInt("renderVariant", 1);
-
-				GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.StartAnimation(new AnimationMetaData()
-				{
-					Animation = "Draw",
-					Code = "draw",
-					AnimationSpeed = 0.5f / GetChargeNeeded(api, byEntity),
-					EaseOutSpeed = 6,
-					EaseInSpeed = 15
-				});
             }
 
             slot.Itemstack.Attributes.SetInt("renderVariant", 1);
 
-            byEntity.AnimManager.StartAnimation("bowaim");
+            byEntity.AnimManager.StartAnimation("slingaimbalearic");
 
             IPlayer byPlayer = null;
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
@@ -51,20 +40,16 @@ namespace Bullseye
 
         public override void OnAimingStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity)
         {
-            //if (byEntity.World is IClientWorldAccessor)
-            {
-                // Vanilla is broken, only shows 2 out of 3 charged states
-                int renderVariant = GameMath.Clamp((int)Math.Ceiling(secondsUsed * 3f / GetChargeNeeded(api, byEntity)), 0, 4);
-                int prevRenderVariant = slot.Itemstack.Attributes.GetInt("renderVariant", 0);
+			int renderVariant = GameMath.Clamp((int)Math.Ceiling(secondsUsed * 4), 0, 3);
+			int prevRenderVariant = slot.Itemstack.Attributes.GetInt("renderVariant", 0);
 
-                slot.Itemstack.TempAttributes.SetInt("renderVariant", renderVariant);
-                slot.Itemstack.Attributes.SetInt("renderVariant", renderVariant);
+			slot.Itemstack.TempAttributes.SetInt("renderVariant", renderVariant);
+			slot.Itemstack.Attributes.SetInt("renderVariant", renderVariant);
 
-                if (prevRenderVariant != renderVariant)
-                {
-                    (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
-                }
-            }
+			if (prevRenderVariant != renderVariant)
+			{
+				(byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
+			}
         }
 
         public override void OnAimingCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, EnumItemUseCancelReason cancelReason) 
@@ -77,16 +62,21 @@ namespace Bullseye
             slot.Itemstack.Attributes.SetInt("renderVariant", 0);
             (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
 
-            if (cancelReason != EnumItemUseCancelReason.ReleasedMouse || secondsUsed < GetChargeNeeded(api, byEntity))
+            if (cancelReason != EnumItemUseCancelReason.ReleasedMouse)
             {
-                byEntity.AnimManager.StopAnimation("bowaim");
-
-				if (byEntity.Api.Side == EnumAppSide.Client)
-            	{
-					GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.StopAnimation("draw");
-				}
+                byEntity.AnimManager.StopAnimation("slingaimbalearic");
             }
         }
+
+		protected override void SetAimTransform(ICoreClientAPI capi, ModelTransform transform)
+		{
+			Vec2f currentAim = CoreClientSystem.GetCurrentAim();
+
+			float secondsUsed = (api.World.ElapsedMilliseconds - RangedWeaponSystem.GetEntityChargeStart(capi.World.Player.Entity.EntityId)) / 1000f;
+
+			transform.Rotation.X = secondsUsed * 360f / 0.75f;
+			transform.Rotation.Y = DefaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
+		}
 
         public override List<ItemStack> GetAvailableAmmoTypes(ItemSlot slot, IClientPlayer forPlayer)
         {
@@ -96,13 +86,13 @@ namespace Bullseye
             {
                 if (invslot is ItemSlotCreative) return true;
 
-                if (invslot.Itemstack != null && invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-"))
+                if (invslot.Itemstack != null && invslot.Itemstack.Collectible is ItemStone)
                 {
-					ItemStack ammoStack = ammoTypes.Find(itemstack => itemstack.Equals(api.World, invslot.Itemstack, GlobalConstants.IgnoredStackAttributes));
+					ItemStack ammoStack = ammoTypes.Find(itemstack => itemstack.Id == invslot.Itemstack.Id);
 
 					if (ammoStack == null)
 					{
-						ammoStack = invslot.Itemstack.GetEmptyClone();
+						ammoStack = new ItemStack(api.World.GetItem(invslot.Itemstack.Id));
 						ammoStack.StackSize = invslot.StackSize;
 						ammoTypes.Add(ammoStack);
 					}
@@ -132,66 +122,44 @@ namespace Bullseye
 
         public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot, bool isStartCheck = false)
         {
-            ItemSlot arrowSlot = null;
+            ItemSlot ammoSlot = null;
 
-			ItemStack ammoType = isStartCheck ? GetEntitySelectedAmmoType(byEntity) : weaponSlot.Itemstack?.TempAttributes?.GetItemstack("loadedAmmo", null);
+			ItemStack ammoType = GetEntitySelectedAmmoType(byEntity);
 
             byEntity.WalkInventory((invslot) =>
             {
                 if (invslot is ItemSlotCreative) return true;
 
-                if (invslot.Itemstack != null && invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-"))
+                if (invslot.Itemstack != null && invslot.Itemstack.Collectible is ItemStone)
                 {
 					// If we found the selected ammo type or no ammo type is specifically selected, return the first one we find
 					if (ammoType == null || invslot.Itemstack.Equals(api.World, ammoType, GlobalConstants.IgnoredStackAttributes))
 					{
-						arrowSlot = invslot;
+						ammoSlot = invslot;
                     	return false;
 					}
 
-					// Otherwise just get the first ammo stack we find, if we only just started drawing the bow
-					if (arrowSlot == null && isStartCheck)
+					// Otherwise just get the first ammo stack we find
+					if (ammoSlot == null)
 					{
-						arrowSlot = invslot;
+						ammoSlot = invslot;
 					}
                 }
 
                 return true;
             });
 
-			if (isStartCheck && arrowSlot != null)
-			{
-				weaponSlot.Itemstack?.TempAttributes?.SetItemstack("loadedAmmo", arrowSlot.Itemstack);
-
-				if (api is ICoreClientAPI capi)
-				{
-					ItemRenderInfo renderInfo = capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground);
-
-					float arrowScale = weaponSlot.Itemstack?.Collectible?.Attributes?["arrowScale"].AsFloat(1) ?? 1f;
-
-					renderInfo.Transform = renderInfo.Transform.Clone();
-					renderInfo.Transform.ScaleXYZ.X = arrowScale;
-					renderInfo.Transform.ScaleXYZ.Y = arrowScale;
-					renderInfo.Transform.ScaleXYZ.Z = arrowScale;
-
-					/*GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.SetAttachedRenderInfo(capi.TesselatorManager.GetDefaultItemMeshRef(arrowSlot.Itemstack.Item),
-						capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground));*/
-
-					GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.SetAttachedRenderInfo(renderInfo);
-				}
-			}
-
-            return arrowSlot;
+            return ammoSlot;
         }
 
         public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
         {
             float damage = 0f;
 
-            // Arrow damage
+            // Ammo damage
             damage += ammoSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
 
-            // Bow damage
+            // Sling damage
             damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
             damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
 
@@ -218,7 +186,7 @@ namespace Bullseye
 
         public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
         {
-            return byEntity.World.GetEntityType(new AssetLocation("arrow-" + ammoSlot.Itemstack.Collectible.Variant["material"]));
+            return byEntity.World.GetEntityType(new AssetLocation("thrownstone-" + ammoSlot.Itemstack.Collectible.Variant["rock"]));
         }
 
         public override int GetWeaponDamageOnShot(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
@@ -228,26 +196,26 @@ namespace Bullseye
 
         public override void OnShot(ItemSlot slot, Entity projectileEntity, EntityAgent byEntity) 
         {
-            if (byEntity.World is IClientWorldAccessor)
+			byEntity.AnimManager.StopAnimation("slingaimbalearic");
+
+            byEntity.World.RegisterCallback((dt) => slot.Itemstack?.Attributes.SetInt("renderVariant", 2), 250);
+            byEntity.World.RegisterCallback((dt) =>
             {
-                slot.Itemstack.TempAttributes.RemoveAttribute("renderVariant");
+                if (byEntity.World is IClientWorldAccessor)
+                {
+                    slot.Itemstack?.TempAttributes.RemoveAttribute("renderVariant");
+                }
+                slot.Itemstack?.Attributes.SetInt("renderVariant", 0);
+            }, 450);
 
-				GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.StopAnimation("draw", true);
-				GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.SetAttachedRenderInfo(null);
-            }
+			IPlayer byPlayer = (byEntity as EntityPlayer)?.Player;
 
-            slot.Itemstack.Attributes.SetInt("renderVariant", 0);
-            (byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
+			byPlayer?.InventoryManager.BroadcastHotbarSlot();
+            byEntity.World.PlaySoundAt(new AssetLocation("sounds/tool/sling1"), byEntity, byPlayer, false, 8, 0.25f);
 
-            IPlayer byPlayer = null;
-            if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
-            byEntity.World.PlaySoundAt(new AssetLocation("sounds/bow-release"), byEntity, byPlayer, false, 8);
-            byEntity.AnimManager.StartAnimation("bowhit");
+			byEntity.AnimManager.StartAnimation("slingthrowbalearic");
 
-            api.Event.RegisterCallback((ms) => 
-			{
-				byEntity.AnimManager.StopAnimation("bowaim");
-			}, 500);
+            byEntity.World.RegisterCallback((dt) => byEntity.AnimManager.StopAnimation("slingthrowbalearic"), 400);
         }
 
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)

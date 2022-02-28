@@ -22,28 +22,40 @@ namespace Bullseye
         private BullseyeRangedWeaponStats weaponStats;
 
         private BullseyeRangedWeaponSystem rangedWeaponSystem;
-        private BullseyeCoreClientSystem coreClientSystem;
+        private BullseyeClientAimingSystem clientAimingSystem;
+
+		private EntityAgent agent;
 
         public EntityBehaviorAimingAccuracy(Entity entity) : base(entity)
         {
-            EntityAgent agent = entity as EntityAgent;
-
-            modifiers.Add(new BaseAimingAccuracy(agent));
-            modifiers.Add(new MovingAimingAccuracy(agent));
-            modifiers.Add(new SprintAimingAccuracy(agent));
-            modifiers.Add(new OnHurtAimingAccuracy(agent));
-
-            entity.Attributes.RegisterModifiedListener("bullseyeAiming", OnAimingChanged);
+            agent = entity as EntityAgent;
 
             rangedWeaponSystem = entity.Api.ModLoader.GetModSystem<BullseyeRangedWeaponSystem>();
 
             if (entity.Api.Side == EnumAppSide.Client)
             {
-                coreClientSystem = entity.Api.ModLoader.GetModSystem<BullseyeCoreClientSystem>();
+                clientAimingSystem = entity.Api.ModLoader.GetModSystem<BullseyeClientAimingSystem>();
+				(entity.Api as ICoreClientAPI).Input.InWorldAction += Event_InWorldAction;
             }
 
             Rand = new Random((int)(entity.EntityId + entity.World.ElapsedMilliseconds));
+
+			modifiers.Add(new BaseAimingAccuracy(agent, clientAimingSystem));
+            modifiers.Add(new MovingAimingAccuracy(agent, clientAimingSystem));
+            modifiers.Add(new MountedAimingAccuracy(agent, clientAimingSystem));
+            modifiers.Add(new OnHurtAimingAccuracy(agent, clientAimingSystem));
+
+			entity.Attributes.RegisterModifiedListener("bullseyeAiming", OnAimingChanged);
+			entity.Stats.Set("walkspeed", "bullseyeaimmod", 0f);
         }
+
+		public void Event_InWorldAction(EnumEntityAction action, bool on, ref EnumHandling handled)
+		{
+			if (IsAiming && !weaponStats.allowSprint && action == EnumEntityAction.Sprint && on)
+			{
+				handled = EnumHandling.PreventDefault;
+			}
+		}
 
         public void SetRangedWeaponStats(BullseyeRangedWeaponStats weaponStats)
         {
@@ -56,6 +68,11 @@ namespace Bullseye
             IsAiming = entity.Attributes.GetInt("bullseyeAiming") > 0;
 
             if (beforeAiming == IsAiming) return;
+
+			if (weaponStats.moveSpeedPenalty != 0)
+			{
+				entity.Stats.Set("walkspeed", "bullseyeaimmod", IsAiming ? -(weaponStats.moveSpeedPenalty * entity.Stats.GetBlended("walkspeed")) : 0f);
+			}
 
             for (int i = 0; i < modifiers.Count; i++)
             {
@@ -78,20 +95,18 @@ namespace Bullseye
             }
             else if (entity.World is IClientWorldAccessor cWorld && cWorld.Player.Entity.EntityId == entity.EntityId)
             {
-                coreClientSystem.aiming = IsAiming;
+                clientAimingSystem.Aiming = IsAiming;
 
                 if (IsAiming)
                 {
-                    coreClientSystem.aimOffsetX = 0;
-                    coreClientSystem.aimOffsetY = 0;
-                    ClientMainPatch.twitchX = 0;
-                    ClientMainPatch.twitchY = 0;
-
                     if (rangedWeaponSystem.GetEntityCooldownTime(entity.EntityId) > 15f)
                     {
-                        coreClientSystem.aimX = 0f;
-                        coreClientSystem.aimY = 0f;
+                        clientAimingSystem.ResetAim();
                     }
+					else
+					{
+						clientAimingSystem.ResetAimOffset();
+					}
                 }
             }
         }
@@ -103,9 +118,17 @@ namespace Bullseye
             if (!entity.Alive)
             {
                 entity.Attributes.SetInt("bullseyeAiming", 0);
+				return;
             }
 
-            for (int i = 0; i < modifiers.Count; i++)
+			if (!weaponStats.allowSprint)
+			{
+				agent.CurrentControls &= ~EnumEntityActivity.SprintMode;
+				agent.Controls.Sprint = false;
+				agent.ServerControls.Sprint = false;
+			}
+
+			for (int i = 0; i < modifiers.Count; i++)
             {
                 modifiers[i].Update(deltaTime, weaponStats);
             }
@@ -135,14 +158,17 @@ namespace Bullseye
         internal EntityAgent entity;
         internal long aimStartMs;
 
+		protected BullseyeClientAimingSystem clientAimingSystem;
+
         public float SecondsSinceAimStart
         {
             get { return (entity.World.ElapsedMilliseconds - aimStartMs) / 1000f; }
         }
 
-        public AccuracyModifier(EntityAgent entity)
+        public AccuracyModifier(EntityAgent entity, BullseyeClientAimingSystem clientAimingSystem)
         {
             this.entity = entity;
+			this.clientAimingSystem = clientAimingSystem;
         }
 
         public virtual void BeginAim()
@@ -166,81 +192,103 @@ namespace Bullseye
 
     public class BaseAimingAccuracy : AccuracyModifier
     {
-        public BaseAimingAccuracy(EntityAgent entity) : base(entity)
+        public BaseAimingAccuracy(EntityAgent entity, BullseyeClientAimingSystem clientAimingSystem) : base(entity, clientAimingSystem)
         {
         }
 
         public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
-            //float rangedAcc = entity.Stats.GetBlended("rangedWeaponsAcc");
             float modspeed = entity.Stats.GetBlended("rangedWeaponsSpeed");
 
-            //float bullseyeAccuracyMod = Math.Max(1f - (rangedAcc - 1f), 0.1f);
-            float bullseyeAccuracyMod = 1f;
-
-            float bullseyeAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * 2.5f; // Loss of accuracy from draw
+            float bullseyeAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * weaponStats.accuracyStart; // Loss of accuracy from draw
             bullseyeAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
 
-            ClientMainPatch.driftMultiplier = bullseyeAccuracyMod + bullseyeAccuracy;
-            ClientMainPatch.twitchMultiplier = bullseyeAccuracyMod + (bullseyeAccuracy * 3f);
+			if (clientAimingSystem != null)
+			{
+				clientAimingSystem.DriftMultiplier = 1 + bullseyeAccuracy;
+            	clientAimingSystem.TwitchMultiplier = 1 + (bullseyeAccuracy * 3f);
+			}
         }
     }
 
-    /// <summary>
-    /// Moving around decreases accuracy by 20% in 0.75 secconds
-    /// </summary>
     public class MovingAimingAccuracy : AccuracyModifier
     {
-        float accuracyPenalty;
+        private float walkAccuracyPenalty;
+		private float sprintAccuracyPenalty;
 
-        public MovingAimingAccuracy(EntityAgent entity) : base(entity)
+		private float walkMaxPenaltyMod = 1f;
+		private float sprintMaxPenaltyMod = 1.5f;
+
+		private float penaltyRiseRate = 6.5f;
+		private float penaltyDropRate = 2.5f;
+
+		private float driftMod = 0.8f;
+		private float twitchMod = 0.6f;
+
+        public MovingAimingAccuracy(EntityAgent entity, BullseyeClientAimingSystem clientAimingSystem) : base(entity, clientAimingSystem)
         {
+        }
+
+		public override void BeginAim()
+        {
+			base.BeginAim();
+
+            walkAccuracyPenalty = 0f;
+			sprintAccuracyPenalty = 0f;
         }
 
         public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
-            bool sprint = entity.Controls.Sprint;
+			walkAccuracyPenalty = GameMath.Clamp(entity.Controls.TriesToMove ? walkAccuracyPenalty + dt * penaltyRiseRate : walkAccuracyPenalty - dt * penaltyDropRate, 0, walkMaxPenaltyMod);
+			sprintAccuracyPenalty = GameMath.Clamp(entity.Controls.TriesToMove && entity.Controls.Sprint ? sprintAccuracyPenalty + dt * penaltyRiseRate : sprintAccuracyPenalty - dt * penaltyDropRate, 0, sprintMaxPenaltyMod);
 
-            if (entity.Controls.TriesToMove)
-            {
-                accuracyPenalty = GameMath.Clamp(accuracyPenalty + dt / 0.75f, 0, 0.2f);
-            } else
-            {
-                accuracyPenalty = GameMath.Clamp(accuracyPenalty - dt / 2f, 0, 0.2f);
-            }
-
-            ClientMainPatch.driftMultiplier += accuracyPenalty * 5f * weaponStats.accuracyMovePenalty;
-            ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f * weaponStats.accuracyMovePenalty;
+			if (clientAimingSystem != null)
+			{
+				clientAimingSystem.DriftMultiplier += ((walkAccuracyPenalty + sprintAccuracyPenalty) * driftMod * weaponStats.accuracyMovePenalty);
+           		clientAimingSystem.TwitchMultiplier += ((walkAccuracyPenalty + sprintAccuracyPenalty) * twitchMod * weaponStats.accuracyMovePenalty);
+			}
         }
     }
 
-
-    /// <summary>
-    /// Sprinting around decreases accuracy by 30% in 0.75 secconds
-    /// </summary>
-    public class SprintAimingAccuracy : AccuracyModifier
+    public class MountedAimingAccuracy : AccuracyModifier
     {
-        float accuracyPenalty;
+        private float walkAccuracyPenalty;
+		private float sprintAccuracyPenalty;
 
-        public SprintAimingAccuracy(EntityAgent entity) : base(entity)
+		private float walkMaxPenaltyMod = 0.8f;
+		private float sprintMaxPenaltyMod = 1.5f;
+
+		private float penaltyRiseRate = 6.5f;
+		private float penaltyDropRate = 2f;
+
+		private float driftMod = 0.8f;
+		private float twitchMod = 0.6f; 
+
+        public MountedAimingAccuracy(EntityAgent entity, BullseyeClientAimingSystem clientAimingSystem) : base(entity, clientAimingSystem)
         {
+        }
+
+		public override void BeginAim()
+        {
+			base.BeginAim();
+
+            walkAccuracyPenalty = 0f;
+			sprintAccuracyPenalty = 0f;
         }
 
         public override void Update(float dt, BullseyeRangedWeaponStats weaponStats)
         {
-            bool sprint = entity.Controls.Sprint;
+			bool mountTriesToMove = entity.MountedOn?.Controls != null && entity.MountedOn.Controls.TriesToMove;
+			bool mountTriesToSprint = mountTriesToMove && entity.MountedOn.Controls.Sprint;
 
-            if (entity.Controls.TriesToMove && entity.Controls.Sprint)
-            {
-                accuracyPenalty = GameMath.Clamp(accuracyPenalty + dt / 0.75f, 0, 0.3f);
-            }
-            else
-            {
-                accuracyPenalty = GameMath.Clamp(accuracyPenalty - dt / 2f, 0, 0.3f);
-            }
+			walkAccuracyPenalty = GameMath.Clamp(mountTriesToMove ? walkAccuracyPenalty + dt * penaltyRiseRate : walkAccuracyPenalty - dt * penaltyDropRate, 0, walkMaxPenaltyMod);
+			sprintAccuracyPenalty = GameMath.Clamp(mountTriesToSprint ? sprintAccuracyPenalty + dt * penaltyRiseRate : sprintAccuracyPenalty - dt * penaltyDropRate, 0, sprintMaxPenaltyMod);
 
-            ClientMainPatch.driftMultiplier += accuracyPenalty * 5f * weaponStats.accuracyMovePenalty;
-            ClientMainPatch.twitchMultiplier += accuracyPenalty * 3f * weaponStats.accuracyMovePenalty;
+            if (clientAimingSystem != null)
+			{
+				clientAimingSystem.DriftMultiplier += (walkAccuracyPenalty + sprintAccuracyPenalty) * driftMod * weaponStats.accuracyMovePenalty;
+           		clientAimingSystem.TwitchMultiplier += (walkAccuracyPenalty + sprintAccuracyPenalty) * twitchMod * weaponStats.accuracyMovePenalty;
+			}
         }
     }
 
@@ -248,7 +296,7 @@ namespace Bullseye
     {
         float accuracyPenalty;
 
-        public OnHurtAimingAccuracy(EntityAgent entity) : base(entity)
+        public OnHurtAimingAccuracy(EntityAgent entity, BullseyeClientAimingSystem clientAimingSystem) : base(entity, clientAimingSystem)
         {
         }
 

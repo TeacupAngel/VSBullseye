@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyTitle>Bullseye</AssemblyTitle>
         <Authors>Rahjital</Authors>
-        <Version>2.2.4</Version>
+        <Version>2.3.0</Version>
         <Description>A vanilla-friendly rebalance and overhaul of ranged weapons.</Description>
         <RepositoryUrl>https://github.com/Rahjital/VSBullseye</RepositoryUrl>
         <TargetFramework>net461</TargetFramework>
@@ -10,7 +10,7 @@
     </PropertyGroup>
     <PropertyGroup>
         <ModId>bullseye</ModId>
-        <VSVersion>1.16.0-rc.7</VSVersion>
+        <VSVersion>1.16.4</VSVersion>
         <ModWebsite>https://mods.vintagestory.at/bullseye</ModWebsite>
     </PropertyGroup>
     <ItemGroup>
@@ -51,6 +51,10 @@
         </Reference>
         <Reference Include="0Harmony">
             <HintPath>$(VINTAGE_STORY)/Lib/0Harmony.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+		<Reference Include="Newtonsoft.Json">
+            <HintPath>$(VINTAGE_STORY)/Lib/Newtonsoft.Json.dll</HintPath>
             <Private>false</Private>
         </Reference>
     </ItemGroup>

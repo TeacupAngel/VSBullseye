@@ -14,8 +14,13 @@
 	"game:item-arrowhead-obsidian": "Obsidian arrow head",
 
 	"game:itemdesc-bow-crude": "Does not always shoot straight, but still serviceable.",
-	"game:itemdesc-bow-long": "Far reaching, though slow to draw.",
-	"game:itemdesc-bow-recurve": "A powerful, hard to handle bow.",
+	"game:itemdesc-bow-long": "Slow, but far-reaching and powerful.",
+	"game:itemdesc-bow-recurve": "A strong bow for those who prefer.",
 
 	"bullseye:weapon-bonus-damage-ranged": "{0}% piercing damage",
+
+	"bullseye:weapon-ranged-total-damage": "{0:0.##} damage with your {1} and your class",
+
+	"bullseye:damage-with-sling": "{0} damage when shot from sling",
+	"bullseye:lifetime-projectile-damage": "Average {0} damage per arrow before breaking",
 }

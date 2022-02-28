@@ -1,9 +1,0 @@
-[ 
-	{ 
-		file: "game:config/remaps", op: "add", path: "/bullseye:v2.1.0", value: 
-		[
-			"/bir remapq bullseye:toolmold-raw-spear archery:toolmold-raw-spear force",
-			"/bir remapq bullseye:toolmold-burned-spear archery:toolmold-burned-spear force",
-		]
-	},
-]

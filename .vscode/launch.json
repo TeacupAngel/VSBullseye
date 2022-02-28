@@ -98,5 +98,17 @@
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
+	},
+	{
+		"name": "Launch Multiplayer Client #2 (.NET)",
+		"type": "clr",
+		"request": "launch",
+		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+		"args": [
+			"--dataPath", "${env:VINTAGE_STORY_DATA}/client2",
+			"--addModPath", "${workspaceFolder}/staged"
+		],
+		"console": "internalConsole",
+		"internalConsoleOptions": "openOnSessionStart"
 	}]
 }
