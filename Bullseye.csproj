@@ -82,27 +82,14 @@
         </PropertyGroup>
 
         <WriteLinesToFile File="$(MSBuildProjectDirectory)/resources/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
-        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)"/>
-        <Copy SourceFiles="@(ModAssets)" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/%(RecursiveDir)" SkipUnchangedFiles="true"/>
-        
-        <!-- Remove stale staged files (modified from https://stackoverflow.com/questions/46161651/safely-remove-stale-files-with-msbuild)  -->
-        <PropertyGroup>
-            <DSChar>$([System.IO.Path]::DirectorySeparatorChar)</DSChar>
-        </PropertyGroup>
-        <ItemGroup>
-            <SourceAssets Include="@(ModAssets->'$(MSBuildProjectDirectory)$(DSChar)staged$(DSChar)$(TargetName)$(DSChar)assets$(DSChar)%(RecursiveDir)%(Filename)%(Extension)')" />
-            <StagedAssets Include="$(MSBuildProjectDirectory)/staged/$(TargetName)/assets/**/*.*"/>
-            <StaleAssets Include="@(StagedAssets)" Exclude="@(SourceAssets)" />
-        </ItemGroup>
-        <Message Text="Deleting Stale Files: @(StaleAssets, '%0A')" Condition="'@(StaleAssets->Count())' > 0" importance="high"/>
-        <Delete Files="@(StaleAssets)"/>   
+        <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/resources" SkipUnchangedFiles="true"/>
 
-        <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/staged/$(TargetName)" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/resources/" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/resources" SkipUnchangedFiles="true"/>
     </Target>
     <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Debug'"></Target>
     <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(Configuration)' == 'Release'">
         <MakeDir Directories="$(MSBuildProjectDirectory)/release/$(Version)" />
-        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/staged/$(TargetName)/" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName) $(Version).zip" Overwrite="true" />
+        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/resources" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName) $(Version).zip" Overwrite="true" />
     </Target>
 </Project>

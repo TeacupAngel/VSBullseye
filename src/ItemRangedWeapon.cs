@@ -347,7 +347,7 @@ namespace Bullseye
             ItemStack stack = ammoSlot.TakeOut(1);
             ammoSlot.MarkDirty();
 
-			// Aaaaaa why doesn't EntityThrownStone not inherit from EntityProjectile
+			// Aaaaaa why doesn't EntityThrownStone inherit from EntityProjectile
 			// Tyron pls
             //EntityProjectile entityProjectile = byEntity.World.ClassRegistry.CreateEntity(type) as EntityProjectile;
 			Entity projectileEntity = byEntity.World.ClassRegistry.CreateEntity(type);
@@ -370,7 +370,7 @@ namespace Bullseye
 				entityThrownStone.ProjectileStack = stack;
 			}
 
-            // Might as well reuse these for now
+            // Might as well reuse these attributes for now
             double spreadAngle = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1);
             double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
 
@@ -404,6 +404,11 @@ namespace Bullseye
 
             // What the heck? Server's SidedPos.Motion is somehow twice that of client's!
             velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
+
+            if (byEntity.MountedOn is Entity mountedEntity)
+            {
+                velocity += api.Side == EnumAppSide.Client ? mountedEntity.SidedPos.Motion : mountedEntity.SidedPos.Motion / 2;
+            }
 
             // Used in vanilla spears but feels awful, might redo later with zeroing and proper offset to the right
             //projectileEntity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));

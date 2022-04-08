@@ -1,16 +1,16 @@
 [ 
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
 
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/texturesByType/*", path: "/move-temp"},
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/texturesByType/arrowhead-obsidian", value: 
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/texturesByType/*", path: "/move-temp"},
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/texturesByType/arrowhead-obsidian", value: 
 		{
 			"material": { base: "block/stone/rock/{material}1" }
 		}
 	},
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/move-temp", path: "/texturesByType/*"},
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/move-temp", path: "/texturesByType/*"},
 
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/guiTransformByType/*", path: "/move-temp"},
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/guiTransformByType/arrowhead-obsidian", value: 
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/guiTransformByType/*", path: "/move-temp"},
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/guiTransformByType/arrowhead-obsidian", value: 
 		{
 			translation: { x: 0, y: 2, z: -100 },
 			rotation: { x: -56, y: 32, z: 0 },
@@ -18,5 +18,5 @@
 			scale: 5.46
 		} 
 	},
-	{ file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/move-temp", path: "/guiTransformByType/*"},
+	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/move-temp", path: "/guiTransformByType/*"},
 ]

@@ -1,6 +1,6 @@
 [ 
 	{ 
-		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/bullseyeWeaponStatsByType", value: 
+		side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/bullseyeWeaponStatsByType", value: 
 		{
 			"*-crude": {
 				aimDrift: 130,
@@ -86,10 +86,10 @@
 		},
 	},
 
-	{ file: "game:itemtypes/tool/bow", op: "remove", path: "/attributes/damageByType" },
+	{ side: "Server", file: "game:itemtypes/tool/bow", op: "remove", path: "/attributes/damageByType" },
 
 	{
-		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/damagePercentByType", value: 
+		side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/damagePercentByType", value: 
 		{
 			"*-crude": -0.1,
 			"*-long": 0.6,
@@ -98,18 +98,18 @@
 	},
 
 	{
-		file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/arrowScaleByType", value: 
+		side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/arrowScaleByType", value: 
 		{
 			"*-long": 1.2,
 			"*-recurve": 1.5
 		}
 	},
 
-	{ file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-chargebow" },
-	{ file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/interactionCollectibleCode", value: "arrow-" },
+	{ side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-chargebow" },
+	{ side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/interactionCollectibleCode", value: "arrow-" },
 
 	{
-		file: "game:itemtypes/tool/bow", op: "add", path: "/behaviors", value: 
+		side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/behaviors", value: 
 		[{
 			name: "AnimatableWithAttach",
 			properties: {

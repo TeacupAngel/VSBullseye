@@ -1,5 +1,5 @@
 [ 
-	{ file: "game:recipes/grid/tool/spear", op: "add", path: "/ingredients/T/allowedVariants/-", value: "iron" },
-	{ file: "game:recipes/grid/tool/spear", op: "add", path: "/ingredients/T/allowedVariants/-", value: "meteoriciron" },
-	{ file: "game:recipes/grid/tool/spear", op: "add", path: "/ingredients/T/allowedVariants/-", value: "steel" },
+	{ side: "Server", file: "game:recipes/grid/tool/spear", op: "add", path: "/ingredients/T/allowedVariants/-", value: "iron" },
+	{ side: "Server", file: "game:recipes/grid/tool/spear", op: "add", path: "/ingredients/T/allowedVariants/-", value: "meteoriciron" },
+	{ side: "Server", file: "game:recipes/grid/tool/spear", op: "add", path: "/ingredients/T/allowedVariants/-", value: "steel" },
 ]

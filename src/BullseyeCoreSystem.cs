@@ -5,6 +5,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Server;
 using Vintagestory.API.Client;
+using Vintagestory.API.Config;
 
 using HarmonyLib;
 
@@ -42,6 +43,8 @@ namespace Bullseye
 			{
 				HarmonyPatches.PatchManager.PatchCommon(harmony);
 			}
+
+            capi.Input.RegisterHotKey("bullseye.ammotypeselect", Lang.Get("bullseye:select-ammo"), GlKeys.F, HotkeyType.GUIOrOtherControls);
 
 			capi.Gui.RegisterDialog(new GuiDialogAmmoSelect(capi));
         }

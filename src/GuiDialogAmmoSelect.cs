@@ -13,7 +13,7 @@ namespace Bullseye
 	{
 		private InventoryAmmoSelect inventoryAmmoSelect;
 
-		public override string ToggleKeyCombinationCode => "toolmodeselect";
+		public override string ToggleKeyCombinationCode => "bullseye.ammotypeselect";
 		public override bool PrefersUngrabbedMouse => false;
 
 		public GuiDialogAmmoSelect(ICoreClientAPI api)	: base(api)
@@ -21,7 +21,7 @@ namespace Bullseye
 			inventoryAmmoSelect = new InventoryAmmoSelect(api);
 		}
 
-		/*private void OnEventBusEvent(string eventName, ref EnumHandling handling, IAttribute data)
+        /*private void OnEventBusEvent(string eventName, ref EnumHandling handling, IAttribute data)
 		{
 			capi.Event.EnqueueMainThreadTask(() =>
 			{
@@ -29,8 +29,8 @@ namespace Bullseye
 			}, "reopentoolmodedlg");
 		}*/
 
-		// internal won't be removed from this method until 1.17 :(
-		/*internal override bool OnKeyCombinationToggle(KeyCombination viaKeyComb)
+        // internal won't be removed from this method until 1.17 :(
+        /*internal override bool OnKeyCombinationToggle(KeyCombination viaKeyComb)
 		{
 			ItemSlot itemSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;
 			if (itemSlot?.Itemstack?.Collectible.GetToolModes(itemSlot, capi.World.Player, capi.World.Player.CurrentBlockSelection) == null)

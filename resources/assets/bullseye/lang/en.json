@@ -15,7 +15,7 @@
 
 	"game:itemdesc-bow-crude": "Does not always shoot straight, but still serviceable.",
 	"game:itemdesc-bow-long": "Slow, but far-reaching and powerful.",
-	"game:itemdesc-bow-recurve": "A strong bow for those who prefer.",
+	"game:itemdesc-bow-recurve": "A strong bow for those who prefer shooting on the move.",
 
 	"bullseye:weapon-bonus-damage-ranged": "{0}% piercing damage",
 
@@ -23,4 +23,6 @@
 
 	"bullseye:damage-with-sling": "{0} damage when shot from sling",
 	"bullseye:lifetime-projectile-damage": "Average {0} damage per arrow before breaking",
+
+	"bullseye:select-ammo": "Bullseye: Select Ranged Weapon Ammo",
 }

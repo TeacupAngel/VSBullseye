@@ -1,6 +1,6 @@
 [
 	{ 
-		file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		side: "Server", file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
 		{
 			cooldownTime: 1.5, 
 
@@ -31,8 +31,8 @@
 		}
 	},
 
-	{ file: "game:itemtypes/tool/sling", op: "replace", path: "/attributes/damage", value: 0 },
+	{ side: "Server", file: "game:itemtypes/tool/sling", op: "replace", path: "/attributes/damage", value: 0 },
 
-	{ file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-chargesling" },
-	{ file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/interactionCollectibleCode", value: "stone-" },
+	{ side: "Server", file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-chargesling" },
+	{ side: "Server", file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/interactionCollectibleCode", value: "stone-" },
 ]
