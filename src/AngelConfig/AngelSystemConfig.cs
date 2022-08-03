@@ -26,26 +26,6 @@ namespace AngelConfig
 		public AngelConfigArgumentException(string message) : base(message) {}
 	}
 
-	public struct AngelConfigSetting
-	{
-		public AngelConfigSetting(string code, string name, System.Func<string> get, System.Func<CmdArgs, string> set)
-		{
-			Code = code;
-			Name = name;
-			Get = get;
-			Set = set;
-
-			Config = null;
-		}
-
-		public string Code {get; private set;}
-		public string Name {get; private set;}
-		public System.Func<string> Get {get; private set;}
-		public System.Func<CmdArgs, string> Set {get; private set;}
-
-		public AngelConfigBase Config {get; set;}
-	}
-
 	public abstract class AngelSystemConfig : ModSystem
 	{
 		[ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
@@ -175,8 +155,8 @@ namespace AngelConfig
 
 		public void RegisterConfigSetting(AngelConfigSetting setting, AngelConfigBase config, ICoreAPI api)
 		{
-			if (setting.Config.ConfigType == EnumAngelConfigType.Client && api.Side == EnumAppSide.Server) return;
-			if (setting.Config.ConfigType == EnumAngelConfigType.Server && api.Side == EnumAppSide.Client) return;
+			if (config.ConfigType == EnumAngelConfigType.Client && api.Side == EnumAppSide.Server) return;
+			if (config.ConfigType == EnumAngelConfigType.Server && api.Side == EnumAppSide.Client) return;
 
 			setting.Config = config;
 
@@ -467,6 +447,8 @@ namespace AngelConfig
 			}
 
 			// Copy new values into existing config instance, so that we don't have to re-register settings; not the most elegant, but it happens only on sync anyway
+			// In the future, we can introduce delta sharing where only the changed variables will be sent, instead of everything
+			// There won't be any more need to send the type either, saving bandwidth and closing a potential security hole
 			foreach (PropertyInfo property in SyncedConfig.GetType().GetProperties().Where(p => p.CanWrite))
 			{
 				property.SetValue(SyncedConfig, property.GetValue(incomingConfig, null), null);
