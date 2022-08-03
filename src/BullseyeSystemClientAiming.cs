@@ -10,11 +10,11 @@ using System.Reflection;
 
 namespace Bullseye
 {
-    public class BullseyeClientAimingSystem : ModSystem, IRenderer
-    {
-        public BullseyeConfigSystem configSystem;
+	public class BullseyeSystemClientAiming : ModSystem, IRenderer
+	{
+		public BullseyeSystemConfig configSystem;
 
-        public bool Aiming = false;
+		public bool Aiming = false;
 
 		private Random random;
 		private ICoreClientAPI capi;
@@ -25,22 +25,19 @@ namespace Bullseye
 
 		// Renderer
 		public double RenderOrder => 0.98;
-        public int RenderRange => 9999;
+		public int RenderRange => 9999;
 
-        public override bool ShouldLoad(EnumAppSide forSide)
-        {
+		public override bool ShouldLoad(EnumAppSide forSide)
+		{
 			atSide = forSide;
-            return forSide == EnumAppSide.Client;
-        }
+			return forSide == EnumAppSide.Client;
+		}
 
-        public override void StartClientSide(ICoreClientAPI capi)
-        {
+		public override void StartClientSide(ICoreClientAPI capi)
+		{
 			this.capi = capi;
 
-            configSystem = capi.ModLoader.GetModSystem<BullseyeConfigSystem>();
-
-            HarmonyPatches.SystemRenderAimClientPatch.clientAimingSystem = this;
-            HarmonyPatches.ClientMainPatch.clientAimingSystem = this;
+			configSystem = capi.ModLoader.GetModSystem<BullseyeSystemConfig>();
 
 			StartAimSystem(capi);
 
@@ -49,19 +46,19 @@ namespace Bullseye
 
 			StartRenderer(capi);
 			capi.Event.RegisterRenderer(this, EnumRenderStage.Ortho);
-        }
+		}
 
 		public void SetRangedWeaponStats(BullseyeRangedWeaponStats weaponStats)
-        {
+		{
 			this.weaponStats = weaponStats;
-        }
+		}
 
 		// Aiming system
 		private float aimX;
-        private float aimY;
+		private float aimY;
 
-        private float aimOffsetX;
-        private float aimOffsetY;
+		private float aimOffsetX;
+		private float aimOffsetY;
 
 		private bool showAim = true;
 
@@ -81,38 +78,38 @@ namespace Bullseye
 
 		public Vec3d TargetVec {get; private set;}
 
-        private Unproject unproject;
-        private double[] viewport;
-        private double[] rayStart;
-        private double[] rayEnd;
+		private Unproject unproject;
+		private double[] viewport;
+		private double[] rayStart;
+		private double[] rayEnd;
 
 		public void StartAimSystem(ICoreClientAPI capi)
 		{
-            unproject = new Unproject();
-            viewport = new double[4];
-            rayStart = new double[4];
-            rayEnd = new double[4];
-            
-            TargetVec = new Vec3d();
+			unproject = new Unproject();
+			viewport = new double[4];
+			rayStart = new double[4];
+			rayEnd = new double[4];
+			
+			TargetVec = new Vec3d();
 		}
 
-        public Vec2f GetCurrentAim()
-        {
-            float offsetMagnitude = configSystem.serverConfig.aimDifficulty;
+		public Vec2f GetCurrentAim()
+		{
+			float offsetMagnitude = configSystem.GetSyncedConfig().AimDifficulty;
 
-            if (capi.World.Player?.Entity != null)
-            {
-                offsetMagnitude /= GameMath.Max(capi.World.Player.Entity.Stats.GetBlended("rangedWeaponsAcc"), 0.001f);
-            }
+			if (capi.World.Player?.Entity != null)
+			{
+				offsetMagnitude /= GameMath.Max(capi.World.Player.Entity.Stats.GetBlended("rangedWeaponsAcc"), 0.001f);
+			}
 
-            return new Vec2f(aimX + aimOffsetX * offsetMagnitude * weaponStats.horizontalAccuracyMult, aimY + aimOffsetY * offsetMagnitude * weaponStats.verticalAccuracyMult);
-        }
+			return new Vec2f(aimX + aimOffsetX * offsetMagnitude * weaponStats.horizontalAccuracyMult, aimY + aimOffsetY * offsetMagnitude * weaponStats.verticalAccuracyMult);
+		}
 
 		public void UpdateAimPoint(ClientMain __instance, 
 				ref double ___MouseDeltaX, ref double ___MouseDeltaY, 
 				ref double ___DelayedMouseDeltaX, ref double ___DelayedMouseDeltaY,
 				float dt)
-		{
+		{			
 			if (Aiming)
 			{
 				// = Aiming system #3 - simpler, Receiver-inspired =
@@ -191,13 +188,52 @@ namespace Bullseye
 			twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 		}
 
+		// In progress fixing of an FOV bug
+		/*public void UpdateAimOffsetSimple(ClientMain __instance, float dt)
+		{
+			// Default FOV is 70, and 1920 is the screen width of my dev machine :)
+			float fovRatio = (__instance.Width / 1920f) * (70f / ClientSettings.FieldOfView) * (70f / ClientSettings.FieldOfView);
+
+			float driftMaxRatio = 0.9f;
+			float twitchMaxRatio = 7f;
+
+			aimOffsetX += (((float)noisegen.Noise(__instance.ElapsedMilliseconds * weaponStats.aimDriftFrequency, 1000f) - 0.5f) - aimOffsetX / (weaponStats.aimDrift / driftMaxRatio * DriftMultiplier)) * weaponStats.aimDrift * DriftMultiplier * dt * fovRatio;
+			aimOffsetY += (((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * weaponStats.aimDriftFrequency) - 0.5f) - aimOffsetY / (weaponStats.aimDrift / driftMaxRatio * DriftMultiplier)) * weaponStats.aimDrift * DriftMultiplier * dt * fovRatio;
+
+			if (__instance.Api.World.ElapsedMilliseconds > twitchLastChangeMilliseconds + weaponStats.aimTwitchDuration)
+			{
+				twitchLastChangeMilliseconds = __instance.Api.World.ElapsedMilliseconds;
+				twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
+
+				float twitchMax = weaponStats.aimTwitch / twitchMaxRatio * TwitchMultiplier;
+
+				twitchX = (((float)random.NextDouble() - 0.5f) * 2f) * twitchMax - aimOffsetX / twitchMax;
+				twitchY = (((float)random.NextDouble() - 0.5f) * 2f) * twitchMax - aimOffsetY / twitchMax;
+
+				twitchLength = GameMath.Sqrt(twitchX * twitchX + twitchY * twitchY);
+
+				twitchX = twitchX / twitchLength;
+				twitchY = twitchY / twitchLength;
+			}
+
+			float lastStep = (twitchLastStepMilliseconds - twitchLastChangeMilliseconds) / (float)weaponStats.aimTwitchDuration;
+			float currentStep = (__instance.Api.World.ElapsedMilliseconds - twitchLastChangeMilliseconds) / (float)weaponStats.aimTwitchDuration;
+
+			float stepSize = ((1f - lastStep) * (1f - lastStep)) - ((1f - currentStep) * (1f - currentStep));
+
+			aimOffsetX += twitchX * stepSize * (weaponStats.aimTwitch * TwitchMultiplier * dt) * (weaponStats.aimTwitchDuration / 20) * fovRatio;
+			aimOffsetY += twitchY * stepSize * (weaponStats.aimTwitch * TwitchMultiplier * dt) * (weaponStats.aimTwitchDuration / 20) * fovRatio;
+
+			twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
+		}*/
+
 		private float slingDt;
 
 		private float slingHorizRandomOffset;
 
 		public void UpdateAimOffsetSling(ClientMain __instance, float dt)
 		{
-			float fovRatio = __instance.Width / 1920f;
+			float fovRatio = (__instance.Width / 1920f) * (70f / ClientSettings.FieldOfView);
 
 			float slingCycleLength = 0.75f;
 			float slingCycleStartDeadzone = 0.2f;
@@ -227,9 +263,9 @@ namespace Bullseye
 			aimOffsetY = (slingRiseArea / 2f) - (slingRiseArea * slingCurrentPoint);
 		}
 
-        public void SetAim()
+		public void SetAim()
 		{
-            Vec2f currentAim = GetCurrentAim();
+			Vec2f currentAim = GetCurrentAim();
 
 			int mouseCurrentX = (int)currentAim.X + capi.Render.FrameWidth / 2;
 			int mouseCurrentY = (int)currentAim.Y + capi.Render.FrameHeight / 2;
@@ -247,9 +283,9 @@ namespace Bullseye
 			offsetY /= length;
 			offsetZ /= length;
 
-            TargetVec.X = offsetX;
-            TargetVec.Y = offsetY;
-            TargetVec.Z = offsetZ;
+			TargetVec.X = offsetX;
+			TargetVec.Y = offsetY;
+			TargetVec.Z = offsetZ;
 		}
 
 		public void ResetAimOffset()
@@ -309,8 +345,8 @@ namespace Bullseye
 		}
 
 		public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
-        {
-            if (Aiming && showAim)
+		{
+			if (Aiming && showAim)
 			{
 				Vec2f currentAim = GetCurrentAim();
 
@@ -339,7 +375,7 @@ namespace Bullseye
 					;
 				}
 			}
-        }
+		}
 
 		public void SetReticleTextures(LoadedTexture partChargeTex, LoadedTexture fullChargeTex, LoadedTexture blockedTex)
 		{
@@ -354,8 +390,8 @@ namespace Bullseye
 		}
 
 		// ---
-        public override void Dispose()
-        {
+		public override void Dispose()
+		{
 			if (atSide == EnumAppSide.Client && !disposed)
 			{
 				unproject = null;
@@ -369,16 +405,13 @@ namespace Bullseye
 
 				foreach (CollectibleObject collectible in capi.World.Collectibles)
 				{
-					if (collectible is ItemRangedWeapon rangedWeapon)
+					if (collectible is BullseyeItemRangedWeapon rangedWeapon)
 					{
 						rangedWeapon.Dispose();
 					}
 				}
 
 				capi = null;
-
-				HarmonyPatches.SystemRenderAimClientPatch.clientAimingSystem = null;
-            	HarmonyPatches.ClientMainPatch.clientAimingSystem = null;
 
 				disposed = true;
 			}
@@ -392,6 +425,6 @@ namespace Bullseye
 			unproject = null;
 
 			base.Dispose();
-        }
-    }
+		}
+	}
 }

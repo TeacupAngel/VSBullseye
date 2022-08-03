@@ -16,65 +16,66 @@ using Vintagestory.Client.NoObf;
 
 using HarmonyLib;
 
-namespace AnimatableCollectibleSimple
+namespace Bullseye
 {
-    public class CollectibleBehaviorAnimatableSimple : CollectibleBehavior, ITexPositionSource
-    {
+	public class BullseyeCollectibleBehaviorAnimatable : CollectibleBehavior, ITexPositionSource
+	{
 		public AnimatorBase Animator;
 		public Dictionary<string, AnimationMetaData> ActiveAnimationsByAnimCode = new Dictionary<string, AnimationMetaData>();
 
 		// ITexPositionSource
 		ITextureAtlasAPI curAtlas;
-        public Size2i AtlasSize => curAtlas.Size;
+		public Size2i AtlasSize => curAtlas.Size;
 
-        public virtual TextureAtlasPosition this[string textureCode]
-        {
-            get
-            {
-                AssetLocation texturePath = null;
-                if (texturePath == null)
-                {
-                    currentShape?.Textures.TryGetValue(textureCode, out texturePath);
-                }
+		public virtual TextureAtlasPosition this[string textureCode]
+		{
+			get
+			{
+				AssetLocation texturePath = null;
+				if (texturePath == null)
+				{
+					currentShape?.Textures.TryGetValue(textureCode, out texturePath);
+				}
 
-                if (texturePath == null)
-                {
-                    texturePath = new AssetLocation(textureCode);
-                }
+				if (texturePath == null)
+				{
+					texturePath = new AssetLocation(textureCode);
+				}
 
-                return GetOrCreateTexPos(texturePath);
-            }
-        }
+				return GetOrCreateTexPos(texturePath);
+			}
+		}
 
 		protected TextureAtlasPosition GetOrCreateTexPos(AssetLocation texturePath)
-        {
-            TextureAtlasPosition texpos = curAtlas[texturePath];
+		{
+			TextureAtlasPosition texpos = curAtlas[texturePath];
 
-            if (texpos == null)
-            {
-                IAsset texAsset = capi.Assets.TryGet(texturePath.Clone().WithPathPrefixOnce("textures/").WithPathAppendixOnce(".png"));
-                if (texAsset != null)
-                {
-                    BitmapRef bmp = texAsset.ToBitmap(capi);
-                    curAtlas.InsertTextureCached(texturePath, bmp, out _, out texpos);
-                }
-                else
-                {
-                    capi.World.Logger.Warning("AnimatableCollectible: Item {0} defined texture {1}, not no such texture found.", collObj.Code, texturePath);
-                }
-            }
+			if (texpos == null)
+			{
+				IAsset texAsset = capi.Assets.TryGet(texturePath.Clone().WithPathPrefixOnce("textures/").WithPathAppendixOnce(".png"));
+				if (texAsset != null)
+				{
+					//BitmapRef bmp = texAsset.ToBitmap(capi);
+					//curAtlas.InsertTextureCached(texturePath, bmp, out _, out texpos);
+					curAtlas.GetOrInsertTexture(texturePath, out _, out texpos);
+				}
+				else
+				{
+					capi.World.Logger.Warning("AnimatableCollectible: Item {0} defined texture {1}, not no such texture found.", collObj.Code, texturePath);
+				}
+			}
 
-            return texpos;
-        }
+			return texpos;
+		}
 
 		// CollectibleBehaviorAnimatable
-        public CollectibleBehaviorAnimatableSimple(CollectibleObject collObj) : base(collObj)
-        {
-        }
+		public BullseyeCollectibleBehaviorAnimatable(CollectibleObject collObj) : base(collObj)
+		{
+		}
 
 		protected string cacheKey => "animatedCollectibleMeshes-" + collObj.Code.ToShortString();
 
-		protected AnimatableCollectibleSimpleModsystem modsystem;
+		protected BullseyeSystemAnimatable modsystem;
 
 		protected ICoreClientAPI capi;
 		protected Shape currentShape;
@@ -89,16 +90,16 @@ namespace AnimatableCollectibleSimple
 		protected float[] tmpMvMat = Mat4f.Create();
 
 		public override void Initialize(JsonObject properties)
-        {
-            animatedShapePath = properties["animatedShape"].AsString(null);
-            onlyWhenAnimating = properties["onlyWhenAnimating"].AsBool(true);
+		{
+			animatedShapePath = properties["animatedShape"].AsString(null);
+			onlyWhenAnimating = properties["onlyWhenAnimating"].AsBool(true);
 
-            base.Initialize(properties);
-        }
+			base.Initialize(properties);
+		}
 
 		public override void OnLoaded(ICoreAPI api)
 		{
-			modsystem = api.ModLoader.GetModSystem<AnimatableCollectibleSimpleModsystem>();
+			modsystem = api.ModLoader.GetModSystem<BullseyeSystemAnimatable>();
 
 			if (api.Side == EnumAppSide.Client)
 			{
@@ -123,7 +124,8 @@ namespace AnimatableCollectibleSimple
 
 			AssetLocation loc = animatedShapePath != null ? new AssetLocation(animatedShapePath) : item.Shape.Base.Clone();
 			loc = loc.WithPathAppendixOnce(".json").WithPathPrefixOnce("shapes/");
-			currentShape = capi.Assets.TryGet(loc)?.ToObject<Shape>();
+			//currentShape = capi.Assets.TryGet(loc)?.ToObject<Shape>();
+			currentShape = Shape.TryGet(capi, loc);
 
 			Vec3f rendererRot = new Vec3f(0f, 1f, 0f);
 
@@ -135,145 +137,145 @@ namespace AnimatableCollectibleSimple
 
 		// adapted from: public MeshData InitializeAnimator(string cacheDictKey, Shape shape, ITexPositionSource texSource, Vec3f rotation)
 		public MeshData InitializeMeshData(string cacheDictKey, Shape shape, ITexPositionSource texSource)
-        {
-            if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented yet.");
+		{
+			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented yet.");
 
-            Item item = (collObj as Item);
+			Item item = (collObj as Item);
 
-            MeshData meshdata;
+			MeshData meshdata;
 
-            /*if (shape == null)
-            {
-                IAsset asset = capi.Assets.TryGet(item.Shape.Base.Clone().WithPathPrefixOnce("shapes/").WithPathAppendixOnce(".json"));
-                shape = asset.ToObject<Shape>();
-            }*/
+			/*if (shape == null)
+			{
+				IAsset asset = capi.Assets.TryGet(item.Shape.Base.Clone().WithPathPrefixOnce("shapes/").WithPathAppendixOnce(".json"));
+				shape = asset.ToObject<Shape>();
+			}*/
 
-            shape.ResolveReferences(capi.World.Logger, cacheDictKey);
-            CacheInvTransforms(shape.Elements);
-            shape.ResolveAndLoadJoints();
+			shape.ResolveReferences(capi.World.Logger, cacheDictKey);
+			CacheInvTransforms(shape.Elements);
+			shape.ResolveAndLoadJoints();
 
-            //capi.Tesselator.TesselateShapeWithJointIds("collectible", shape, out meshdata, texSource, null, item.Shape.QuantityElements, item.Shape.SelectiveElements);
+			//capi.Tesselator.TesselateShapeWithJointIds("collectible", shape, out meshdata, texSource, null, item.Shape.QuantityElements, item.Shape.SelectiveElements);
 			capi.Tesselator.TesselateShapeWithJointIds("collectible", shape, out meshdata, texSource, null);
 
-            if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented yet.");
+			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented yet.");
 
-            //InitializeAnimator(cacheDictKey, meshdata, shape, rotation);
+			//InitializeAnimator(cacheDictKey, meshdata, shape, rotation);
 
-            return meshdata;
-        }
+			return meshdata;
+		}
 
 		//public void InitializeAnimator(string cacheDictKey, MeshData meshdata, Shape shape, Vec3f rotation) 
 		public AnimatorBase InitializeAnimator(string cacheDictKey, MeshData meshdata, Shape shape, Vec3f rotation) 
-        {
-            if (meshdata == null)
-            {
-                throw new ArgumentException("meshdata cannot be null");
-            }
+		{
+			if (meshdata == null)
+			{
+				throw new ArgumentException("meshdata cannot be null");
+			}
 
-            AnimatorBase animator = GetAnimator(capi, cacheDictKey, shape);
-            
-            /*if (RuntimeEnv.MainThreadId == System.Threading.Thread.CurrentThread.ManagedThreadId)
-            {
-                currentMeshRef = capi.Render.UploadMesh(meshdata);
-            } else
-            {
-                capi.Event.EnqueueMainThreadTask(() => {
-                    currentMeshRef = capi.Render.UploadMesh(meshdata);
-                }, "uploadmesh");
-            }*/
+			AnimatorBase animator = GetAnimator(capi, cacheDictKey, shape);
+			
+			/*if (RuntimeEnv.MainThreadId == System.Threading.Thread.CurrentThread.ManagedThreadId)
+			{
+				currentMeshRef = capi.Render.UploadMesh(meshdata);
+			} else
+			{
+				capi.Event.EnqueueMainThreadTask(() => {
+					currentMeshRef = capi.Render.UploadMesh(meshdata);
+				}, "uploadmesh");
+			}*/
 
 			return animator;
-        }
+		}
 
 		public MeshRef InitializeMeshRef(MeshData meshdata) 
-        {            
+		{            
 			MeshRef meshRef = null;
 
-            if (RuntimeEnv.MainThreadId == System.Threading.Thread.CurrentThread.ManagedThreadId)
-            {
-                meshRef = capi.Render.UploadMesh(meshdata);
-            } else
-            {
-                capi.Event.EnqueueMainThreadTask(() => {
-                    meshRef = capi.Render.UploadMesh(meshdata);
-                }, "uploadmesh");
-            }
+			if (RuntimeEnv.MainThreadId == System.Threading.Thread.CurrentThread.ManagedThreadId)
+			{
+				meshRef = capi.Render.UploadMesh(meshdata);
+			} else
+			{
+				capi.Event.EnqueueMainThreadTask(() => {
+					meshRef = capi.Render.UploadMesh(meshdata);
+				}, "uploadmesh");
+			}
 
 			return meshRef;
-        }
+		}
 
 		public static AnimatorBase GetAnimator(ICoreClientAPI capi, string cacheDictKey, Shape blockShape)
-        {
-            if (blockShape == null)
-            {
-                return null;
-            }
+		{
+			if (blockShape == null)
+			{
+				return null;
+			}
 
-            object animCacheObj;
-            Dictionary<string, AnimCacheEntry> animCache = null;
-            capi.ObjectCache.TryGetValue("coAnimCache", out animCacheObj);
-            animCache = animCacheObj as Dictionary<string, AnimCacheEntry>;
-            if (animCache == null)
-            {
-                capi.ObjectCache["coAnimCache"] = animCache = new Dictionary<string, AnimCacheEntry>();
-            }
+			object animCacheObj;
+			Dictionary<string, AnimCacheEntry> animCache = null;
+			capi.ObjectCache.TryGetValue("coAnimCache", out animCacheObj);
+			animCache = animCacheObj as Dictionary<string, AnimCacheEntry>;
+			if (animCache == null)
+			{
+				capi.ObjectCache["coAnimCache"] = animCache = new Dictionary<string, AnimCacheEntry>();
+			}
 
-            AnimatorBase animator;
+			AnimatorBase animator;
 
-            AnimCacheEntry cacheObj = null;
-            if (animCache.TryGetValue(cacheDictKey, out cacheObj))
-            {
-                animator = capi.Side == EnumAppSide.Client ?
-                    new ClientAnimator(() => 1, cacheObj.RootPoses, cacheObj.Animations, cacheObj.RootElems, blockShape.JointsById) :
-                    new ServerAnimator(() => 1, cacheObj.RootPoses, cacheObj.Animations, cacheObj.RootElems, blockShape.JointsById)
-                ;
-            }
-            else
-            {
-                for (int i = 0; blockShape.Animations != null && i < blockShape.Animations.Length; i++)
-                {
-                    blockShape.Animations[i].GenerateAllFrames(blockShape.Elements, blockShape.JointsById);
-                }
+			AnimCacheEntry cacheObj = null;
+			if (animCache.TryGetValue(cacheDictKey, out cacheObj))
+			{
+				animator = capi.Side == EnumAppSide.Client ?
+					new ClientAnimator(() => 1, cacheObj.RootPoses, cacheObj.Animations, cacheObj.RootElems, blockShape.JointsById) :
+					new ServerAnimator(() => 1, cacheObj.RootPoses, cacheObj.Animations, cacheObj.RootElems, blockShape.JointsById)
+				;
+			}
+			else
+			{
+				for (int i = 0; blockShape.Animations != null && i < blockShape.Animations.Length; i++)
+				{
+					blockShape.Animations[i].GenerateAllFrames(blockShape.Elements, blockShape.JointsById);
+				}
 
-                animator = capi.Side == EnumAppSide.Client ?
-                    new ClientAnimator(() => 1, blockShape.Animations, blockShape.Elements, blockShape.JointsById) :
-                    new ServerAnimator(() => 1, blockShape.Animations, blockShape.Elements, blockShape.JointsById)
-                ;
+				animator = capi.Side == EnumAppSide.Client ?
+					new ClientAnimator(() => 1, blockShape.Animations, blockShape.Elements, blockShape.JointsById) :
+					new ServerAnimator(() => 1, blockShape.Animations, blockShape.Elements, blockShape.JointsById)
+				;
 
-                animCache[cacheDictKey] = new AnimCacheEntry()
-                {
-                    Animations = blockShape.Animations,
-                    RootElems = (animator as ClientAnimator).rootElements,
-                    RootPoses = (animator as ClientAnimator).RootPoses
-                };
-            }
+				animCache[cacheDictKey] = new AnimCacheEntry()
+				{
+					Animations = blockShape.Animations,
+					RootElems = (animator as ClientAnimator).rootElements,
+					RootPoses = (animator as ClientAnimator).RootPoses
+				};
+			}
 
-            return animator;
-        }
+			return animator;
+		}
 
 		public static void CacheInvTransforms(ShapeElement[] elements)
-        {
-            if (elements == null) return;
+		{
+			if (elements == null) return;
 
-            for (int i = 0; i < elements.Length; i++)
-            {
-                elements[i].CacheInverseTransformMatrix();
-                CacheInvTransforms(elements[i].Children);
-            }
-        }
+			for (int i = 0; i < elements.Length; i++)
+			{
+				elements[i].CacheInverseTransformMatrix();
+				CacheInvTransforms(elements[i].Children);
+			}
+		}
 
 		public void StartAnimation(AnimationMetaData metaData)
-        {
+		{
 			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented.");
 
 			if (!ActiveAnimationsByAnimCode.ContainsKey(metaData.Code))
 			{
 				ActiveAnimationsByAnimCode[metaData.Code] = metaData;
 			}
-        }
+		}
 
-        public void StopAnimation(string code, bool forceImmediate = false)
-        {
+		public void StopAnimation(string code, bool forceImmediate = false)
+		{
 			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented.");
 
 			if (ActiveAnimationsByAnimCode.ContainsKey(code))
@@ -286,20 +288,20 @@ namespace AnimatableCollectibleSimple
 					anim.EasingFactor = 0f;
 				}
 			}
-        }
+		}
 
 		public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
-        {
+		{
 			if (capi.IsGamePaused || target != EnumItemRenderTarget.HandFp) return; // We don't get entity here, so only do it for the FP target
 
-            if (ActiveAnimationsByAnimCode.Count > 0 || Animator.ActiveAnimationCount > 0)
-            {
+			if (ActiveAnimationsByAnimCode.Count > 0 || Animator.ActiveAnimationCount > 0)
+			{
 				Animator.OnFrame(ActiveAnimationsByAnimCode, renderinfo.dt);
-            }
-        }
+			}
+		}
 
 		public virtual void RenderHandFp(ItemSlot inSlot, ItemRenderInfo renderInfo, Matrixf modelMat, double posX, double posY, double posZ, float size, int color, bool rotate = false, bool showStackSize = true)
-        {
+		{
 			if (onlyWhenAnimating && ActiveAnimationsByAnimCode.Count == 0)
 			{
 				capi.Render.RenderMesh(renderInfo.ModelRef);
@@ -341,8 +343,9 @@ namespace AnimatableCollectibleSimple
 				float[] tmpVals = new float[4];
 				Vec4f outPos = new Vec4f();
 				float[] array = Mat4f.Create();
-				Mat4f.RotateY(array, array, (float)capi.World.Player.CameraYaw);
-				Mat4f.RotateX(array, array, (float)capi.World.Player.CameraPitch);
+				Mat4f.RotateY(array, array, capi.World.Player.Entity.SidedPos.Yaw);
+				//Mat4f.RotateX(array, array, (float)capi.World.Player.CameraPitch);
+				Mat4f.RotateX(array, array, capi.World.Player.Entity.SidedPos.Pitch);
 				Mat4f.Mul(array, array, modelMat.Values);
 				tmpVals[0] = capi.Render.ShaderUniforms.LightPosition3D.X;
 				tmpVals[1] = capi.Render.ShaderUniforms.LightPosition3D.Y;
@@ -366,6 +369,6 @@ namespace AnimatableCollectibleSimple
 				prog?.Stop();
 				prevProg?.Use();
 			}
-        }
-    }
+		}
+	}
 }

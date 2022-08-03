@@ -8,7 +8,7 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
-			"--addModPath", "${workspaceFolder}/resources",
+			"--addModPath", "${workspaceFolder}",
 			"--playStyle", "surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
@@ -23,7 +23,7 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
-			"--addModPath", "${workspaceFolder}/resources",
+			"--addModPath", "${workspaceFolder}",
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",
 		],
@@ -38,7 +38,7 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
-			"--addModPath", "${workspaceFolder}/resources",
+			"--addModPath", "${workspaceFolder}",
 			"--playStyle", "preset-surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
@@ -68,7 +68,7 @@
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
-			"--addModPath", "${workspaceFolder}/resources",
+			"--addModPath", "${workspaceFolder}",
 		],
 		"console": "externalTerminal",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -81,7 +81,7 @@
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
-			"--addModPath", "${workspaceFolder}/resources",
+			"--addModPath", "${workspaceFolder}",
 		],
 		"console": "externalTerminal",
 		"internalConsoleOptions": "openOnSessionStart"
@@ -93,7 +93,7 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
-			"--addModPath", "${workspaceFolder}/resources",
+			"--addModPath", "${workspaceFolder}",
 			"--connect", "127.0.0.1"
 		],
 		"console": "internalConsole",
@@ -106,7 +106,7 @@
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client2",
-			"--addModPath", "${workspaceFolder}/resources"
+			"--addModPath", "${workspaceFolder}"
 		],
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"

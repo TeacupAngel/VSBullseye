@@ -47,7 +47,7 @@
             ]
         },
         {
-            "label": "build (Release)",
+            "label": "build (Debug) and pack",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -68,7 +68,36 @@
             "args": [
                 "build",
                 "-c",
-                "Release"
+                "Debug",
+                "-p:ReleasePack=1",
+                "-p:ReleasePackName=\"_debug\""
+            ]
+        },
+        {
+            "label": "build (Release) and pack",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile",
+            "type": "shell",
+            "command": "dotnet",
+            "linux": {
+                "options": {
+                    "env": {
+                        "FrameworkPathOverride": "/lib/mono/4.6.1-api/"
+                    }
+                }
+            },
+            "args": [
+                "build",
+                "-c",
+                "Release",
+                "-p:ReleasePack=1",
+                "-p:ReleasePackName=\"\""
             ]
         },
         {

@@ -14,21 +14,21 @@ using Vintagestory.GameContent;
 
 using Vintagestory.Client.NoObf;
 
-namespace AnimatableCollectibleSimple
+namespace Bullseye
 {
-    public class CollectibleBehaviorAnimatableSimpleWithAttach : CollectibleBehaviorAnimatableSimple
-    {
-        public CollectibleBehaviorAnimatableSimpleWithAttach(CollectibleObject collObj) : base(collObj)
-        {
-        }
+	public class BullseyeCollectibleBehaviorAnimatableAttach : BullseyeCollectibleBehaviorAnimatable
+	{
+		public BullseyeCollectibleBehaviorAnimatableAttach(CollectibleObject collObj) : base(collObj)
+		{
+		}
 
 		protected ItemRenderInfo AttachedRenderInfo;
 		protected Matrixf AttachedMeshMat = new Matrixf();
 
 		public override void Initialize(JsonObject properties)
-        {
-            base.Initialize(properties);
-        }
+		{
+			base.Initialize(properties);
+		}
 
 		public void SetAttachedRenderInfo(ItemRenderInfo renderInfo)
 		{
@@ -38,7 +38,7 @@ namespace AnimatableCollectibleSimple
 		}
 
 		public override void RenderHandFp(ItemSlot inSlot, ItemRenderInfo renderInfo, Matrixf modelMat, double posX, double posY, double posZ, float size, int color, bool rotate = false, bool showStackSize = true)
-        {
+		{
 			base.RenderHandFp(inSlot, renderInfo, modelMat, posX, posY, posZ, size, color, rotate = false, showStackSize = true);
 
 			if ((!onlyWhenAnimating || ActiveAnimationsByAnimCode.Count > 0) && AttachedRenderInfo != null)
@@ -72,6 +72,6 @@ namespace AnimatableCollectibleSimple
 
 				capi.Render.RenderMesh(AttachedRenderInfo.ModelRef);
 			}
-        }
-    }
+		}
+	}
 }

@@ -9,19 +9,19 @@ using Vintagestory.API.MathTools;
 
 namespace Bullseye
 {
-	public class GuiDialogAmmoSelect : GuiDialog
+	public class BullseyeGuiDialogAmmoSelect : GuiDialog
 	{
-		private InventoryAmmoSelect inventoryAmmoSelect;
+		private BullseyeInventoryAmmoSelect inventoryAmmoSelect;
 
 		public override string ToggleKeyCombinationCode => "bullseye.ammotypeselect";
 		public override bool PrefersUngrabbedMouse => false;
 
-		public GuiDialogAmmoSelect(ICoreClientAPI api)	: base(api)
+		public BullseyeGuiDialogAmmoSelect(ICoreClientAPI api)	: base(api)
 		{
-			inventoryAmmoSelect = new InventoryAmmoSelect(api);
+			inventoryAmmoSelect = new BullseyeInventoryAmmoSelect(api);
 		}
 
-        /*private void OnEventBusEvent(string eventName, ref EnumHandling handling, IAttribute data)
+		/*private void OnEventBusEvent(string eventName, ref EnumHandling handling, IAttribute data)
 		{
 			capi.Event.EnqueueMainThreadTask(() =>
 			{
@@ -29,8 +29,8 @@ namespace Bullseye
 			}, "reopentoolmodedlg");
 		}*/
 
-        // internal won't be removed from this method until 1.17 :(
-        /*internal override bool OnKeyCombinationToggle(KeyCombination viaKeyComb)
+		// internal won't be removed from this method until 1.17 :(
+		/*internal override bool OnKeyCombinationToggle(KeyCombination viaKeyComb)
 		{
 			ItemSlot itemSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;
 			if (itemSlot?.Itemstack?.Collectible.GetToolModes(itemSlot, capi.World.Player, capi.World.Player.CurrentBlockSelection) == null)
@@ -42,19 +42,19 @@ namespace Bullseye
 		}*/
 
 		public override bool TryOpen()
-        {
-            ItemSlot activeHotbarSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;
-			ItemRangedWeapon rangedWeaponItem = (activeHotbarSlot?.Itemstack?.Collectible) as ItemRangedWeapon;
+		{
+			ItemSlot activeHotbarSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;
+			BullseyeItemRangedWeapon rangedWeaponItem = (activeHotbarSlot?.Itemstack?.Collectible) as BullseyeItemRangedWeapon;
 
-			if (rangedWeaponItem?.AmmoCategory == null)
+			if (rangedWeaponItem?.AmmoType == null)
 			{
 				return false;
 			}
 
-			inventoryAmmoSelect.AmmoCategory = rangedWeaponItem.AmmoCategory;
+			inventoryAmmoSelect.AmmoCategory = rangedWeaponItem.AmmoType;
 
-            return base.TryOpen();
-        }
+			return base.TryOpen();
+		}
 
 		public override void OnGuiOpened()
 		{
@@ -64,20 +64,20 @@ namespace Bullseye
 		private void ComposeDialog()
 		{
 			ItemSlot activeHotbarSlot = capi.World.Player.InventoryManager.ActiveHotbarSlot;
-			ItemRangedWeapon rangedWeaponItem = (activeHotbarSlot?.Itemstack?.Collectible) as ItemRangedWeapon;
+			BullseyeItemRangedWeapon rangedWeaponItem = (activeHotbarSlot?.Itemstack?.Collectible) as BullseyeItemRangedWeapon;
 
 			ClearComposers();
 
 			List<ItemStack> ammoStacks = rangedWeaponItem.GetAvailableAmmoTypes(activeHotbarSlot, capi.World.Player);
 
-			inventoryAmmoSelect.SetAmmoStacks(ammoStacks);
-			inventoryAmmoSelect.SetSelectedAmmoItemStack(rangedWeaponItem.GetEntitySelectedAmmoType(capi.World.Player.Entity));
-			inventoryAmmoSelect.PlayerEntity = capi.World.Player.Entity;
-
 			if (ammoStacks == null)
 			{
 				return;
 			}
+
+			inventoryAmmoSelect.SetAmmoStacks(ammoStacks);
+			inventoryAmmoSelect.SetSelectedAmmoItemStack(rangedWeaponItem.GetEntitySelectedAmmoType(capi.World.Player.Entity));
+			inventoryAmmoSelect.PlayerEntity = capi.World.Player.Entity;
 
 			int maxItemsPerLine = 8;
 

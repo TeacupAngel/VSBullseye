@@ -3,6 +3,8 @@
 		side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/attributes/bullseyeWeaponStatsByType", value: 
 		{
 			"*-crude": {
+				ammoType: "arrow",
+
 				aimDrift: 130,
 				aimTwitch: 32,
 
@@ -22,6 +24,8 @@
 			},
 
 			"*-simple": {
+				ammoType: "arrow",
+
 				aimDrift: 130,
 				aimTwitch: 32,
 
@@ -41,6 +45,8 @@
 			},
 
 			"*-long": {
+				ammoType: "arrow",
+
 				aimDrift: 150,
 				aimTwitch: 45,
 
@@ -63,6 +69,8 @@
 			},
 
 			"*-recurve": {
+				ammoType: "arrow",
+				
 				aimDrift: 180,
 				aimTwitch: 35,
 
@@ -111,7 +119,7 @@
 	{
 		side: "Server", file: "game:itemtypes/tool/bow", op: "add", path: "/behaviors", value: 
 		[{
-			name: "AnimatableWithAttach",
+			name: "Bullseye_AnimatableAttach",
 			properties: {
 				animatedShape: "bullseye:item/tool/bow/{type}-animated",
 				onlyWhenAnimating: false

@@ -1,35 +1,60 @@
+= 2.4.0-pre.1 =
+
+- Significantly improved debugging information
+- Fixed various smaller bugs
+- Refactor of the config system
+- Fixed indentation formatting (for Github)
+
+
+= 2.3.2 =
+
+- New server commands:
+--- `/bullseye set arrowDamage 0-1000` - set a multiplier to arrow damage
+--- `/bullseye set spearDamage 0-1000` - set a multiplier to spear damage
+--- `/bullseye set slingDamage 0-1000` - set a multiplier to sling damage
+--- `/bullseye set allDamage 0-1000` - set the arrowDamage, spearDamage, and slingDamage multipliers in one command
+- Added mod compatibility for Primitive Tools, AnMiTech, and WeaponPack Gamma
+- Fixed vanilla break chance appearing 100 times too low in arrow description
+- Weapon ammo type now exposed in json instead of being hardcoded
+- Added mod icon
+- Minor code improvements
+
+= 2.3.1 =
+
+- Fixed multiplayer crash
+
 = 2.3.0 =
 
 New Features
-- Basic sling implementation
-- Smoother first person sling animation
+- Basic sling implementation with smoother animation
 - Fully animated bows in first person view
 - Bows show the arrow you are shooting
 - Ability to choose ammo type for bows and slings (press F to select)
-- Support for shooting while mounted
+- Support for shooting while mounted on an entity (horse, Vies airship, etc.)
 
 Rebalance
-- Spears have greater accuracy difference between
-- Spears have less vertical aim sway, to make distance judging when throwing easier
+- Spears have slightly higher running aim penalty
+- Spears have less vertical aim sway, to make judging throw distance easier
 - Spears no longer have any random spread
 - Slightly reduced aim sway for simple and crude bows
 - Increased longbow damage bonus to +60%
 - Increased longbow movement accuracy penalty to 130%
-- Reduced recurve bow damage bonus to +35%, but made it draw slightly faster (still has the best sustained damage of all bows)
+- Reduced recurve bow damage bonus to +35%, but made it charge slightly faster (still has the best sustained damage of all bows)
 - Reduced recurve bow movement accuracy penalty to 50%
 - Reduced aim sway of recurve bow
-- Can no longer sprint when shooting a bow
-- Shooting bows slows you down (depending on the bow used)
+- Can no longer sprint when aiming a bow
+- Walking when aiming is now slower (slowest with longbow, fastest with recurve bow)
 
 Other
-- Compatibility with Lichen improved
+- Better compatibility with Lichen
 - Now also compatible with Ore Crystals, Useful Stuff, Feverstone Horses, and ViesCraft Machines
-- "globalAccuracy" setting renamed to "aimDifficulty" (can still use "globalAccuracy" to set this)
-- Large code refactor
+- "globalAccuracy" setting renamed to "aimDifficulty" ("globalAccuracy" is still recognised, too)
+- Major code refactor
 - Fix: less intrusive patching of arrow and spear damage
 - Fix: now respects armour ranged penalties properly
 - Fix: texture leak related to crosshairs
-- Fix: removed old world migration from version 2.1.0 popping up for everyone
+- Fix: removed old world migration from version 2.1.0 popping up even in worlds that never used the mod
+- Fix: no longer try to pointlessly patch items, blocks and entities on the client
 
 
 = 2.2.4 =

@@ -12,49 +12,44 @@ using System.Reflection;
 
 using HarmonyLib;
 
-namespace AnimatableCollectibleSimple
+namespace Bullseye
 {
-    public class AnimatableCollectibleSimpleModsystem : ModSystem
-    {
+	public class BullseyeSystemAnimatable : ModSystem
+	{
 		// Clientside
 		public IShaderProgram AnimatedItemShaderProgram {get; private set;}
 
 		private ICoreClientAPI capi;
 
-		/*public override bool ShouldLoad(EnumAppSide forSide)
-        {
-            return forSide == EnumAppSide.Client;
-        }*/
-
-        public override void StartClientSide(ICoreClientAPI api)
-        {
+		public override void StartClientSide(ICoreClientAPI api)
+		{
 			capi = api;
 
 			capi.Event.ReloadShader += LoadAnimatedItemShaders;
-            LoadAnimatedItemShaders();
-        }
+			LoadAnimatedItemShaders();
+		}
 
 		public bool LoadAnimatedItemShaders()
-        {
-            AnimatedItemShaderProgram = capi.Shader.NewShaderProgram();
+		{
+			AnimatedItemShaderProgram = capi.Shader.NewShaderProgram();
 			(AnimatedItemShaderProgram as ShaderProgram).AssetDomain = Mod.Info.ModID;
 			capi.Shader.RegisterFileShaderProgram("helditemanimated", AnimatedItemShaderProgram);
-            AnimatedItemShaderProgram.Compile();
+			AnimatedItemShaderProgram.Compile();
 
-            return true;
-        }
+			return true;
+		}
 
 		public override void Start(ICoreAPI api)
 		{
-			api.RegisterCollectibleBehaviorClass("Animatable", typeof(CollectibleBehaviorAnimatableSimple));
-			api.RegisterCollectibleBehaviorClass("AnimatableWithAttach", typeof(CollectibleBehaviorAnimatableSimpleWithAttach));
+			api.RegisterCollectibleBehaviorClass("Bullseye_Animatable", typeof(BullseyeCollectibleBehaviorAnimatable));
+			api.RegisterCollectibleBehaviorClass("Bullseye_AnimatableAttach", typeof(BullseyeCollectibleBehaviorAnimatableAttach));
 		}
 
-        public override void Dispose()
-        {
+		public override void Dispose()
+		{
 			capi = null;
 
 			AnimatedItemShaderProgram = null;
-        }
-    }
+		}
+	}
 }

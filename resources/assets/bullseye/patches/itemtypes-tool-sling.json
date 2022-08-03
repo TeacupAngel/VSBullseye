@@ -2,6 +2,7 @@
 	{ 
 		side: "Server", file: "game:itemtypes/tool/sling", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
 		{
+			ammoType: "slingbullet",
 			cooldownTime: 1.5, 
 
 			aimDrift: 1,

@@ -10,31 +10,31 @@ using Vintagestory.API.Config;
 
 namespace Bullseye
 {
-    public class InventoryAmmoSelect : InventoryBase
-    {
-        static int dummyId = 1;
+	public class BullseyeInventoryAmmoSelect : InventoryBase
+	{
+		static int dummyId = 1;
 		public string AmmoCategory {get; set;}
 
-        List<ItemSlot> slots = new List<ItemSlot>();
+		List<ItemSlot> slots = new List<ItemSlot>();
 
 		public EntityPlayer PlayerEntity {get; set;}
 
-        public InventoryAmmoSelect(ICoreAPI api) : this("inventoryAmmoSelect-" + (dummyId++), api)
-        {
-        }
+		public BullseyeInventoryAmmoSelect(ICoreAPI api) : this("inventoryAmmoSelect-" + (dummyId++), api)
+		{
+		}
 
-        private InventoryAmmoSelect(string inventoryID, ICoreAPI api) : base(inventoryID, api)
-        {
-        }
+		private BullseyeInventoryAmmoSelect(string inventoryID, ICoreAPI api) : base(inventoryID, api)
+		{
+		}
 
-        private InventoryAmmoSelect(string className, string instanceID, ICoreAPI api) : base(className, instanceID, api)
-        {
-        }
+		private BullseyeInventoryAmmoSelect(string className, string instanceID, ICoreAPI api) : base(className, instanceID, api)
+		{
+		}
 
 		protected override ItemSlot NewSlot(int i)
-        {
-            return new ItemSlotAmmo(this);
-        }
+		{
+			return new BullseyeItemSlotAmmo(this);
+		}
 
 		public void SetAmmoStacks(List<ItemStack> ammoStacks)
 		{
@@ -58,27 +58,27 @@ namespace Bullseye
 		}
 
 		public override object ActivateSlot(int slotId, ItemSlot mouseSlot, ref ItemStackMoveOperation op)
-        {
+		{
 			if (Api is ICoreClientAPI capi)
 			{
-				BullseyeRangedWeaponSystem rangedWeaponSystem = Api.ModLoader.GetModSystem<BullseyeRangedWeaponSystem>();
+				BullseyeSystemRangedWeapon rangedWeaponSystem = Api.ModLoader.GetModSystem<BullseyeSystemRangedWeapon>();
 
 				ItemSlot selectedSlot = this[slotId];
 
 				rangedWeaponSystem.EntitySetAmmoType((Api as ICoreClientAPI).World.Player.Entity, AmmoCategory, selectedSlot.Itemstack);
 				rangedWeaponSystem.SendRangedWeaponAmmoSelectPacket(AmmoCategory, selectedSlot.Itemstack);
 
-				capi.Gui.OpenedGuis.Find((dialog) => dialog is GuiDialogAmmoSelect)?.TryClose();
+				capi.Gui.OpenedGuis.Find((dialog) => dialog is BullseyeGuiDialogAmmoSelect)?.TryClose();
 			}
 
-            return InvNetworkUtil.GetActivateSlotPacket(slotId, op);
-        }
+			return InvNetworkUtil.GetActivateSlotPacket(slotId, op);
+		}
 
 		public override ItemSlot this[int slotId]
-        {
-            get
-            {
-                if (slotId < 0) throw new ArgumentOutOfRangeException(nameof(slotId));
+		{
+			get
+			{
+				if (slotId < 0) throw new ArgumentOutOfRangeException(nameof(slotId));
 				if (slotId >= Count)
 				{
 					for (int i = Count; i <= slotId; i++)
@@ -86,11 +86,11 @@ namespace Bullseye
 						slots.Add(NewSlot(i));
 					}
 				}
-                return slots[slotId];
-            }
-            set
-            {
-                if (slotId < 0) throw new ArgumentOutOfRangeException(nameof(slotId));
+				return slots[slotId];
+			}
+			set
+			{
+				if (slotId < 0) throw new ArgumentOutOfRangeException(nameof(slotId));
 				if (slotId >= Count)
 				{
 					for (int i = Count; i <= slotId; i++)
@@ -98,26 +98,26 @@ namespace Bullseye
 						slots.Add(NewSlot(i));
 					}
 				}
-                slots[slotId] = value ?? throw new ArgumentNullException(nameof(value));
-            }
-        }
+				slots[slotId] = value ?? throw new ArgumentNullException(nameof(value));
+			}
+		}
 
-        public override int Count => slots.Count;
+		public override int Count => slots.Count;
 
-        public override void FromTreeAttributes(ITreeAttribute tree)
-        {
-            slots = SlotsFromTreeAttributes(tree, null).ToList();
-        }
+		public override void FromTreeAttributes(ITreeAttribute tree)
+		{
+			slots = SlotsFromTreeAttributes(tree, null).ToList();
+		}
 
-        public override void ToTreeAttributes(ITreeAttribute tree)
-        {
-            SlotsToTreeAttributes(slots.ToArray(), tree);
-        }
+		public override void ToTreeAttributes(ITreeAttribute tree)
+		{
+			SlotsToTreeAttributes(slots.ToArray(), tree);
+		}
 
 		public override float GetTransitionSpeedMul(EnumTransitionType transType, ItemStack stack)
-        {
-            return 0;
-        }
-    }
+		{
+			return 0;
+		}
+	}
 }
 

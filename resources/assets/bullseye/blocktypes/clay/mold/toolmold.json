@@ -14,16 +14,17 @@
 	},
 	variantgroups: [
 		{ code:"materialtype", states: ["raw", "burned"] },
-		{ code:"tooltype", states: ["spear"] }
+		{ code:"tooltype", states: ["spear", "bullets"] }
 	],
-	attributesByType: {
-		"toolmold-burned-*": {
-			"requiredUnits": 100,
-			"fillHeight": 1,
-			"moldrackable": true,
-			"onmoldrackTransform": { rotation: { z: 90 } },
-			"drop": { type: "item", code: "game:{tooltype}head-{metal}" }
-		},
+	attributes: {
+		"requiredUnits": 100,
+		"fillHeight": 1,
+		"moldrackable": true,
+		"onmoldrackTransform": { rotation: { z: 90 } },
+		"dropByType": {
+			"toolmold-burned-bullets": { type: "item", code: "game:bullets-{metal}", quantity: 32 },
+			"*": { type: "item", code: "game:{tooltype}head-{metal}" }
+		}
 	},
 	entityClassByType: {
 		"toolmold-burned-*": "ToolMold",
@@ -53,11 +54,9 @@
 		walk: "walk/stone",
 	},
 	collisionboxByType: {
-		"*-anvil": { x1: 0.0625, y1: 0, z1: 0.0625, x2: 0.9375, y2: 0.6875, z2: 0.9375 },
 		"*": { x1: 0, y1: 0, z1: 0, x2: 1, y2: 0.1875, z2: 1 },
 	},
 	selectionboxByType: {
-		"*-anvil": { x1: 0, y1: 0, z1: 0, x2: 1, y2: 0.6875, z2: 1 },
 		"*": { x1: 0, y1: 0, z1: 0, x2: 1, y2: 0.1875, z2: 1 },
 	},
 	sideopaque: {
@@ -65,14 +64,6 @@
 	},
 	sidesolid: {
 		all: false
-	},
-	heldTpIdleAnimationByType: {
-		"*-anvil": "holdbothhands",
-		"*-helvehammer": "holdbothhands"
-	},
-	heldTpUseAnimationByType: {
-		"*-anvil": "twohandplaceblock",
-		"*-helvehammer": "twohandplaceblock"
 	},
 	guiTransformByType: {
 		"*": {

@@ -1,5 +1,6 @@
 [
 	{ side: "Server", file: "game:itemtypes/resource/stone", op: "add", path: "/attributes", value: {} },
+	{ side: "Server", file: "game:itemtypes/resource/stone", op: "add", path: "/attributes/ammoType", value: "slingbullet" },
 	{ side: "Server", file: "game:itemtypes/resource/stone", op: "add", path: "/attributes/damage", value: 4 },
 	{ side: "Server", file: "game:itemtypes/resource/stone", op: "add", path: "/attributes/benefitsFromClass", value: false },
 

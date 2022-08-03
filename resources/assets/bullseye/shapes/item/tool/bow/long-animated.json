@@ -21,7 +21,7 @@
 		"string": "game:item/tool/material/string",
 		"aged": "game:block/wood/debarked/aged",
 		"bone": "game:block/wood/debarked/oak",
-		"leather": "game:block/leather"
+		"leather": "game:block/leather/plain"
 	},
 	"elements": [
 		{

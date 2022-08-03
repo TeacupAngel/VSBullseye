@@ -23,45 +23,74 @@ namespace Bullseye
 	{
 		public class PatchManager
 		{
-			public static void PatchClientside(Harmony harmony)
+			public static void PatchServerside(Harmony harmony, ICoreServerAPI sapi)
 			{
-				SystemRenderAimClientPatch.Patch(harmony);
-				ClientMainPatch.Patch(harmony);
+				HarmonyPatches.PatchManager.PatchCommon(harmony, sapi);
 			}
 
-			public static void PatchCommon(Harmony harmony)
+			public static void PatchClientside(Harmony harmony, ICoreClientAPI capi)
 			{
-				ItemStonePatch.Patch(harmony);
-				ItemArrowPatch.Patch(harmony);
+				SystemRenderAimClientPatch.Patch(harmony, capi);
+				ClientMainPatch.Patch(harmony, capi);
+
+				if (!capi.IsSinglePlayer)
+				{
+					HarmonyPatches.PatchManager.PatchCommon(harmony, capi);
+				}
+			}
+
+			private static void PatchCommon(Harmony harmony, ICoreAPI api)
+			{
+				ItemStonePatch.Patch(harmony, api);
+				ItemArrowPatch.Patch(harmony, api);
+			}
+
+			public static void Dispose()
+			{
+				SystemRenderAimClientPatch.Dispose();
+				ClientMainPatch.Dispose();
+
+				ItemStonePatch.Dispose();
+				ItemArrowPatch.Dispose();
 			}
 		}
 
+		// CLIENTSIDE PATCHES
 		public class SystemRenderAimClientPatch
 		{
-			public static BullseyeClientAimingSystem clientAimingSystem;
+			private static BullseyeSystemClientAiming clientAimingSystem;
 
-			public static void Patch(Harmony harmony)
+			public static void Patch(Harmony harmony, ICoreClientAPI capi)
 			{
 				harmony.Patch(typeof(SystemRenderAim).GetMethod("DrawAim", BindingFlags.Instance | BindingFlags.NonPublic), 
 					prefix: new HarmonyMethod(typeof(SystemRenderAimClientPatch).GetMethod("DrawAimPrefix", BindingFlags.Static | BindingFlags.NonPublic) 
 				));
+
+				clientAimingSystem = capi.ModLoader.GetModSystem<BullseyeSystemClientAiming>();
 			}
 
 			static bool DrawAimPrefix()
 			{
 				return !(clientAimingSystem?.Aiming ?? false);
 			}
+
+			public static void Dispose()
+			{
+				clientAimingSystem = null;
+			}
 		}
 
 		public class ClientMainPatch
 		{
-			public static BullseyeClientAimingSystem clientAimingSystem;
+			private static BullseyeSystemClientAiming clientAimingSystem;
 
-			public static void Patch(Harmony harmony)
+			public static void Patch(Harmony harmony, ICoreClientAPI capi)
 			{
 				harmony.Patch(typeof(ClientMain).GetMethod("UpdateCameraYawPitch", BindingFlags.Instance | BindingFlags.NonPublic), 
 					prefix: new HarmonyMethod(typeof(ClientMainPatch).GetMethod("UpdateCameraYawPitchPrefix", BindingFlags.Static | BindingFlags.NonPublic) 
 				));
+
+				clientAimingSystem = capi.ModLoader.GetModSystem<BullseyeSystemClientAiming>();
 			}
 
 			static bool UpdateCameraYawPitchPrefix(ClientMain __instance, 
@@ -78,51 +107,69 @@ namespace Bullseye
 				
 				return true;
 			}
+
+			public static void Dispose()
+			{
+				clientAimingSystem = null;
+			}
 		}
 
+		// COMMON PATCHES
 		public class ItemStonePatch
 		{
-			public static void Patch(Harmony harmony)
+			private static BullseyeSystemConfig configSystem;
+
+			public static void Patch(Harmony harmony, ICoreAPI api)
 			{
 				harmony.Patch(typeof(ItemStone).GetMethod("GetHeldItemInfo"),
 					postfix: new HarmonyMethod(typeof(ItemStonePatch).GetMethod("GetHeldItemInfoPostfix", BindingFlags.Static | BindingFlags.NonPublic) 
 				));
+
+				configSystem = api.ModLoader.GetModSystem<BullseyeSystemConfig>();
 			}
 
 			static void GetHeldItemInfoPostfix(ItemSlot inSlot, StringBuilder dsc)
 			{
-				float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
-            	if (dmg != 0) dsc.AppendLine(Lang.Get("bullseye:damage-with-sling", dmg));
+				float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * configSystem.GetSyncedConfig().SlingDamage;
+				if (dmg != 0) dsc.AppendLine(Lang.Get("bullseye:damage-with-sling", dmg));
+			}
+
+			public static void Dispose()
+			{
+				configSystem = null;
 			}
 		}
 	}
 
 	public class ItemArrowPatch
 	{
+		private static BullseyeSystemConfig configSystem;
+
 		private static void BaseGetHeldItemInfo(object instance, ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
 			throw new NotImplementedException("Called unpatched BaseGetHeldItemInfo stub in ItemArrowPatch!");
 		}
 
-		public static void Patch(Harmony harmony)
+		public static void Patch(Harmony harmony, ICoreAPI api)
 		{
-			MethodInfo test1 = typeof(CollectibleObject).GetMethod("GetHeldItemInfo");
-			HarmonyMethod test2 = new HarmonyMethod(typeof(ItemArrowPatch).GetMethod("BaseGetHeldItemInfo", BindingFlags.Static | BindingFlags.NonPublic));
-
 			ReversePatcher reversePatcher = harmony.CreateReversePatcher(typeof(CollectibleObject).GetMethod("GetHeldItemInfo"), 
 				new HarmonyMethod(typeof(ItemArrowPatch).GetMethod("BaseGetHeldItemInfo", BindingFlags.Static | BindingFlags.NonPublic)));
-			reversePatcher.Patch(HarmonyReversePatchType.Snapshot);
+			
+			//reversePatcher.Patch(HarmonyReversePatchType.Original); // Crashes since 1.17, probably because new Harmony version :(
+			reversePatcher.Patch(HarmonyReversePatchType.Original);
 
 			harmony.Patch(typeof(ItemArrow).GetMethod("GetHeldItemInfo"),
 				prefix: new HarmonyMethod(typeof(ItemArrowPatch).GetMethod("GetHeldItemInfoPrefix", BindingFlags.Static | BindingFlags.NonPublic) 
 			));
+
+			configSystem = api.ModLoader.GetModSystem<BullseyeSystemConfig>();
 		}
 
 		private static bool GetHeldItemInfoPrefix(ItemArrow __instance, ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
 			BaseGetHeldItemInfo(__instance, inSlot, dsc, world, withDebugInfo);
 
-			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
+			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * configSystem.GetSyncedConfig().ArrowDamage;
 			if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("game:piercing-damage"));
 
 			if (inSlot.Itemstack.Collectible.Attributes.KeyExists("averageLifetimeDamage"))
@@ -133,10 +180,15 @@ namespace Bullseye
 			{
 				float breakChance = inSlot.Itemstack.ItemAttributes["breakChanceOnImpact"].AsFloat(0);
 
-				if (breakChance != 0) dsc.AppendLine(Lang.Get("game:breakchanceonimpact", breakChance));
+				if (breakChance != 0) dsc.AppendLine(Lang.Get("game:breakchanceonimpact", (int)(breakChance * 100)));
 			}
 
 			return false;
+		}
+
+		public static void Dispose()
+		{
+			configSystem = null;
 		}
 	}
 }
