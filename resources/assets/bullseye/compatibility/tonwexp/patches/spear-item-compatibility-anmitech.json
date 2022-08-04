@@ -1,0 +1,103 @@
+[
+	// AnMiTech spear
+	{ 
+		side: "Server", file: "tonwexp:itemtypes/spear", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		{
+			cooldownTime: 1.5, 
+
+			aimDrift: 180,
+			aimTwitch: 40,
+			aimTwitchDuration: 450,
+
+			horizontalLimit: 0,
+			verticalLimit: 0,
+        	verticalOffset: 0,
+			projectileSpread: 0,
+			projectileVelocity: 15,
+
+			verticalAccuracyMult: 0.6,
+			accuracyStart: 0.8,
+			accuracyStartTime: 1.5,
+			accuracyOvertime: 0,
+			accuracyMovePenalty: 0.3,
+
+			aimTexPartChargePath: "bullseye:gui/aimthrowpart.png",
+			aimTexFullChargePath: "bullseye:gui/aimthrowfull.png"
+		}
+	},
+
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-copper", value: 5 },
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-bismuthbronze", value: 5.5 },
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-tinbronze", value: 6 },
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-blackbronze", value: 6.25 },
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-iron", value: 6.5 },
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-meteoriciron", value: 6.75 },
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "replace", path: "/attributes/damageByType/spear-steel", value: 6.75 },
+
+	{ 
+		side: "Server", file: "tonwexp:itemtypes/spear", op: "add", path: "/tooltierbytype", value: 
+		{
+			"spear-copper": 2,
+			"spear-bismuthbronze": 3,
+			"spear-tinbronze": 3,
+			"spear-blackbronze": 3,
+			"spear-iron": 4,
+			"spear-meteoriciron": 4,
+			"spear-steel": 5,
+		},
+	},
+
+	{ side: "Server", file: "tonwexp:itemtypes/spear", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-throw" },
+
+	// AnMiTech pilum
+	{ 
+		side: "Server", file: "tonwexp:itemtypes/pilum", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		{
+			cooldownTime: 1.5, 
+
+			aimDrift: 140,
+			aimTwitch: 30,
+			aimTwitchDuration: 450,
+
+			horizontalLimit: 0,
+			verticalLimit: 0,
+        	verticalOffset: 0,
+			projectileSpread: 0,
+			projectileVelocity: 24,
+
+			verticalAccuracyMult: 0.8,
+			accuracyStart: 0.8,
+			accuracyStartTime: 1.4,
+			accuracyOvertime: 0,
+			accuracyMovePenalty: 0.3,
+
+			aimTexPartChargePath: "bullseye:gui/aimthrowpart.png",
+			aimTexFullChargePath: "bullseye:gui/aimthrowfull.png"
+		}
+	},
+
+	// Pilum has the same damage for tin and bismuth bronze, even though bismuth is more durable. 
+	// Resolving inconsistencies like this is part of the purpose of Bullseye as well
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/attributes/damageByType/pilum-tinbronze", value: 11.25 },
+
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/durabilitybytype/pilum-bismuthbronze", value: 80 },
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/durabilitybytype/pilum-tinbronze", value: 60 },
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/durabilitybytype/pilum-blackbronze", value: 100 },
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/durabilitybytype/pilum-iron", value: 125 },
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/durabilitybytype/pilum-meteoriciron", value: 150 },
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "replace", path: "/durabilitybytype/pilum-steel", value: 200 },
+
+	{ 
+		side: "Server", file: "tonwexp:itemtypes/pilum", op: "add", path: "/tooltierbytype", value: 
+		{
+			"pilum-bismuthbronze": 3,
+			"pilum-tinbronze": 3,
+			"pilum-blackbronze": 3,
+			"pilum-iron": 4,
+			"pilum-meteoriciron": 4,
+			"pilum-steel": 5,
+		},
+	},
+
+	{ side: "Server", file: "tonwexp:itemtypes/pilum", op: "add", path: "/attributes/interactionLangCode", value: "heldhelp-throw" },
+]
