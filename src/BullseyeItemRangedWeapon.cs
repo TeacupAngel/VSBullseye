@@ -218,6 +218,7 @@ namespace Bullseye
 		public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
 		{
 			base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
+            if (handling == EnumHandHandling.PreventDefault) return;
 
 			if (!RangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, WeaponStats.cooldownTime))
 			{
@@ -225,18 +226,18 @@ namespace Bullseye
 				return;
 			}
 
+			ItemSlot invslot = GetNextAmmoSlot(byEntity, slot, true);
+			if (invslot == null) return;
+
 			if (byEntity.World is IClientWorldAccessor)
 			{
 				CoreClientSystem.SetRangedWeaponStats(WeaponStats);
 				CoreClientSystem.SetReticleTextures(AimTexPartCharge, AimTexFullCharge, AimTexBlocked);
 			}
-			
+
 			RangedWeaponSystem.SetLastEntityRangedChargeData(byEntity.EntityId, slot);
 
 			byEntity.GetBehavior<BullseyeEntityBehaviorAimingAccuracy>().SetRangedWeaponStats(WeaponStats);
-
-			ItemSlot invslot = GetNextAmmoSlot(byEntity, slot, true);
-			if (invslot == null) return;
 
 			// Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
 			byEntity.Attributes.SetInt("bullseyeAiming", 1);

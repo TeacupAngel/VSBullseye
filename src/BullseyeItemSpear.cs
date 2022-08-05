@@ -81,7 +81,7 @@ namespace Bullseye
 
 		public override void OnShot(ItemSlot slot, Entity projectileEntity, EntityAgent byEntity) 
 		{
-			if (byEntity is EntityPlayer) RefillSlotIfEmpty(slot, byEntity, (itemstack) => itemstack.Collectible is ItemSpear);
+			if (byEntity is EntityPlayer) RefillSlotIfEmpty(slot, byEntity, (itemstack) => itemstack.Collectible is BullseyeItemSpear);
 
 			byEntity.StopAnimation("aim");
 
@@ -155,7 +155,8 @@ namespace Bullseye
 					byEntity.Attributes.SetInt("didattack", 1);
 					world.AddCameraShake(0.25f);
 				}
-			} else
+			} 
+			else
 			{
 				if (stab > 1.15f && byEntity.Attributes.GetInt("didattack") == 0 && entitySel != null)
 				{
