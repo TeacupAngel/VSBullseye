@@ -1,5 +1,5 @@
 {
-	ingredient: { type: "item", code: "game:stone-*", name: "rock", allowedVariants: ["obsidian"] },
+	ingredient: { "type": "item", "code": "game:stone-*", "name": "rock", allowedVariants: ["obsidian"] },
 	pattern: [[
 		"_#_____#__",
 		"###___###_",
@@ -12,6 +12,6 @@
 		"___###____",
 		"____#_____"
 	]],
-	name: "Stone arrowhead",
-	output: { type: "item", code: "game:arrowhead-{rock}", stacksize: 6  }
+	"name": "Stone arrowhead",
+	output: { "type": "item", "code": "game:arrowhead-{rock}", stacksize: 6  }
 }

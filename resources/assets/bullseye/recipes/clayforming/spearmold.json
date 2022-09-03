@@ -1,5 +1,5 @@
 {
-	ingredient: { type: "item", code: "game:clay-*", name: "type", allowedVariants: ["blue", "fire"] },
+	ingredient: { "type": "item", "code": "game:clay-*", "name": "type", allowedVariants: ["blue", "fire"] },
 	pattern: [[
 		"##############",
 		"##############",
@@ -32,6 +32,6 @@
 		"##############",
 		"##############",
 	]],
-	name: "Spear Mold",
-	output: { type: "block", code: "bullseye:toolmold-raw-spear"  }
+	"name": "Spear Mold",
+	output: { "type": "block", "code": "bullseye:toolmold-raw-spear"  }
 }

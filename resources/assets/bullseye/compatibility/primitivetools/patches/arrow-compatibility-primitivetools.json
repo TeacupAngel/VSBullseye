@@ -2,5 +2,5 @@
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-bone", "value": 3.5 },
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType/*-bone", "value": 24 },
 
-	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/damageByType/*-bone", value: 5.5, "dependsOn": [{ "modid": "weaponpackg" }] },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/damageByType/*-bone", "value": 5.5, "dependsOn": [{ "modid": "weaponpackg" }] },
 ]

@@ -1,8 +1,8 @@
 [ 
-	{ side: "Server", file: "tonwexp:entities/spear", op: "replace", path: "/client/behaviors/0/gravityFactor", value: 1 },
-	{ side: "Server", file: "tonwexp:entities/spear", op: "replace", path: "/server/behaviors/0/gravityFactor", value: 1 },
+	{ "side": "Server", "file": "tonwexp:entities/spear", "op": "replace", "path": "/client/behaviors/0/gravityFactor", "value": 1 },
+	{ "side": "Server", "file": "tonwexp:entities/spear", "op": "replace", "path": "/server/behaviors/0/gravityFactor", "value": 1 },
 
-	{ side: "Server", file: "tonwexp:entities/pilum", op: "replace", path: "/client/behaviors/0/gravityFactor", value: 0.75 },
-	{ side: "Server", file: "tonwexp:entities/pilum", op: "replace", path: "/server/behaviors/0/gravityFactor", value: 0.75 },
+	{ "side": "Server", "file": "tonwexp:entities/pilum", "op": "replace", "path": "/client/behaviors/0/gravityFactor", "value": 0.75 },
+	{ "side": "Server", "file": "tonwexp:entities/pilum", "op": "replace", "path": "/server/behaviors/0/gravityFactor", "value": 0.75 },
 ]
 

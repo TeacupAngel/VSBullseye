@@ -1,22 +1,22 @@
 [
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/ammoType", value: "arrow" },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/ammoType", "value": "arrow" },
 	
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-crude", value: 3 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-flint", value: 3.5 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-copper", value: 5 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-bismuthbronze", value: 5.5 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-tinbronze", value: 5.75 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-blackbronze", value: 6 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-gold", value: 6.25 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-silver", value: 6.25 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-iron", value: 6.5 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-meteoriciron", value: 6.75 },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "replace", path: "/attributes/damageByType/*-steel", value: 7 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-crude", "value": 3 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-flint", "value": 3.5 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-copper", "value": 5 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-bismuthbronze", "value": 5.5 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-tinbronze", "value": 5.75 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-blackbronze", "value": 6 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-gold", "value": 6.25 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-silver", "value": 6.25 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-iron", "value": 6.5 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-meteoriciron", "value": 6.75 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-steel", "value": 7 },
 
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/damageByType/*-obsidian", value: 4 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/damageByType/*-obsidian", "value": 4 },
 
 	{
-		side: "Server", file: "game:itemtypes/tool/arrow", op: "add", path: "/attributes/averageLifetimeDamageByType", value: 
+		"side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType", "value": 
 		{
 			"*-crude": 6,
 			"*-flint": 11,
@@ -33,17 +33,17 @@
 		}
 	},
 
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/variantgroups/0/states/-", "value": "obsidian" },
 
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "move", frompath: "/shapeByType/*", path: "/move-temp", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "add", path: "/shapeByType/arrow-obsidian", value: { base: "item/tool/arrow-stone" } },
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "move", frompath: "/move-temp", path: "/shapeByType/*", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "move", "frompath": "/shapeByType/*", "path": "/move-temp", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/shapeByType/arrow-obsidian", "value": { "base": "item/tool/arrow-stone" } },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "move", "frompath": "/move-temp", "path": "/shapeByType/*", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
 
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "move", frompath: "/texturesByType/*", path: "/move-temp", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "add", path: "/texturesByType/*-obsidian", value:
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "move", "frompath": "/texturesByType/*", "path": "/move-temp", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/texturesByType/*-obsidian", "value":
 		{
-			"material": { base: "block/stone/rock/{material}1" }
+			"material": { "base": "block/stone/rock/{material}1" }
 		}
 	},
-	{ side: "Server", file: "game:itemtypes/tool/arrow", op: "move", frompath: "/move-temp", path: "/texturesByType/*", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "move", "frompath": "/move-temp", "path": "/texturesByType/*", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
 ]

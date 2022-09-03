@@ -1,68 +1,68 @@
 [
 	// Crude longbow
 	{ 
-		side: "Server", file: "weaponpackg:itemtypes/tool/crudelong", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		"side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
-			ammoType: "arrow",
+			"ammoType": "arrow",
 
-			aimDrift: 150,
-			aimTwitch: 45,
+			"aimDrift": 150,
+			"aimTwitch": 45,
 
-			projectileVelocity: 39,
-			chargeTime: 1.25,
+			"projectileVelocity": 39,
+			"chargeTime": 1.25,
 
-			accuracyStartTime: 1.75,
-			accuracyOvertimeStart: 8,
-			accuracyMovePenalty: 1.3,
+			"accuracyStartTime": 1.75,
+			"accuracyOvertimeStart": 8,
+			"accuracyMovePenalty": 1.3,
 
-			projectileSpread: 1,
-			zeroingAngle: 1,
+			"projectileSpread": 1,
+			"zeroingAngle": 1,
 
-			aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
-			aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+			"aimTexPartChargePath": "bullseye:gui/aimarrowpart.png",
+			"aimTexFullChargePath": "bullseye:gui/aimarrowfull.png",
 
-			aimFullChargeLeeway: 0.6,
-			allowSprint: false,
-			moveSpeedPenalty: 0.7
+			"aimFullChargeLeeway": 0.6,
+			"allowSprint": false,
+			"moveSpeedPenalty": 0.7
 		},
 	},
 
-	{ side: "Server", file: "weaponpackg:itemtypes/tool/crudelong", op: "remove", path: "/attributes/damageByType" },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "remove", "path": "/attributes/damageByType" },
 
-	{ side: "Server", file: "weaponpackg:itemtypes/tool/crudelong", op: "add", path: "/attributes/damagePercent", value: 0.1 },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "add", "path": "/attributes/damagePercent", "value": 0.1 },
 
 	// Metal longbows
 	{ 
-		side: "Server", file: "weaponpackg:itemtypes/tool/metallong", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		"side": "Server", "file": "weaponpackg:itemtypes/tool/metallong", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
-			ammoType: "arrow",
+			"ammoType": "arrow",
 
-			aimDrift: 150,
-			aimTwitch: 45,
+			"aimDrift": 150,
+			"aimTwitch": 45,
 
-			projectileVelocity: 39,
-			chargeTime: 1.25,
+			"projectileVelocity": 39,
+			"chargeTime": 1.25,
 
-			accuracyStartTime: 1.75,
-			accuracyOvertimeStart: 8,
-			accuracyMovePenalty: 1.3,
+			"accuracyStartTime": 1.75,
+			"accuracyOvertimeStart": 8,
+			"accuracyMovePenalty": 1.3,
 
-			projectileSpread: 0,
-			zeroingAngle: 1,
+			"projectileSpread": 0,
+			"zeroingAngle": 1,
 
-			aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
-			aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+			"aimTexPartChargePath": "bullseye:gui/aimarrowpart.png",
+			"aimTexFullChargePath": "bullseye:gui/aimarrowfull.png",
 
-			aimFullChargeLeeway: 0.6,
-			allowSprint: false,
-			moveSpeedPenalty: 0.7
+			"aimFullChargeLeeway": 0.6,
+			"allowSprint": false,
+			"moveSpeedPenalty": 0.7
 		},
 	},
 
-	{ side: "Server", file: "weaponpackg:itemtypes/tool/metallong", op: "remove", path: "/attributes/damageByType" },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/metallong", "op": "remove", "path": "/attributes/damageByType" },
 
 	{
-		side: "Server", file: "weaponpackg:itemtypes/tool/metallong", op: "add", path: "/attributes/damagePercentByType", value: 
+		"side": "Server", "file": "weaponpackg:itemtypes/tool/metallong", "op": "add", "path": "/attributes/damagePercentByType", "value": 
 		{
 			"*-bismuthbronze": 0.7,
 			"*-tinbronze": 0.75,
@@ -75,36 +75,36 @@
 
 	// Metal recurve bows
 	{ 
-		side: "Server", file: "weaponpackg:itemtypes/tool/metalrecurve", op: "add", path: "/attributes/bullseyeWeaponStats", value: 
+		"side": "Server", "file": "weaponpackg:itemtypes/tool/metalrecurve", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
-			ammoType: "arrow",
+			"ammoType": "arrow",
 				
-			aimDrift: 180,
-			aimTwitch: 35,
+			"aimDrift": 180,
+			"aimTwitch": 35,
 
-			projectileVelocity: 33,
-			chargeTime: 0.85,
+			"projectileVelocity": 33,
+			"chargeTime": 0.85,
 
-			accuracyStartTime: 1.25,
-			accuracyOvertimeStart: 8,
-			accuracyMovePenalty: 0.6,
+			"accuracyStartTime": 1.25,
+			"accuracyOvertimeStart": 8,
+			"accuracyMovePenalty": 0.6,
 
-			projectileSpread: 0,
-			zeroingAngle: 1.5,
+			"projectileSpread": 0,
+			"zeroingAngle": 1.5,
 
-			aimTexPartChargePath: "bullseye:gui/aimarrowpart.png",
-			aimTexFullChargePath: "bullseye:gui/aimarrowfull.png",
+			"aimTexPartChargePath": "bullseye:gui/aimarrowpart.png",
+			"aimTexFullChargePath": "bullseye:gui/aimarrowfull.png",
 
-			aimFullChargeLeeway: 0.5,
-			allowSprint: false,
-			moveSpeedPenalty: 0
+			"aimFullChargeLeeway": 0.5,
+			"allowSprint": false,
+			"moveSpeedPenalty": 0
 		},
 	},
 
-	{ side: "Server", file: "weaponpackg:itemtypes/tool/metalrecurve", op: "remove", path: "/attributes/damageByType" },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/metalrecurve", "op": "remove", "path": "/attributes/damageByType" },
 
 	{
-		side: "Server", file: "weaponpackg:itemtypes/tool/metalrecurve", op: "add", path: "/attributes/damagePercentByType", value: 
+		"side": "Server", "file": "weaponpackg:itemtypes/tool/metalrecurve", "op": "add", "path": "/attributes/damagePercentByType", "value": 
 		{
 			"*-bismuthbronze": 0.4,
 			"*-tinbronze": 0.425,

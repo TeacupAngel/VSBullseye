@@ -1,22 +1,22 @@
 [ 
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/variantgroups/0/states/-", value: "obsidian" },
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "add", "path": "/variantgroups/0/states/-", "value": "obsidian" },
 
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/texturesByType/*", path: "/move-temp"},
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/texturesByType/arrowhead-obsidian", value: 
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "move", "frompath": "/texturesByType/*", "path": "/move-temp"},
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "add", "path": "/texturesByType/arrowhead-obsidian", "value": 
 		{
-			"material": { base: "block/stone/rock/{material}1" }
+			"material": { "base": "block/stone/rock/{material}1" }
 		}
 	},
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/move-temp", path: "/texturesByType/*"},
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "move", "frompath": "/move-temp", "path": "/texturesByType/*"},
 
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/guiTransformByType/*", path: "/move-temp"},
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "add", path: "/guiTransformByType/arrowhead-obsidian", value: 
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "move", "frompath": "/guiTransformByType/*", "path": "/move-temp"},
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "add", "path": "/guiTransformByType/arrowhead-obsidian", "value": 
 		{
-			translation: { x: 0, y: 2, z: -100 },
-			rotation: { x: -56, y: 32, z: 0 },
-			origin: { x: 0.81, y: 0.76, z: 0.09 },
-			scale: 5.46
+			"translation": { "x": 0, "y": 2, "z": -100 },
+			"rotation": { "x": -56, "y": 32, "z": 0 },
+			"origin": { "x": 0.81, "y": 0.76, "z": 0.09 },
+			"scale": 5.46
 		} 
 	},
-	{ side: "Server", file: "game:itemtypes/toolhead/arrowhead", op: "move", frompath: "/move-temp", path: "/guiTransformByType/*"},
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "move", "frompath": "/move-temp", "path": "/guiTransformByType/*"},
 ]

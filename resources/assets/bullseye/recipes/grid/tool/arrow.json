@@ -2,23 +2,23 @@
 	{
 		ingredientPattern: "H	S	F",
 		ingredients: {
-			"H": { type: "item", code: "game:arrowhead-*", name: "metal", quantity: 3 },
-			"S": { type: "item", code: "game:bamboostakes" },
-			"F": { type: "item", code: "game:feather", quantity: 3 }
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "metal", "quantity": 3 },
+			"S": { "type": "item", "code": "game:bamboostakes" },
+			"F": { "type": "item", "code": "game:feather", "quantity": 3 }
 		},
 		width: 1,
 		height: 3,
-		output: { type: "item", code: "game:arrow-{metal}", quantity: 3  }
+		output: { "type": "item", "code": "game:arrow-{metal}", "quantity": 3  }
 	},
 	{
 		ingredientPattern: "H	S",
 		requiresTrait: "bowyer",
 		ingredients: {
-			"H": { type: "item", code: "game:arrowhead-flint", quantity: 3 },
-			"S": { type: "item", code: "game:bamboostakes" }
+			"H": { "type": "item", "code": "game:arrowhead-flint", "quantity": 3 },
+			"S": { "type": "item", "code": "game:bamboostakes" }
 		},
 		width: 1,
 		height: 2,
-		output: { type: "item", code: "game:arrow-crude", quantity: 3  }
+		output: { "type": "item", "code": "game:arrow-crude", "quantity": 3  }
 	}
 ]
