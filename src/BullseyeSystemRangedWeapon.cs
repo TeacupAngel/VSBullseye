@@ -120,8 +120,8 @@ namespace Bullseye
 			.RegisterMessageType<BullseyeRangedWeaponAmmoSyncPacket>()
 			.SetMessageHandler<BullseyeRangedWeaponAmmoSyncPacket>(OnClientRangedWeaponAmmoSync);
 
-			capi.Event.AfterActiveSlotChanged += (changeEvenArgs) => {
-				if (changeEvenArgs.ToSlot < capi.World.Player.InventoryManager?.GetHotbarInventory().Count && capi.World.Player.InventoryManager?.GetHotbarItemstack(changeEvenArgs.ToSlot)?.Item is BullseyeItemRangedWeapon rangedWeapon)
+			capi.Event.AfterActiveSlotChanged += (changeEventArgs) => {
+				if (changeEventArgs.ToSlot < capi.World.Player.InventoryManager?.GetHotbarInventory().Count && capi.World.Player.InventoryManager?.GetHotbarItemstack(changeEventArgs.ToSlot)?.Item is BullseyeItemRangedWeapon rangedWeapon)
 				{
 					rangedWeapon.GetBehavior<BullseyeCollectibleBehaviorAnimatableAttach>()?.SetAttachedRenderInfo(null);
 				}

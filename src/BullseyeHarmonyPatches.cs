@@ -42,7 +42,7 @@ namespace Bullseye
 			private static void PatchCommon(Harmony harmony, ICoreAPI api)
 			{
 				ItemStonePatch.Patch(harmony, api);
-				ItemArrowPatch.Patch(harmony, api);
+				//ItemArrowPatch.Patch(harmony, api); // Disabled as a test fix for 2.4.0-rc.4
 			}
 
 			public static void Dispose()
@@ -51,7 +51,7 @@ namespace Bullseye
 				ClientMainPatch.Dispose();
 
 				ItemStonePatch.Dispose();
-				ItemArrowPatch.Dispose();
+				//ItemArrowPatch.Dispose();
 			}
 		}
 
@@ -98,12 +98,7 @@ namespace Bullseye
 				ref double ___DelayedMouseDeltaX, ref double ___DelayedMouseDeltaY,
 				float dt)
 			{
-				if (clientAimingSystem == null)
-				{
-					return true;
-				}
-
-				clientAimingSystem.UpdateAimPoint(__instance, ref ___MouseDeltaX, ref ___MouseDeltaY, ref ___DelayedMouseDeltaX, ref ___DelayedMouseDeltaY, dt);
+				clientAimingSystem?.UpdateAimPoint(__instance, ref ___MouseDeltaX, ref ___MouseDeltaY, ref ___DelayedMouseDeltaX, ref ___DelayedMouseDeltaY, dt);
 				
 				return true;
 			}
@@ -130,7 +125,7 @@ namespace Bullseye
 
 			static void GetHeldItemInfoPostfix(ItemSlot inSlot, StringBuilder dsc)
 			{
-				float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * configSystem.GetSyncedConfig().SlingDamage;
+				float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * configSystem?.GetSyncedConfig().SlingDamage ?? 1f;
 				if (dmg != 0) dsc.AppendLine(Lang.Get("bullseye:damage-with-sling", dmg));
 			}
 
@@ -141,10 +136,11 @@ namespace Bullseye
 		}
 	}
 
-	public class ItemArrowPatch
+	/*public class ItemArrowPatch
 	{
 		private static BullseyeSystemConfig configSystem;
 
+		// 2.4.0-rc.4 - could this potentially cause Harmony patches to crash, somehow? Commented this whole thing out, just in case
 		private static void BaseGetHeldItemInfo(object instance, ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
 			throw new NotImplementedException("Called unpatched BaseGetHeldItemInfo stub in ItemArrowPatch!");
@@ -155,7 +151,7 @@ namespace Bullseye
 			ReversePatcher reversePatcher = harmony.CreateReversePatcher(typeof(CollectibleObject).GetMethod("GetHeldItemInfo"), 
 				new HarmonyMethod(typeof(ItemArrowPatch).GetMethod("BaseGetHeldItemInfo", BindingFlags.Static | BindingFlags.NonPublic)));
 			
-			//reversePatcher.Patch(HarmonyReversePatchType.Original); // Crashes since 1.17, probably because new Harmony version :(
+			//reversePatcher.Patch(HarmonyReversePatchType.Snapshot); // Crashes since 1.17, probably because new Harmony version :(
 			reversePatcher.Patch(HarmonyReversePatchType.Original);
 
 			harmony.Patch(typeof(ItemArrow).GetMethod("GetHeldItemInfo"),
@@ -169,7 +165,7 @@ namespace Bullseye
 		{
 			BaseGetHeldItemInfo(__instance, inSlot, dsc, world, withDebugInfo);
 
-			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * configSystem.GetSyncedConfig().ArrowDamage;
+			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * configSystem?.GetSyncedConfig().ArrowDamage ?? 1f;
 			if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("game:piercing-damage"));
 
 			if (inSlot.Itemstack.Collectible.Attributes.KeyExists("averageLifetimeDamage"))
@@ -190,5 +186,5 @@ namespace Bullseye
 		{
 			configSystem = null;
 		}
-	}
+	}*/
 }

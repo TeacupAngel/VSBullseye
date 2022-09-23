@@ -33,6 +33,7 @@ namespace AngelConfig
 
 		public string Code {get; protected set;}
 		public string Name {get; protected set;}
+		// Replace with proper delegates
 		public System.Func<string> Get {get; protected set;}
 		public System.Func<CmdArgs, string> Set {get; protected set;}
 
@@ -41,9 +42,9 @@ namespace AngelConfig
 
 	public class AngelConfigSettingSimpleFloat : AngelConfigSetting
 	{
-		public AngelConfigSettingSimpleFloat(string code, string name, string propertyName, float minValue = float.MinValue, float maxValue = float.MaxValue) : base(code, name, null, null)
+		public AngelConfigSettingSimpleFloat(string code, string name, float minValue = float.MinValue, float maxValue = float.MaxValue) : base(code, name, null, null)
 		{
-			Get = () => {return Config.GetType().GetProperty(propertyName).GetValue(Config).ToString();};
+			Get = () => {return Config.GetType().GetProperty(code).GetValue(Config).ToString();};
 			Set = (args) => 
 				{
 					if (args.Length > 0)
@@ -52,7 +53,7 @@ namespace AngelConfig
 
 						if (param.HasValue)
 						{
-						    PropertyInfo propertyInfo = Config.GetType().GetProperty(propertyName);
+						    PropertyInfo propertyInfo = Config.GetType().GetProperty(code);
 
 							propertyInfo.SetValue(Config, GameMath.Clamp(param.Value, minValue, maxValue));
 							return propertyInfo.GetValue(Config).ToString();

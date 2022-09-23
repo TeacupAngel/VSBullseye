@@ -14,6 +14,21 @@
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-steel", "value": 7 },
 
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/damageByType/*-obsidian", "value": 4 },
+	
+	/* These aren't normally needed and are here only as fall-back in case Bullseye's own display fails */
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-crude", "value": 0.5 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-flint", "value": 0.32 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-copper", "value": 0.156 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-bismuthbronze", "value": 0.078 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-tinbronze", "value": 0.088 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-blackbronze", "value": 0.075 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-gold", "value": 0.069 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-silver", "value": 0.069 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-iron", "value": 0.054 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-meteoriciron", "value": 0.042 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-steel", "value": 0.0225 },
+
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/breakChanceOnImpactByType/*-obsidian", "value": 0.26 },
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType", "value": 

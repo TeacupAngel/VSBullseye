@@ -1,3 +1,35 @@
+= 2.4.0 =
+
+(since 2.4.0-rc.4)
+
+- Compatibility with Black Sand Megapatch mod
+
+
+= 2.4.0-rc.4 =
+
+- One more measure to fix the frozen spear bug
+
+= 2.4.0-rc.3 =
+
+- Another attempt at fixing the frozen spear bug
+- New model for iron, meteoric, and steel spears
+- Fixed incorrect inventory and ground storage positions for iron, meteoric, and steel spears
+- Fixed incorrect reticle texture for longbows
+- Fixed spear attack sound pitch
+
+= 2.4.0-rc.2 =
+
+- Fixed frozen spear fix accidentally disabling a part of the reticle sway code
+- FoV fix is now properly applied to slings as well
+- Improvements in compatibility with other mods
+- JSON format standardised to work with tools not familiar with JSON5
+
+= 2.4.0-rc.1 =
+
+- Hopefully fixed floating spear bug
+- Fixed higher FOV making it harder to aim
+- Added safe guards against crashes caused by incompatible mods
+
 = 2.4.0-pre.1 =
 
 - Significantly improved debugging information

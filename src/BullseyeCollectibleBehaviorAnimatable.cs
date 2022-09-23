@@ -10,12 +10,6 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Config;
 
-using Vintagestory.GameContent;
-
-using Vintagestory.Client.NoObf;
-
-using HarmonyLib;
-
 namespace Bullseye
 {
 	public class BullseyeCollectibleBehaviorAnimatable : CollectibleBehavior, ITexPositionSource
@@ -55,20 +49,17 @@ namespace Bullseye
 				IAsset texAsset = capi.Assets.TryGet(texturePath.Clone().WithPathPrefixOnce("textures/").WithPathAppendixOnce(".png"));
 				if (texAsset != null)
 				{
-					//BitmapRef bmp = texAsset.ToBitmap(capi);
-					//curAtlas.InsertTextureCached(texturePath, bmp, out _, out texpos);
 					curAtlas.GetOrInsertTexture(texturePath, out _, out texpos);
 				}
 				else
 				{
-					capi.World.Logger.Warning("AnimatableCollectible: Item {0} defined texture {1}, not no such texture found.", collObj.Code, texturePath);
+					capi.World.Logger.Warning("Bullseye.CollectibleBehaviorAnimatable: Item {0} defined texture {1}, not no such texture found.", collObj.Code, texturePath);
 				}
 			}
 
 			return texpos;
 		}
 
-		// CollectibleBehaviorAnimatable
 		public BullseyeCollectibleBehaviorAnimatable(CollectibleObject collObj) : base(collObj)
 		{
 		}
@@ -80,9 +71,6 @@ namespace Bullseye
 		protected ICoreClientAPI capi;
 		protected Shape currentShape;
 		protected MeshRef currentMeshRef;
-
-		//protected AnimatorBase currentAnimator;
-		//protected Dictionary<string, AnimationMetaData> currentActiveAnimationsByAnimCode = new Dictionary<string, AnimationMetaData>();
 
 		protected string animatedShapePath;
 		protected bool onlyWhenAnimating;
@@ -112,6 +100,9 @@ namespace Bullseye
 
 				InitAnimatable();
 
+				// Don't bother registering a renderer if we can't get the proper data. Should hopefully save us from some crashes
+				if (Animator is null || currentMeshRef is null) return;
+
 				capi.Event.RegisterItemstackRenderer(collObj, (inSlot, renderInfo, modelMat, posX, posY, posZ, size, color, rotate, showStackSize) => RenderHandFp(inSlot, renderInfo, modelMat, posX, posY, posZ, size, color, rotate, showStackSize), EnumItemRenderTarget.HandFp);
 			}
 		}
@@ -124,8 +115,9 @@ namespace Bullseye
 
 			AssetLocation loc = animatedShapePath != null ? new AssetLocation(animatedShapePath) : item.Shape.Base.Clone();
 			loc = loc.WithPathAppendixOnce(".json").WithPathPrefixOnce("shapes/");
-			//currentShape = capi.Assets.TryGet(loc)?.ToObject<Shape>();
 			currentShape = Shape.TryGet(capi, loc);
+
+			if (currentShape is null) return;
 
 			Vec3f rendererRot = new Vec3f(0f, 1f, 0f);
 
@@ -135,7 +127,6 @@ namespace Bullseye
 			Animator = GetAnimator(capi, cacheKey, currentShape);
 		}
 
-		// adapted from: public MeshData InitializeAnimator(string cacheDictKey, Shape shape, ITexPositionSource texSource, Vec3f rotation)
 		public MeshData InitializeMeshData(string cacheDictKey, Shape shape, ITexPositionSource texSource)
 		{
 			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented yet.");
@@ -144,47 +135,13 @@ namespace Bullseye
 
 			MeshData meshdata;
 
-			/*if (shape == null)
-			{
-				IAsset asset = capi.Assets.TryGet(item.Shape.Base.Clone().WithPathPrefixOnce("shapes/").WithPathAppendixOnce(".json"));
-				shape = asset.ToObject<Shape>();
-			}*/
-
 			shape.ResolveReferences(capi.World.Logger, cacheDictKey);
 			CacheInvTransforms(shape.Elements);
 			shape.ResolveAndLoadJoints();
 
-			//capi.Tesselator.TesselateShapeWithJointIds("collectible", shape, out meshdata, texSource, null, item.Shape.QuantityElements, item.Shape.SelectiveElements);
 			capi.Tesselator.TesselateShapeWithJointIds("collectible", shape, out meshdata, texSource, null);
 
-			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented yet.");
-
-			//InitializeAnimator(cacheDictKey, meshdata, shape, rotation);
-
 			return meshdata;
-		}
-
-		//public void InitializeAnimator(string cacheDictKey, MeshData meshdata, Shape shape, Vec3f rotation) 
-		public AnimatorBase InitializeAnimator(string cacheDictKey, MeshData meshdata, Shape shape, Vec3f rotation) 
-		{
-			if (meshdata == null)
-			{
-				throw new ArgumentException("meshdata cannot be null");
-			}
-
-			AnimatorBase animator = GetAnimator(capi, cacheDictKey, shape);
-			
-			/*if (RuntimeEnv.MainThreadId == System.Threading.Thread.CurrentThread.ManagedThreadId)
-			{
-				currentMeshRef = capi.Render.UploadMesh(meshdata);
-			} else
-			{
-				capi.Event.EnqueueMainThreadTask(() => {
-					currentMeshRef = capi.Render.UploadMesh(meshdata);
-				}, "uploadmesh");
-			}*/
-
-			return animator;
 		}
 
 		public MeshRef InitializeMeshRef(MeshData meshdata) 
@@ -292,7 +249,7 @@ namespace Bullseye
 
 		public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
 		{
-			if (capi.IsGamePaused || target != EnumItemRenderTarget.HandFp) return; // We don't get entity here, so only do it for the FP target
+			if (Animator is null || capi.IsGamePaused || target != EnumItemRenderTarget.HandFp) return; // We don't get entity here, so only do it for the FP target
 
 			if (ActiveAnimationsByAnimCode.Count > 0 || Animator.ActiveAnimationCount > 0)
 			{
@@ -344,7 +301,6 @@ namespace Bullseye
 				Vec4f outPos = new Vec4f();
 				float[] array = Mat4f.Create();
 				Mat4f.RotateY(array, array, capi.World.Player.Entity.SidedPos.Yaw);
-				//Mat4f.RotateX(array, array, (float)capi.World.Player.CameraPitch);
 				Mat4f.RotateX(array, array, capi.World.Player.Entity.SidedPos.Pitch);
 				Mat4f.Mul(array, array, modelMat.Values);
 				tmpVals[0] = capi.Render.ShaderUniforms.LightPosition3D.X;

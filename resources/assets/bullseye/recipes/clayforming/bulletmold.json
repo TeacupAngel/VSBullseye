@@ -1,6 +1,6 @@
 {
-	ingredient: { "type": "item", "code": "game:clay-*", "name": "type", allowedVariants: ["blue", "fire"] },
-	pattern: [[
+	"ingredient": { "type": "item", "code": "game:clay-*", "name": "type", "allowedVariants": ["blue", "fire"] },
+	"pattern": [[
 		"##############",
 		"##############",
 		"##############",
@@ -49,6 +49,6 @@
 		"##############",
 	]*/],
 	"name": "Bullet Mold",
-	output: { "type": "block", "code": "bullseye:toolmold-raw-bullets"  },
-	enabled: false
+	"output": { "type": "block", "code": "bullseye:toolmold-raw-bullets"  },
+	"enabled": true
 }

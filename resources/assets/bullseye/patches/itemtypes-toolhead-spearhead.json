@@ -2,9 +2,9 @@
 	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/variantgroups/0/states/-", "value": "iron" },
 	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/variantgroups/0/states/-", "value": "meteoriciron" },
 	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/variantgroups/0/states/-", "value": "steel" },
-	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/shapeByType/spearhead-iron", "value": { "base": "item/tool/spearhead-metal" } },
-	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/shapeByType/spearhead-meteoriciron", "value": { "base": "item/tool/spearhead-metal" } },
-	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/shapeByType/spearhead-steel", "value": { "base": "item/tool/spearhead-metal" } },
+	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/shapeByType/spearhead-iron", "value": { "base": "bullseye:item/tool/spear/spearhead-iron" } },
+	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/shapeByType/spearhead-meteoriciron", "value": { "base": "bullseye:item/tool/spear/spearhead-iron" } },
+	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/shapeByType/spearhead-steel", "value": { "base": "bullseye:item/tool/spear/spearhead-iron" } },
 
 	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "move", "frompath": "/guiTransformByType/*", "path": "/move-temp"},
 	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "add", "path": "/guiTransformByType/@*-(iron|meteoriciron|steel)", "value": 

@@ -93,7 +93,8 @@ namespace Bullseye
 
 			byEntity.StartAnimation("throw");
 
-			byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.5f);
+			float pitch = (byEntity as EntityPlayer)?.talkUtil.pitchModifier ?? 1f;
+            byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, pitch * 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.35f);
 		}
 
 		// Spear melee specific
@@ -110,7 +111,8 @@ namespace Bullseye
 
 				if (byEntity.Controls.HandUse == EnumHandInteract.HeldItemAttack)
 				{
-					byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.5f);
+					float pitch = (byEntity as EntityPlayer).talkUtil.pitchModifier;
+					byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, pitch * 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.35f);
 				}
 			}, 464);
 

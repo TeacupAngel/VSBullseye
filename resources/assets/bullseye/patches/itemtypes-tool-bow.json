@@ -61,7 +61,7 @@
 				"zeroingAngle": 1,
 
 				"aimTexPartChargePath": "bullseye:gui/aimarrowpart.png",
-				"aimTexFullChargPath": "bullseye:gui/aimarrowfull.png",
+				"aimTexFullChargePath": "bullseye:gui/aimarrowfull.png",
 
 				"aimFullChargeLeeway": 0.6,
 				"allowSprint": false,

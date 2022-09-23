@@ -270,12 +270,12 @@ namespace Bullseye
 					// - Show yellow "partial charge" reticle if the bow is ready for a snap shot, but accuracy is still poor
 					// --- OR if the weapon was held so long that accuracy is starting to get bad again, for weapons that have it
 					// - Show red "blocked" reticle if the weapon can't shoot yet
-					bool showBlocked = secondsUsed < GetEntityChargeTime(byEntity) + 0.1f;
+					bool showBlocked = secondsUsed < GetEntityChargeTime(byEntity);
 					bool showPartCharged = secondsUsed < WeaponStats.accuracyStartTime / byEntity.Stats.GetBlended("rangedWeaponsSpeed") + WeaponStats.aimFullChargeLeeway;
 					showPartCharged = showPartCharged || secondsUsed > WeaponStats.accuracyOvertimeStart + WeaponStats.accuracyStartTime && WeaponStats.accuracyOvertime > 0;
 
-					CoreClientSystem.ReadinessState = showBlocked ? BullseyeSystemClientAiming.EnumReadinessState.Blocked : 
-														showPartCharged ? BullseyeSystemClientAiming.EnumReadinessState.PartCharge : BullseyeSystemClientAiming.EnumReadinessState.FullCharge;
+					CoreClientSystem.WeaponReadiness = showBlocked ? EnumWeaponReadiness.Blocked : 
+														showPartCharged ? EnumWeaponReadiness.PartCharge : EnumWeaponReadiness.FullCharge;
 				}
 			}
 			
@@ -607,8 +607,10 @@ namespace Bullseye
 			return interactions?.Append(base.GetHeldInteractionHelp(inSlot));
 		}
 
-		public void Dispose()
+		public override void OnUnloaded(ICoreAPI api)
 		{
+			base.OnUnloaded(api);
+
 			AimTexFullCharge?.Dispose();
 			AimTexPartCharge?.Dispose();
 			AimTexBlocked?.Dispose();

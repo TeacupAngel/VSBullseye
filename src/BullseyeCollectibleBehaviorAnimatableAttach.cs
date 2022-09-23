@@ -32,7 +32,7 @@ namespace Bullseye
 
 		public void SetAttachedRenderInfo(ItemRenderInfo renderInfo)
 		{
-			if (capi == null) return; // Client-only for now 
+			if (capi == null) return;
 
 			AttachedRenderInfo = renderInfo;
 		}
