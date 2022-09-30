@@ -1,0 +1,21 @@
+[
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "replace", "path": "/class", value: "bullseye.ItemBullet" },
+
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/attributes/ammoType", "value": "slingbullet" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/attributes/entityCode", "value": "bullseye:bullet-{material}" },
+
+	// Copied straight from the vanilla file
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/creativeinventory", "value": { "general": ["*"], "items": ["*"], "tools": ["*"] } },
+	
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "replace", "path": "/attributes/damageByType", "value": 
+		{
+			"*-lead" : 7
+		}
+	},
+
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "replace", "path": "/attributes/breakChanceOnImpactByType", "value": 
+		{
+			"*-lead" : 1
+		}
+	},
+]

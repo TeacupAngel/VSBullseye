@@ -10,8 +10,6 @@ using Vintagestory.API.Datastructures;
 using ProtoBuf;
 using System.Reflection;
 
-using HarmonyLib;
-
 namespace Bullseye
 {
 	public class BullseyeSystemAnimatable : ModSystem

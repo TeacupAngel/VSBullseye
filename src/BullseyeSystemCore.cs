@@ -16,26 +16,31 @@ namespace Bullseye
 		private Harmony harmony;
 		private readonly string harmonyId = "vs.teacupangel.bullseye";
 
+		private ICoreAPI api;
+
 		public override void StartPre(ICoreAPI api)
 		{
+			this.api = api;
+			api.Logger.Notification("[Bullseye] Starting Harmony instance");
+
 			harmony = new Harmony(harmonyId);
 		}
 
 		public override void Start(ICoreAPI api)
 		{
-			ClassRegistry classRegistry = Traverse.Create(api.ClassRegistry).Field<ClassRegistry>("registry").Value;
-
-			RegisterItems(classRegistry);
-			RegisterEntityBehaviors(classRegistry);
+			RegisterItems(api);
+			RegisterEntityBehaviors(api);
 		}
 
 		public override void StartServerSide(ICoreServerAPI sapi)
 		{
+			api.Logger.Notification("[Bullseye] Applying server-side Harmony patches");
 			HarmonyPatches.PatchManager.PatchServerside(harmony, sapi);
 		}
 
 		public override void StartClientSide(ICoreClientAPI capi)
 		{
+			api.Logger.Notification("[Bullseye] Applying client-side Harmony patches");
 			HarmonyPatches.PatchManager.PatchClientside(harmony, capi);
 
 			capi.Input.RegisterHotKey("bullseye.ammotypeselect", Lang.Get("bullseye:select-ammo"), GlKeys.F, HotkeyType.GUIOrOtherControls);
@@ -43,20 +48,25 @@ namespace Bullseye
 			capi.Gui.RegisterDialog(new BullseyeGuiDialogAmmoSelect(capi));
 		}
 
-		private void RegisterItems(ClassRegistry classRegistry)
+		private void RegisterItems(ICoreAPI api)
 		{
-			classRegistry.ItemClassToTypeMapping["ItemBow"] = typeof(Bullseye.BullseyeItemBow);
-			classRegistry.ItemClassToTypeMapping["ItemSpear"] = typeof(Bullseye.BullseyeItemSpear);
-			classRegistry.ItemClassToTypeMapping["ItemSling"] = typeof(Bullseye.BullseyeItemSling);
+			api.RegisterItemClass("bullseye.ItemBow", typeof(Bullseye.BullseyeItemBow));
+			api.RegisterItemClass("bullseye.ItemSpear", typeof(Bullseye.BullseyeItemSpear));
+			api.RegisterItemClass("bullseye.ItemSling", typeof(Bullseye.BullseyeItemSling));
+
+			api.RegisterItemClass("bullseye.ItemArrow", typeof(Bullseye.BullseyeItemArrow));
+			api.RegisterItemClass("bullseye.ItemBullet", typeof(Bullseye.BullseyeItemBullet));
 		}
 
-		private void RegisterEntityBehaviors(ClassRegistry classRegistry)
+		private void RegisterEntityBehaviors(ICoreAPI api)
 		{
-			classRegistry.RegisterentityBehavior("bullseye.aimingaccuracy", typeof(Bullseye.BullseyeEntityBehaviorAimingAccuracy));
+			api.RegisterEntityBehaviorClass("bullseye.aimingaccuracy", typeof(Bullseye.BullseyeEntityBehaviorAimingAccuracy));
 		}
 
 		public override void Dispose()
 		{
+			api.Logger.Notification("[Bullseye] Unpatching and disposing of Harmony");
+
 			harmony?.UnpatchAll(harmonyId);
 			harmony = null;
 

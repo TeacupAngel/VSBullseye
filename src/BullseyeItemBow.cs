@@ -226,10 +226,15 @@ namespace Bullseye
 
 		public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
+			string entityCode = ammoSlot.Itemstack.Collectible.Attributes["entityCode"].AsString();
+
+			if (entityCode is not null) return byEntity.World.GetEntityType(new AssetLocation(entityCode));
+
+			// Fallback for modded arrows that aren't made explicitly compatible
 			return byEntity.World.GetEntityType(new AssetLocation("arrow-" + ammoSlot.Itemstack.Collectible.Variant["material"]));
 		}
 
-		public override int GetWeaponDamageOnShot(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		public override int GetWeaponDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			return 1;
 		}

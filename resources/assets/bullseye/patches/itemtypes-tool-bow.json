@@ -1,4 +1,6 @@
 [ 
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", value: "bullseye.ItemBow" },
+
 	{ 
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/bullseyeWeaponStatsByType", "value": 
 		{
@@ -13,7 +15,7 @@
 				"accuracyOvertimeStart": 8,
 				"accuracyMovePenalty": 1,
 
-				"projectileSpread": 1,
+				"projectileSpread": 0.6,
 				"zeroingAngle": 1.5,
 
 				"aimTexPartChargePath": "bullseye:gui/aimarrowpart.png",
@@ -94,7 +96,10 @@
 		},
 	},
 
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-crude" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-simple" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-long" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-recurve" },
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/damagePercentByType", "value": 

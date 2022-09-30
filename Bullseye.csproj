@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyTitle>Bullseye</AssemblyTitle>
         <Authors>TeacupAngel</Authors>
-        <Version>2.4.0-rc.4</Version>
+        <Version>2.4.0</Version>
         <Description>A vanilla-friendly rebalance and overhaul of ranged weapons.</Description>
         <RepositoryUrl>https://github.com/Rahjital/VSBullseye</RepositoryUrl>
         <TargetFramework>net461</TargetFramework>
@@ -10,7 +10,7 @@
     </PropertyGroup>
     <PropertyGroup>
         <ModId>bullseye</ModId>
-        <VSVersion>1.17.3</VSVersion>
+        <VSVersion>1.17.4</VSVersion>
         <ModWebsite>https://mods.vintagestory.at/bullseye</ModWebsite>
     </PropertyGroup>
     <ItemGroup>

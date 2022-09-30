@@ -1,18 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Vintagestory.Common;
-using Vintagestory.Client.NoObf;
 using Vintagestory.API.Common;
-using Vintagestory.API.Common.Entities;
-using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.API.Client;
-using ProtoBuf;
-
-using HarmonyLib;
-
-using Cairo;
 
 namespace Bullseye
 {

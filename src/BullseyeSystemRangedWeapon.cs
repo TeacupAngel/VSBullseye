@@ -16,8 +16,6 @@ using Vintagestory.GameContent;
 using ProtoBuf;
 using System.Reflection;
 
-using HarmonyLib;
-
 using Cairo;
 
 namespace Bullseye

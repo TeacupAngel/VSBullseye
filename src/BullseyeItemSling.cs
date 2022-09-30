@@ -186,10 +186,12 @@ namespace Bullseye
 
 		public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			return byEntity.World.GetEntityType(new AssetLocation("thrownstone-" + ammoSlot.Itemstack.Collectible.Variant["rock"]));
+			string entityCode = ammoSlot.Itemstack.Collectible.Attributes["entityCode"].AsString();
+
+			return (entityCode is not null) ? byEntity.World.GetEntityType(new AssetLocation(entityCode)) : null;
 		}
 
-		public override int GetWeaponDamageOnShot(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		public override int GetWeaponDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			return 1;
 		}

@@ -69,14 +69,17 @@ namespace Bullseye
 			return 0.3f;
 		}
 
-		public override int GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		public override int GetProjectileDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			return 3;
 		}
 
 		public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			return byEntity.World.GetEntityType(new AssetLocation(Attributes["spearEntityCode"].AsString()));
+			// Accept either Bullseye entityCode, or vanilla spearEntityCode
+			string entityCode = Attributes["entityCode"].AsString() ?? Attributes["spearEntityCode"].AsString();
+
+			return byEntity.World.GetEntityType(new AssetLocation(entityCode));
 		}
 
 		public override void OnShot(ItemSlot slot, Entity projectileEntity, EntityAgent byEntity) 

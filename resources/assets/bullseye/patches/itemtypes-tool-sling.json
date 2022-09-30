@@ -1,4 +1,6 @@
 [
+	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "replace", "path": "/class", value: "bullseye.ItemSling" },
+
 	{ 
 		"side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
@@ -12,7 +14,7 @@
 			"verticalLimit": 0.05,
         	"verticalOffset": 0,
 
-			"projectileVelocity": 27.5,
+			"projectileVelocity": 27,
 
 			"chargeTime": 0.9,
 			"accuracyStartTime": 1.5,

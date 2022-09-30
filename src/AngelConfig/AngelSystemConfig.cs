@@ -44,7 +44,7 @@ namespace AngelConfig
 
 		public override double ExecuteOrder()
 		{
-			return 0.05;
+			return 0.001;
 		}
 
 		public override bool ShouldLoad(EnumAppSide forSide)
@@ -290,7 +290,7 @@ namespace AngelConfig
 
 					if (setting.Get is null)
 					{
-						CommandUniversalMessage($"{Mod.Info.Name}: cannot use get with'{code}'", EnumChatType.CommandSuccess, api, player, groupId);
+						CommandUniversalMessage($"{Mod.Info.Name}: cannot use get with '{code}'", EnumChatType.CommandSuccess, api, player, groupId);
 
 						return;
 					}

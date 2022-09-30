@@ -226,8 +226,11 @@ namespace Bullseye
 				return;
 			}
 
-			ItemSlot invslot = GetNextAmmoSlot(byEntity, slot, true);
-			if (invslot == null) return;
+			ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot, true);
+			if (ammoSlot == null) return;
+
+			EntityProperties projectileEntity = GetProjectileEntityType(byEntity, slot, ammoSlot);
+			if (projectileEntity == null) return;
 
 			if (byEntity.World is IClientWorldAccessor)
 			{
@@ -344,6 +347,16 @@ namespace Bullseye
 			return 0f;
 		}
 
+		public virtual float GetProjectileSpeed(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		{
+			return WeaponStats.projectileVelocity + (ammoSlot.Itemstack?.Collectible.Attributes?["speedModifier"].AsFloat(0f) ?? 0f);
+		}
+
+		public virtual float GetProjectileSpread(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		{
+			return WeaponStats.projectileSpread + (ammoSlot.Itemstack?.Collectible.Attributes?["spreadModifier"].AsFloat(0f) ?? 0f);
+		}
+
 		public virtual float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			return 1.1f;
@@ -354,7 +367,7 @@ namespace Bullseye
 			return 0.1f;
 		}
 
-		public virtual int GetProjectileDamageOnImpact(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		public virtual int GetProjectileDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			return 0;
 		}
@@ -364,7 +377,7 @@ namespace Bullseye
 			throw new NotImplementedException(String.Format("Item {0} does not have implementation for GetProjectileEntityType()!", Code));
 		}
 
-		public virtual int GetWeaponDamageOnShot(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		public virtual int GetWeaponDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			return 0;
 		}
@@ -419,23 +432,26 @@ namespace Bullseye
 			if (ammoSlot == null) return;
 
 			float damage = GetProjectileDamage(byEntity, slot, ammoSlot);
+			float speed = GetProjectileSpeed(byEntity, slot, ammoSlot);
+			float spread = GetProjectileSpread(byEntity, slot, ammoSlot);
 			float dropChance = GetProjectileDropChance(byEntity, slot, ammoSlot);
 			float weight = GetProjectileWeight(byEntity, slot, ammoSlot);
-			bool damageStackOnImpact = GetProjectileDamageOnImpact(byEntity, slot, ammoSlot) > 0;
+			int ammoDurabilityCost = GetProjectileDurabilityCost(byEntity, slot, ammoSlot);
 
 			EntityProperties type = GetProjectileEntityType(byEntity, slot, ammoSlot);
+			if (type == null) return;
 
-			int weaponDamage = GetWeaponDamageOnShot(byEntity, slot, ammoSlot);
+			int weaponDurabilityCost = GetWeaponDurabilityCost(byEntity, slot, ammoSlot);
 
 			// If we need to damage the projectile by more than 1 durability per shot, do it here, but leave at least 1 durability
-			if (GetProjectileDamageOnImpact(byEntity, slot, ammoSlot) > 1)
+			if (GetProjectileDurabilityCost(byEntity, slot, ammoSlot) > 1)
 			{
 				int durability = slot.Itemstack.Attributes.GetInt("durability", Durability);
 
-				int projectileDamage = GetProjectileDamageOnImpact(byEntity, slot, ammoSlot) - 1;
-				projectileDamage = projectileDamage >= durability ? durability - 1 : projectileDamage;
+				ammoDurabilityCost--;
+				ammoDurabilityCost = ammoDurabilityCost >= durability ? durability - 1 : ammoDurabilityCost;
 
-				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, projectileDamage);
+				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, ammoDurabilityCost);
 			}
 
 			ItemStack stack = ammoSlot.TakeOut(1);
@@ -454,7 +470,7 @@ namespace Bullseye
 				entityProjectile.Damage = damage;
 				entityProjectile.ProjectileStack = stack;
 				entityProjectile.DropOnImpactChance = dropChance;
-				entityProjectile.DamageStackOnImpact = damageStackOnImpact;
+				entityProjectile.DamageStackOnImpact = ammoDurabilityCost > 0;
 				entityProjectile.Weight = weight;
 			}
 			else if (projectileEntity is EntityThrownStone entityThrownStone)
@@ -487,14 +503,14 @@ namespace Bullseye
 			Vec3d perp2 = zeroedTargetVec.Cross(perp);
 
 			double angle = spreadAngle * (GameMath.PI * 2f);
-			double offsetAngle = spreadMagnitude *  WeaponStats.projectileSpread * GameMath.DEG2RAD;
+			double offsetAngle = spreadMagnitude * spread * GameMath.DEG2RAD;
 
 			double magnitude = GameMath.Tan(offsetAngle);
 
 			Vec3d deviation = magnitude * perp * GameMath.Cos(angle) + magnitude * perp2 * GameMath.Sin(angle);
 			Vec3d newAngle = (zeroedTargetVec + deviation) * (zeroedTargetVec.Length() / (zeroedTargetVec.Length() + deviation.Length()));
 
-			Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (WeaponStats.projectileVelocity * GlobalConstants.PhysicsFrameTime);
+			Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (speed * GlobalConstants.PhysicsFrameTime);
 
 			// What the heck? Server's SidedPos.Motion is somehow twice that of client's!
 			velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
@@ -530,9 +546,9 @@ namespace Bullseye
 
 			OnShot(slot, projectileEntity, byEntity);
 
-			if (weaponDamage > 0)
+			if (weaponDurabilityCost > 0)
 			{
-				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, weaponDamage);
+				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, weaponDurabilityCost);
 			}
 		}
 

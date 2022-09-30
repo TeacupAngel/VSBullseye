@@ -323,8 +323,6 @@ namespace Bullseye
 			WeaponStats = null;
 			noisegen = null;
 			unproject = null;
-
-			base.Dispose();
 		}
 	}
 }

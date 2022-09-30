@@ -1,0 +1,12 @@
+[
+	{
+		ingredientPattern: "A	F",
+		ingredients: {
+			"A": { "type": "item", "code": "game:arrow-crude" },
+			"F": { "type": "item", "code": "game:feather" }
+		},
+		width: 1,
+		height: 2,
+		output: { "type": "item", "code": "game:arrow-flint", "quantity": 1  }
+	}
+]

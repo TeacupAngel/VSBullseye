@@ -5,7 +5,7 @@
 
 	"bullseye:block-toolmold-raw-bullets": "Raw bullet mold",
 	"bullseye:block-toolmold-burned-bullets": "Bullet mold",
-	"bullseye:blockcraftdesc-toolmold-raw-bullets": "For casting sling bullets out of lead. Useless if you can't craft a Malefactor sling!",
+	"bullseye:blockcraftdesc-toolmold-raw-bullets": "For casting sling bullets out of lead. Useless if you can't make a Malefactor sling!",
 	"bullseye:blockdesc-toolmold-burned-bullets": "A mold for creating sling bullets. Only useful to Malefactors who can craft a sling.",
 
 	"game:item-spear-iron": "Iron spear",
@@ -19,16 +19,21 @@
 	"game:item-arrow-obsidian": "Obsidian arrow",
 	"game:item-arrowhead-obsidian": "Obsidian arrow head",
 
+	"game:itemdesc-arrow-crude": "Inexpensive, but an arrow without fletching will rarely fly true.",
+
 	"game:itemdesc-bow-crude": "Does not always shoot straight, but still serviceable.",
 	"game:itemdesc-bow-long": "Slow, but far-reaching and powerful.",
 	"game:itemdesc-bow-recurve": "A strong bow for those who prefer shooting on the move.",
 
 	"bullseye:weapon-bonus-damage-ranged": "{0}% piercing damage",
 
-	"bullseye:weapon-ranged-total-damage": "{0:0.##} damage with your {1} and your class",
+	"bullseye:weapon-ranged-total-damage": "{0:0.##} damage and {1:0.#}% chance to break with your {2} and your class",
+	"bullseye:weapon-ranged-total-damage-no-drops": "{0:0.##} damage with your {1} and your class",
 
-	"bullseye:damage-with-sling": "{0} damage when shot from sling",
-	"bullseye:lifetime-projectile-damage": "Average {0} damage per arrow before breaking",
+	"bullseye:damage-with-sling": "{0} damage when thrown with sling",
+	"bullseye:lifetime-projectile-damage": "Average {0} damage per ammo before breaking",
+	"bullseye:projectile-break-chance": "{0:0.#}% base chance to break",
+	"bullseye:projectile-always-breaks": "Always breaks on impact.",
 
 	"bullseye:select-ammo": "Bullseye: Select Ranged Weapon Ammo",
 }

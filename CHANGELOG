@@ -2,8 +2,18 @@
 
 (since 2.4.0-rc.4)
 
+- Add lead sling bullets, and bullet molds to cast them in
+--- Lead bullets are faster, stronger, and more accurate ammunition than stones
+- Meteoric iron sling stone damage increased to 6
+- Crude arrows now have an accuracy penalty; crude bow accuracy increased to compensate
+- Crude arrows can now be upgraded to flint arrows by adding feathers
+- All other arrows can be upgraded by adding a new arrowhead (old arrowhead is lost)
+- Custom ammo item readout re-added, now shows break chance in percent instead of lifetime projectile damage
+- No longer replaces vanilla bow/spear/sling code
 - Compatibility with Black Sand Megapatch mod
-
+- API: Can now define projectile entity, spread, and speed per ammo type
+- API: Renamed GetProjectileDamageOnImpact to GetProjectileDurabilityCost
+- API: Renamed GetWeaponDamageOnShot to GetWeaponDurabilityCost
 
 = 2.4.0-rc.4 =
 

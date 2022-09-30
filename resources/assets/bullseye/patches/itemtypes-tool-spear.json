@@ -1,5 +1,7 @@
 [ 
-	{ 
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", value: "bullseye.ItemSpear" },
+
+	{
 		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
 			"cooldownTime": 1.5, 
