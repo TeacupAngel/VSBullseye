@@ -1,12 +1,12 @@
 [
 	{
-		ingredientPattern: "H	A",
-		ingredients: {
+		"ingredientPattern": "H	A",
+		"ingredients": {
 			"H": { "type": "item", "code": "game:arrowhead-*", "name": "metal" },
 			"A": { "type": "item", "code": "game:arrow-*", allowedVariants: ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "gold", "silver", "iron", "meteoriciron", "steel" ] },
 		},
-		width: 1,
-		height: 2,
-		output: { "type": "item", "code": "game:arrow-{metal}" }
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{metal}" }
 	}
 ]

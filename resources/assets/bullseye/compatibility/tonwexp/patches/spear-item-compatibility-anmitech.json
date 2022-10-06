@@ -1,5 +1,7 @@
 [
 	// AnMiTech spear
+	{ "side": "Server", "file": "tonwexp:itemtypes/spear", "op": "replace", "path": "/class", value: "bullseye.ItemSpear" },
+
 	{ 
 		"side": "Server", "file": "tonwexp:itemtypes/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
@@ -50,6 +52,8 @@
 	{ "side": "Server", "file": "tonwexp:itemtypes/spear", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" },
 
 	// AnMiTech pilum
+	{ "side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "replace", "path": "/class", value: "bullseye.ItemSpear" },
+
 	{ 
 		"side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{

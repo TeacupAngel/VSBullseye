@@ -1,3 +1,9 @@
+= 2.4.1 =
+
+- Added knapping recipe for 8 flint and obsidian arrowheads
+- Fixed compatibility with Weapons Pack Gamma and AnMiTech
+- Fixed potential crash when loading a stream is cancelled partway through
+
 = 2.4.0 =
 
 (since 2.4.0-rc.4)

@@ -311,8 +311,12 @@ namespace Bullseye
 		// ---
 		public override void Dispose()
 		{
-			capi.Event.UnregisterRenderer(reticleRenderer, EnumRenderStage.Ortho);
-			reticleRenderer = null;
+			// Can be null when loading a world aborts partway through
+			if (reticleRenderer != null)
+			{
+				capi.Event.UnregisterRenderer(reticleRenderer, EnumRenderStage.Ortho);
+				reticleRenderer = null;
+			}
 
 			capi = null;
 

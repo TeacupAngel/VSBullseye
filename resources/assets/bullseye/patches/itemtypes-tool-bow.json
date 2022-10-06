@@ -125,6 +125,7 @@
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
 		{
 			"name": "Bullseye_AnimatableAttach",
+			/*"name": "AnimatableWithAttach",*/
 			"properties": {
 				"animatedShape": "bullseye:item/tool/bow/{type}-animated",
 				"onlyWhenAnimating": false

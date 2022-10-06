@@ -1,0 +1,17 @@
+{
+	"ingredient": { "type": "item", "code": "game:flint" },
+	"pattern": [[
+		"____##_#_#",
+		"_#_##__###",
+		"###_##__#_",
+		"#_#____#_#",
+		"_#_____###",
+		"###_____#_",
+		"#_#____#_#",
+		"_#__##_###",
+		"###__##_#_",
+		"#_#_##____",
+	]],
+	"name": "8 Arrowheads",
+	"output": { "type": "item", "code": "game:arrowhead-flint", stacksize: 8  }
+}
