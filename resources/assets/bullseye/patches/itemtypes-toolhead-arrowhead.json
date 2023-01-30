@@ -18,5 +18,5 @@
 			"scale": 5.46
 		} 
 	},
-	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "move", "frompath": "/move-temp", "path": "/guiTransformByType/*"},
+	{ "side": "Server", "file": "game:itemtypes/toolhead/arrowhead", "op": "move", "frompath": "/move-temp", "path": "/guiTransformByType/*"}
 ]

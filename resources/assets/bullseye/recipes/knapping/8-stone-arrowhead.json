@@ -1,5 +1,5 @@
 {
-	"ingredient": { "type": "item", "code": "game:stone-*", "name": "rock", allowedVariants: ["obsidian"] },
+	"ingredient": { "type": "item", "code": "game:stone-*", "name": "rock", "allowedVariants": ["obsidian"] },
 	"pattern": [[
 		"____##_#_#",
 		"_#_##__###",
@@ -10,8 +10,8 @@
 		"#_#____#_#",
 		"_#__##_###",
 		"###__##_#_",
-		"#_#_##____",
+		"#_#_##____"
 	]],
 	"name": "8 Arrowheads",
-	"output": { "type": "item", "code": "game:arrowhead-{rock}", stacksize: 8  }
+	"output": { "type": "item", "code": "game:arrowhead-{rock}", "stacksize": 8  }
 }

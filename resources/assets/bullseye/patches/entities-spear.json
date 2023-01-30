@@ -9,6 +9,6 @@
 	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-steel", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
 	{ "side": "Server", "file": "game:entities/spear", "op": "move", "frompath": "/move-temp", "path": "/client/shapeByType/*"},
 
-	{ "side": "Server", "file": "game:entities/spear", "op": "replace", "path": "/client/texturesByType/*", "value": { "material": { "base": "game:block/metal/ingot/{material}" } } },
+	{ "side": "Server", "file": "game:entities/spear", "op": "replace", "path": "/client/texturesByType/*", "value": { "material": { "base": "game:block/metal/ingot/{material}" } } }
 ]
 

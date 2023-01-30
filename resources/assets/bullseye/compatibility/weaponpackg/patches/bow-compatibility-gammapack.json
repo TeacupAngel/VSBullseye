@@ -1,6 +1,6 @@
 [
 	// Crude longbow
-	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "replace", "path": "/class", value: "bullseye.ItemBow" },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "replace", "path": "/class", "value": "bullseye.ItemBow" },
 
 	{ 
 		"side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
@@ -34,7 +34,7 @@
 	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/crudelong", "op": "add", "path": "/attributes/damagePercent", "value": 0.1 },
 
 	// Metal longbows
-	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/metallong", "op": "replace", "path": "/class", value: "bullseye.ItemBow" },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/metallong", "op": "replace", "path": "/class", "value": "bullseye.ItemBow" },
 
 	{ 
 		"side": "Server", "file": "weaponpackg:itemtypes/tool/metallong", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
@@ -78,7 +78,7 @@
 	},
 
 	// Metal recurve bows
-	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/metalrecurve", "op": "replace", "path": "/class", value: "bullseye.ItemBow" },
+	{ "side": "Server", "file": "weaponpackg:itemtypes/tool/metalrecurve", "op": "replace", "path": "/class", "value": "bullseye.ItemBow" },
 
 	{ 
 		"side": "Server", "file": "weaponpackg:itemtypes/tool/metalrecurve", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 

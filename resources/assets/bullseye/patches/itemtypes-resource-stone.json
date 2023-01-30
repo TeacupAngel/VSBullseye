@@ -10,5 +10,5 @@
 		}
 	},
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/spreadModifier", "value": 2 },
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/benefitsFromClass", "value": false },
+	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/benefitsFromClass", "value": false }
 ]

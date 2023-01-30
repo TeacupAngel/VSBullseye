@@ -1,3 +1,8 @@
+= 2.4.2 =
+
+- Fixed some JSON still not conforming to strict JSON standard
+- Finished ability to compile and debug Bullseye on Linux (NodeJS required to debug multiplayer)
+
 = 2.4.1 =
 
 - Added knapping recipe for 8 flint and obsidian arrowheads

@@ -97,6 +97,10 @@ namespace Bullseye
 			return new Vec2f(aimX + aimOffsetX * offsetMagnitude * WeaponStats.horizontalAccuracyMult, aimY + aimOffsetY * offsetMagnitude * WeaponStats.verticalAccuracyMult);
 		}
 
+		// TODO: For a rewrite, consider switching aimX and aimY from pixels to % of screen width/height. That way it's consistent on all resolutions
+		// (still will have to account for FoV though).
+		// Also, on high-resolution screen, the aim cursor is tiny and tricks people into thinking high res like 4K have a harder time.
+		// Consider scaling the cursor up with resolution.
 		public void UpdateAimPoint(ClientMain __instance, 
 				ref double ___MouseDeltaX, ref double ___MouseDeltaY, 
 				ref double ___DelayedMouseDeltaX, ref double ___DelayedMouseDeltaY,

@@ -3,5 +3,5 @@
 	//{ "file": "game:entities/thrownstone", "op": "add", "path": "/client/behaviors/0/gravityFactor", "value": 0.9 },
 
 	{ "side": "Server", "file": "game:entities/thrownstone", "op": "add", "path": "/server/behaviors/0/airDragFactor", "value": 0.15 },
-	//{ "file": "game:entities/thrownstone", "op": "add", "path": "/server/behaviors/0/gravityFactor", "value": 0.9 },
+	//{ "file": "game:entities/thrownstone", "op": "add", "path": "/server/behaviors/0/gravityFactor", "value": 0.9 }
 ]

@@ -1,37 +1,7 @@
 {
 	"version": "0.2.0",
 	"configurations": [{
-		"name": "Launch Survival (Mono)",
-		"type": "mono",
-		"request": "launch",
-		"preLaunchTask": "build (Debug)",
-		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
-			"--addModPath", "${workspaceFolder}",
-			"--playStyle", "surviveandbuild",
-			"--openWorld", "Survival ${workspaceFolderBasename}",
-		],
-		"console": "internalConsole",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Superflat (Mono)",
-		"type": "mono",
-		"request": "launch",
-		"preLaunchTask": "build (Debug)",
-		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
-			"--addModPath", "${workspaceFolder}",
-			"--playStyle", "creativebuilding",
-			"--openWorld", "Superflat ${workspaceFolderBasename}",
-		],
-		"console": "internalConsole",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Survival (.NET)",
+		"name": "Launch Survival",
 		"type": "clr",
 		"request": "launch",
 		"preLaunchTask": "build (Debug)",
@@ -42,11 +12,16 @@
 			"--playStyle", "preset-surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
 		],
+		// If you get warnings for linux launch attributes, that seems to be a VSCode bug: 
+		// https://github.com/microsoft/vscode/issues/129071
+		"linux": {
+			"type": "mono"
+		},
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
-		"name": "Launch Superflat (.NET)",
+		"name": "Launch Superflat",
 		"type": "clr",
 		"request": "launch",
 		"preLaunchTask": "build (Debug)",
@@ -57,6 +32,9 @@
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",
 		],
+		"linux": {
+			"type": "mono"
+		},
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
 	},
@@ -70,6 +48,10 @@
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
 			"--addModPath", "${workspaceFolder}",
 		],
+		"linux": {
+			"type": "mono",
+			"console": "integratedTerminal",
+		},
 		"console": "externalTerminal",
 		"internalConsoleOptions": "openOnSessionStart"
 	},
@@ -83,6 +65,10 @@
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
 			"--addModPath", "${workspaceFolder}",
 		],
+		"linux": {
+			"type": "mono",
+			"console": "internalConsole",
+		},
 		"console": "externalTerminal",
 		"internalConsoleOptions": "openOnSessionStart"
 	},
@@ -96,6 +82,9 @@
 			"--addModPath", "${workspaceFolder}",
 			"--connect", "127.0.0.1"
 		],
+		"linux": {
+			"type": "mono"
+		},
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
 	},
@@ -108,6 +97,9 @@
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/client2",
 			"--addModPath", "${workspaceFolder}"
 		],
+		"linux": {
+			"type": "mono"
+		},
 		"console": "internalConsole",
 		"internalConsoleOptions": "openOnSessionStart"
 	}]

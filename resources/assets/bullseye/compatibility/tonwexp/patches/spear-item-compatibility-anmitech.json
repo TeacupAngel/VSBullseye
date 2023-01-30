@@ -1,6 +1,6 @@
 [
 	// AnMiTech spear
-	{ "side": "Server", "file": "tonwexp:itemtypes/spear", "op": "replace", "path": "/class", value: "bullseye.ItemSpear" },
+	{ "side": "Server", "file": "tonwexp:itemtypes/spear", "op": "replace", "path": "/class", "value": "bullseye.ItemSpear" },
 
 	{ 
 		"side": "Server", "file": "tonwexp:itemtypes/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
@@ -45,14 +45,14 @@
 			"spear-blackbronze": 3,
 			"spear-iron": 4,
 			"spear-meteoriciron": 4,
-			"spear-steel": 5,
-		},
+			"spear-steel": 5
+		}
 	},
 
 	{ "side": "Server", "file": "tonwexp:itemtypes/spear", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" },
 
 	// AnMiTech pilum
-	{ "side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "replace", "path": "/class", value: "bullseye.ItemSpear" },
+	{ "side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "replace", "path": "/class", "value": "bullseye.ItemSpear" },
 
 	{ 
 		"side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
@@ -99,9 +99,9 @@
 			"pilum-blackbronze": 3,
 			"pilum-iron": 4,
 			"pilum-meteoriciron": 4,
-			"pilum-steel": 5,
-		},
+			"pilum-steel": 5
+		}
 	},
 
-	{ "side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" },
+	{ "side": "Server", "file": "tonwexp:itemtypes/pilum", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" }
 ]

@@ -1,42 +1,40 @@
 {
-	code: "bullet",
-	class: "EntityProjectile",
-	variantgroups: [
-		{ code: "material", states: ["lead" ] },
+	"code": "bullet",
+	"class": "EntityProjectile",
+	"variantgroups": [
+		{ "code": "material", "states": ["lead" ] }
 	],
 
-	hitboxSize: { x: 0.125, y: 0.125 },
-	client: {
-		size: 1,
-		renderer: "Shape",
-		shapeByType: {
-			"*": { base: "game:entity/bullet" }
+	"hitboxSize": { "x": 0.125, "y": 0.125 },
+	"client": {
+		"size": 1,
+		"renderer": "Shape",
+		"shapeByType": {
+			"*": { "base": "game:entity/bullet" }
 		},
-		texturesByType: {
+		"texturesByType": {
 			"*": {
-				"material": { base: "block/metal/ingot/{material}" }
+				"material": { "base": "game:block/metal/ingot/{material}" }
 			}
 		},
-		behaviors: [
-			{ code: "passivephysics",
-				groundDragFactor: 1,
-				airDragFactor: 0.1,
-				gravityFactor: 0.75
+		"behaviors": [
+			{ "code": "passivephysics",
+				"groundDragFactor": 1,
+				"airDragFactor": 0.1,
+				"gravityFactor": 0.75
 			}, 
-			{ code: "interpolateposition" }
-		],
+			{ "code": "interpolateposition" }
+		]
 	},
-	server: {
-		behaviors: [
+	"server": {
+		"behaviors": [
 			{ 
-				code: "passivephysics",
-				groundDragFactor: 1,
-				airDragFactor: 0.1,
-				gravityFactor: 0.75
+				"code": "passivephysics",
+				"groundDragFactor": 1,
+				"airDragFactor": 0.1,
+				"gravityFactor": 0.75
 			}, 
-			{ code: "despawn", minSeconds: 600 }
-		],
-	},
-	sounds: {
+			{ "code": "despawn", "minSeconds": 600 }
+		]
 	}
 }

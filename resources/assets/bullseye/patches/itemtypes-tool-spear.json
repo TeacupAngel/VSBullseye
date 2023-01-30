@@ -1,5 +1,5 @@
 [ 
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", value: "bullseye.ItemSpear" },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", "value": "bullseye.ItemSpear" },
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
@@ -92,7 +92,7 @@
 			"*-meteoriciron": 4,
 			"*-steel": 5,
 			"*-hacking": 4
-		},
+		}
 	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" },
@@ -148,5 +148,5 @@
 			"scale": 0.8
 		} 
 	},
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "move", "frompath": "/move-temp", "path": "/tpHandTransformByType/*"},
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "move", "frompath": "/move-temp", "path": "/tpHandTransformByType/*"}
 ]

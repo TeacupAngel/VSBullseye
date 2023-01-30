@@ -1,4 +1,4 @@
 [ 
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/damageByType/arrow-crystal", "value": 7.75 },
-	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType/arrow-crystal", "value": 10 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType/arrow-crystal", "value": 10 }
 ]

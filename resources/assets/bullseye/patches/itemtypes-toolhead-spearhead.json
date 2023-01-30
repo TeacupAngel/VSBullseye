@@ -48,5 +48,5 @@
 			"scale": 4.63
 		} 
 	},
-	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "move", "frompath": "/move-temp", "path": "/groundTransformByType/*"},
+	{ "side": "Server", "file": "game:itemtypes/toolhead/spearhead", "op": "move", "frompath": "/move-temp", "path": "/groundTransformByType/*"}
 ]

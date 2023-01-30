@@ -104,6 +104,11 @@
             "label": "Prepare Server (Survival, .NET)",
             "type": "shell",
             "command": "$path = '\"{WorldConfig:{SaveFileLocation:''${env:VINTAGE_STORY_DATA}/server/Saves/Survival ${workspaceFolderBasename}.vcdbs'',PlayStyle:''surviveandbuild'',WorldType:''standard'',DefaultRoleCode:''suplayer''}}\"'; & '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/server' --setconfig $path.Replace('\\', '/'); exit",
+            "linux": {
+                //"command": "path='{WorldConfig:{SaveFileLocation:\"${env:VINTAGE_STORY_DATA}/server/Saves/Survival ${workspaceFolderBasename}.vcdbs\",PlayStyle:\"surviveandbuild\",WorldType:\"standard\",DefaultRoleCode:\"suplayer\"}}' && '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/server' --setconfig \"$path\"; exit",
+                // Sadly the --setconfig server parameter crashes the VS server on linux, so here's an alternate way. Requires nodeJS
+                "command": "node -p \"JSON.stringify({...require('${env:VINTAGE_STORY_DATA}/server/serverconfig.json'), WorldConfig: {SaveFileLocation:'${env:VINTAGE_STORY_DATA}/server/Saves/Survival ${workspaceFolderBasename}.vcdbs',PlayStyle:'surviveandbuild',WorldType:'standard',DefaultRoleCode:'suplayer'} }, null, 2)\" > '${env:VINTAGE_STORY_DATA}/server/serverconfig.json_new' && cat '${env:VINTAGE_STORY_DATA}/server/serverconfig.json_new' > '${env:VINTAGE_STORY_DATA}/server/serverconfig.json' && rm '${env:VINTAGE_STORY_DATA}/server/serverconfig.json_new'",
+            },
             "dependsOrder": "sequence",
             "dependsOn": ["build (Debug)"]
         },
@@ -111,6 +116,10 @@
             "label": "Prepare Server (Superflat, .NET)",
             "type": "shell",
             "command": "$path = '\"{WorldConfig:{SaveFileLocation:''${env:VINTAGE_STORY_DATA}/server/Saves/Superflat ${workspaceFolderBasename}.vcdbs'',PlayStyle:''creativebuilding'',WorldType:''superflat'',DefaultRoleCode:''crplayer''}}\"'; & '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/server' --setconfig $path.Replace('\\', '/'); exit",
+            "linux": {
+                //"command": "path='{WorldConfig:{SaveFileLocation:\"${env:VINTAGE_STORY_DATA}/server/Saves/Superflat ${workspaceFolderBasename}.vcdbs\",PlayStyle:\"creativebuilding\",WorldType:\"superflat\",DefaultRoleCode:\"crplayer\"}}' && '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/server' --setconfig \"$path\"; exit",
+                "command": "node -p \"JSON.stringify({...require('${env:VINTAGE_STORY_DATA}/server/serverconfig.json'), WorldConfig: {SaveFileLocation:'${env:VINTAGE_STORY_DATA}/server/Saves/Superflat ${workspaceFolderBasename}.vcdbs',PlayStyle:'creativebuilding',WorldType:'superflat',DefaultRoleCode:'crplayer'} }, null, 2)\" > '${env:VINTAGE_STORY_DATA}/server/serverconfig.json_new' && cat '${env:VINTAGE_STORY_DATA}/server/serverconfig.json_new' > '${env:VINTAGE_STORY_DATA}/server/serverconfig.json' && rm '${env:VINTAGE_STORY_DATA}/server/serverconfig.json_new'",
+            },
             "dependsOrder": "sequence",
             "dependsOn": ["build (Debug)"]
         }

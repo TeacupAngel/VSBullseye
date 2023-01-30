@@ -35,5 +35,5 @@
 	"bullseye:projectile-break-chance": "{0:0.#}% base chance to break",
 	"bullseye:projectile-always-breaks": "Always breaks on impact.",
 
-	"bullseye:select-ammo": "Bullseye: Select Ranged Weapon Ammo",
+	"bullseye:select-ammo": "Bullseye: Select Ranged Weapon Ammo"
 }

@@ -1,5 +1,5 @@
 [
-	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/class", value: "bullseye.ItemArrow" },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/class", "value": "bullseye.ItemArrow" },
 
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/ammoType", "value": "arrow" },
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/entityCode", "value": "arrow-{material}" },
@@ -70,5 +70,5 @@
 			"material": { "base": "block/stone/rock/{material}1" }
 		}
 	},
-	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "move", "frompath": "/move-temp", "path": "/texturesByType/*", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]},
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "move", "frompath": "/move-temp", "path": "/texturesByType/*", "dependsOn": [{ "modid": "weaponpackg", "invert": true }]}
 ]

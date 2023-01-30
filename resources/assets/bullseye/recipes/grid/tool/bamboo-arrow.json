@@ -12,7 +12,7 @@
 	},
 	{
 		"ingredientPattern": "H	S",
-		requiresTrait: "bowyer",
+		"requiresTrait": "bowyer",
 		"ingredients": {
 			"H": { "type": "item", "code": "game:arrowhead-flint", "quantity": 3 },
 			"S": { "type": "item", "code": "game:bamboostakes" }

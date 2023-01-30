@@ -1,5 +1,5 @@
 [
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/tooltierbytype/*-blackiron", "value": 2 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/attributes/damageByType/*-blackiron", "value": 8.25 },
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-blackiron", "value": 265 },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-blackiron", "value": 265 }
 ]

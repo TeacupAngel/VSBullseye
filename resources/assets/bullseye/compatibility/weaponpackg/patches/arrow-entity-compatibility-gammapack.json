@@ -2,18 +2,18 @@
 	{ 
 		"side": "Server", "file": "game:entities/arrow", "op": "replace", "path": "/client/behaviorsByType", "value": 
 		{
-			"arrow-*-broadhead": [{ "code": "passivephysics", groundDragFactor: 1, airDragFactor: 0.5, gravityFactor: 1 }, { "code": "interpolateposition" }],
-			"arrow-*-bodkin": [{ "code": "passivephysics", groundDragFactor: 1, airDragFactor: 0.15, gravityFactor: 0.5 }, { "code": "interpolateposition" }],
-			"arrow-*": [{ "code": "passivephysics", groundDragFactor: 1, airDragFactor: 0.25, gravityFactor: 0.75 }, { "code": "interpolateposition" }]
+			"arrow-*-broadhead": [{ "code": "passivephysics", "groundDragFactor": 1, "airDragFactor": 0.5, "gravityFactor": 1 }, { "code": "interpolateposition" }],
+			"arrow-*-bodkin": [{ "code": "passivephysics", "groundDragFactor": 1, "airDragFactor": 0.15, "gravityFactor": 0.5 }, { "code": "interpolateposition" }],
+			"arrow-*": [{ "code": "passivephysics", "groundDragFactor": 1, "airDragFactor": 0.25, "gravityFactor": 0.75 }, { "code": "interpolateposition" }]
 		}
 	},
 
 	{ 
 		"side": "Server", "file": "game:entities/arrow", "op": "replace", "path": "/server/behaviorsByType", "value": 
 		{
-			"arrow-*-broadhead": [{ "code": "passivephysics", groundDragFactor: 1, airDragFactor: 0.5, gravityFactor: 1 }],
-			"arrow-*-bodkin": [{ "code": "passivephysics", groundDragFactor: 1, airDragFactor: 0.15, gravityFactor: 0.5 }],
-			"arrow-*": [{ "code": "passivephysics", groundDragFactor: 1, airDragFactor: 0.25, gravityFactor: 0.75 }]
+			"arrow-*-broadhead": [{ "code": "passivephysics", "groundDragFactor": 1, "airDragFactor": 0.5, "gravityFactor": 1 }],
+			"arrow-*-bodkin": [{ "code": "passivephysics", "groundDragFactor": 1, "airDragFactor": 0.15, "gravityFactor": 0.5 }],
+			"arrow-*": [{ "code": "passivephysics", "groundDragFactor": 1, "airDragFactor": 0.25, "gravityFactor": 0.75 }]
 		}
 	}
 ]

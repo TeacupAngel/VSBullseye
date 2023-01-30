@@ -1,5 +1,5 @@
 [ 
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", value: "bullseye.ItemBow" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", "value": "bullseye.ItemBow" },
 
 	{ 
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/bullseyeWeaponStatsByType", "value": 
@@ -92,8 +92,8 @@
 				"aimFullChargeLeeway": 0.5,
 				"allowSprint": false,
 				"moveSpeedPenalty": 0
-			},
-		},
+			}
+		}
 	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-crude" },
@@ -131,5 +131,5 @@
 				"onlyWhenAnimating": false
 			}
 		}
-	},
+	}
 ]

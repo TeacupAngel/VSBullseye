@@ -1,5 +1,5 @@
 [
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-blackiron", "value": 5.5 },
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/breakChanceOnImpactByType/*-blackiron", "value": 0.125 },
-	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType/*-blackiron", "value": 50 },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/averageLifetimeDamageByType/*-blackiron", "value": 50 }
 ]

@@ -9,7 +9,7 @@
 	{ "side": "Server", "file": "game:entities/arrow", "op": "add", "path": "/client/texturesByType/arrow-obsidian", "value": 
 		{
 			"material": { "base": "block/stone/rock/{material}1" }
-		},
+		}
 	},
-	{ "side": "Server", "file": "game:entities/arrow", "op": "move", "frompath": "/move-temp", "path": "/client/texturesByType/*"},
+	{ "side": "Server", "file": "game:entities/arrow", "op": "move", "frompath": "/move-temp", "path": "/client/texturesByType/*"}
 ]

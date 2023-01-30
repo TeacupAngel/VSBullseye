@@ -3,7 +3,16 @@
 		"ingredientPattern": "H	A",
 		"ingredients": {
 			"H": { "type": "item", "code": "game:arrowhead-*", "name": "metal" },
-			"A": { "type": "item", "code": "game:arrow-*", allowedVariants: ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "gold", "silver", "iron", "meteoriciron", "steel" ] },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-*",
+				"allowedVariants": ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "gold", "silver", "iron", "meteoriciron", "steel" ],
+				// Refunding arrowhead on upgrade - sadly is buggy (an extra duplicate stack appears in result grid that exists only on client)
+				// and doesn't work with allowedVariants - that needs to be commented out to make refunding work
+				//"name": "original",
+				//"returnedStack": { "type": "item", "code": "game:arrowhead-{original}" }
+			}
 		},
 		"width": 1,
 		"height": 2,
