@@ -1,21 +1,160 @@
-[
+// Sadly this generic recipe randomly breaks - when allowedVariants is added,the game seems to confuse the two 'name' properties ({material} and {origina})
+// and adds a whole bunch of recipes to combine flint arrows with flint arrowheads, copper arrows with copper arrowheads, etc., but nothing else
+// Which is exactly the opposite of what we want! So we have to do it manually for now 
+/*[
 	{
 		"ingredientPattern": "H	A",
 		"ingredients": {
-			"H": { "type": "item", "code": "game:arrowhead-*", "name": "metal" },
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
 			"A": 
 			{ 
 				"type": "item", 
 				"code": "game:arrow-*",
-				"allowedVariants": ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "gold", "silver", "iron", "meteoriciron", "steel" ],
-				// Refunding arrowhead on upgrade - sadly is buggy (an extra duplicate stack appears in result grid that exists only on client)
-				// and doesn't work with allowedVariants - that needs to be commented out to make refunding work
-				//"name": "original",
-				//"returnedStack": { "type": "item", "code": "game:arrowhead-{original}" }
+				"allowedVariants": ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ],
+				"name": "original",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-{original}" }
 			}
 		},
 		"width": 1,
 		"height": 2,
-		"output": { "type": "item", "code": "game:arrow-{metal}" }
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	}
+]*/
+
+[
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-flint",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-flint" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-obsidian",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-obsidian" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-copper",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-copper" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-tinbronze",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-tinbronze" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-bismuthbronze",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-bismuthbronze" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-blackbronze",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-blackbronze" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-iron",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-iron" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-meteoriciron",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-meteoriciron" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	},
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-steel",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-steel" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
 	}
 ]

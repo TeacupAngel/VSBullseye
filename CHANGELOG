@@ -1,5 +1,6 @@
 = 2.4.2 =
 
+- Arrow upgrade recipe now refunds arrowheads
 - Fixed some JSON still not conforming to strict JSON standard
 - Finished ability to compile and debug Bullseye on Linux (NodeJS required to debug multiplayer)
 
@@ -7,7 +8,7 @@
 
 - Added knapping recipe for 8 flint and obsidian arrowheads
 - Fixed compatibility with Weapons Pack Gamma and AnMiTech
-- Fixed potential crash when loading a stream is cancelled partway through
+- Fixed potential crash when loading a world is cancelled partway through
 
 = 2.4.0 =
 

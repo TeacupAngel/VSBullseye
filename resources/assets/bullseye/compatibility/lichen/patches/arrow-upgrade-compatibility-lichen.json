@@ -1,3 +1,29 @@
-[ 
+// Disabled - generic recipes don't work reliably now, so we create a specific recipe for these modded arrows instead
+/*[ 
 	{ "side": "Server", "file": "bullseye:recipes/grid/tool/arrow-upgrade", "op": "add", "path": "/0/ingredients/A/allowedVariants/-", "value": "antler" }
+]*/
+
+[ 
+	{ 
+		"side": "Server", 
+		"file": "bullseye:recipes/grid/tool/arrow-upgrade", 
+		"op": "add", 
+		"path": "/-", 
+		"value": 
+		{
+			"ingredientPattern": "H	A",
+			"ingredients": {
+				"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+				"A": 
+				{ 
+					"type": "item", 
+					"code": "game:arrow-antler",
+					"returnedStack": { "type": "item", "code": "game:arrowhead-antler" }
+				}
+			},
+			"width": 1,
+			"height": 2,
+			"output": { "type": "item", "code": "game:arrow-{material}" }
+		}
+	}
 ]
