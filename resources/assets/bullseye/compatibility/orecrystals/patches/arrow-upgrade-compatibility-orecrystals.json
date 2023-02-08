@@ -1,8 +1,3 @@
-// Disabled - generic recipes don't work reliably now, so we create a specific recipe for these modded arrows instead
-/*[ 
-	{ "side": "Server", "file": "bullseye:recipes/grid/tool/arrow-upgrade", "op": "add", "path": "/0/ingredients/A/allowedVariants/-", "value": "crystal" }
-]*/
-
 [ 
 	{ 
 		"side": "Server", 
@@ -27,3 +22,8 @@
 		}
 	}
 ]
+
+// Disabled - generic recipes don't work reliably now, so we create a specific recipe for these modded arrows instead
+/*[ 
+	{ "side": "Server", "file": "bullseye:recipes/grid/tool/arrow-upgrade", "op": "add", "path": "/0/ingredients/A/allowedVariants/-", "value": "crystal" }
+]*/

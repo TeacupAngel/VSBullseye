@@ -1,26 +1,3 @@
-// Sadly this generic recipe randomly breaks - when allowedVariants is added,the game seems to confuse the two 'name' properties ({material} and {origina})
-// and adds a whole bunch of recipes to combine flint arrows with flint arrowheads, copper arrows with copper arrowheads, etc., but nothing else
-// Which is exactly the opposite of what we want! So we have to do it manually for now 
-/*[
-	{
-		"ingredientPattern": "H	A",
-		"ingredients": {
-			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
-			"A": 
-			{ 
-				"type": "item", 
-				"code": "game:arrow-*",
-				"allowedVariants": ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ],
-				"name": "original",
-				"returnedStack": { "type": "item", "code": "game:arrowhead-{original}" }
-			}
-		},
-		"width": 1,
-		"height": 2,
-		"output": { "type": "item", "code": "game:arrow-{material}" }
-	}
-]*/
-
 [
 	{
 		"ingredientPattern": "H	A",
@@ -158,3 +135,28 @@
 		"output": { "type": "item", "code": "game:arrow-{material}" }
 	}
 ]
+
+// Sadly this generic recipe randomly breaks - when allowedVariants is added,the game seems to confuse the two 'name' properties ({material} and {origina})
+// and adds a whole bunch of recipes to combine flint arrows with flint arrowheads, copper arrows with copper arrowheads, etc., but nothing else
+// Which is exactly the opposite of what we want! So we have to do it manually for now
+//
+// Also json files can't handle comments at the top for some reason, so it has to be all the way down here >:c
+/*[
+	{
+		"ingredientPattern": "H	A",
+		"ingredients": {
+			"H": { "type": "item", "code": "game:arrowhead-*", "name": "material" },
+			"A": 
+			{ 
+				"type": "item", 
+				"code": "game:arrow-*",
+				"allowedVariants": ["flint", "obsidian", "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel" ],
+				"name": "original",
+				"returnedStack": { "type": "item", "code": "game:arrowhead-{original}" }
+			}
+		},
+		"width": 1,
+		"height": 2,
+		"output": { "type": "item", "code": "game:arrow-{material}" }
+	}
+]*/
