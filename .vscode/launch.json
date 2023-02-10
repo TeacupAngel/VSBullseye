@@ -39,10 +39,10 @@
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
-		"name": "Launch Survival Server (.NET)",
+		"name": "Launch Survival Server",
 		"type": "clr",
 		"request": "launch",
-		"preLaunchTask": "Prepare Server (Survival, .NET)",
+		"preLaunchTask": "Prepare Server (Survival)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
@@ -56,10 +56,10 @@
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
-		"name": "Launch Superflat Server (.NET)",
+		"name": "Launch Superflat Server",
 		"type": "clr",
 		"request": "launch",
-		"preLaunchTask": "Prepare Server (Superflat, .NET)",
+		"preLaunchTask": "Prepare Server (Superflat)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
 			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
@@ -73,7 +73,7 @@
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
-		"name": "Launch Multiplayer Client (.NET)",
+		"name": "Launch Multiplayer Client",
 		"type": "clr",
 		"request": "launch",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
@@ -89,7 +89,7 @@
 		"internalConsoleOptions": "openOnSessionStart"
 	},
 	{
-		"name": "Launch Multiplayer Client #2 (.NET)",
+		"name": "Launch Multiplayer Client #2",
 		"type": "clr",
 		"request": "launch",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",

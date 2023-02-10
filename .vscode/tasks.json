@@ -101,7 +101,7 @@
             ]
         },
         {
-            "label": "Prepare Server (Survival, .NET)",
+            "label": "Prepare Server (Survival)",
             "type": "shell",
             "command": "$path = '\"{WorldConfig:{SaveFileLocation:''${env:VINTAGE_STORY_DATA}/server/Saves/Survival ${workspaceFolderBasename}.vcdbs'',PlayStyle:''surviveandbuild'',WorldType:''standard'',DefaultRoleCode:''suplayer''}}\"'; & '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/server' --setconfig $path.Replace('\\', '/'); exit",
             "linux": {
@@ -113,7 +113,7 @@
             "dependsOn": ["build (Debug)"]
         },
         {
-            "label": "Prepare Server (Superflat, .NET)",
+            "label": "Prepare Server (Superflat)",
             "type": "shell",
             "command": "$path = '\"{WorldConfig:{SaveFileLocation:''${env:VINTAGE_STORY_DATA}/server/Saves/Superflat ${workspaceFolderBasename}.vcdbs'',PlayStyle:''creativebuilding'',WorldType:''superflat'',DefaultRoleCode:''crplayer''}}\"'; & '${env:VINTAGE_STORY}/VintagestoryServer.exe' --dataPath '${env:VINTAGE_STORY_DATA}/server' --setconfig $path.Replace('\\', '/'); exit",
             "linux": {

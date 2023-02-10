@@ -25,7 +25,7 @@ namespace Bullseye
 
 		public override float GetDamage(ItemSlot inSlot, IWorldAccessor world)
 		{
-			return inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem.GetSyncedConfig().SlingDamage;
+			return inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem.GetSyncedConfig()?.SlingDamage ?? 1f;
 		}
 	}
 }

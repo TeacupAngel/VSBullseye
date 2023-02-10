@@ -48,6 +48,11 @@ namespace Bullseye
 			capi.Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/throw_circle.png"), ref aimTextureThrowCircle);
 		}
 
+		// Issue https://github.com/Rahjital/VSBullseye/issues/8
+		// Aim wobble appears to get worse on higher resolutions because the aim texutre is smaller
+		// Scale it up or down depending on the resolution
+		// Try snapping it to the nearest power of 2 if at all possible?
+		// And base it on a clientside config setting, default on (options: on-snap, on-direct-scale, off)
 		public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
 		{
 			if (clientAimingSystem.Aiming && clientAimingSystem.ShowReticle)
@@ -65,9 +70,9 @@ namespace Bullseye
 
 				// Puts a dot straight on the aiming spot. Useful for debugging
 				/*capi.Render.Render2DTexture(defaultAimTexFullCharge.TextureId, 
-					(capi.Render.FrameWidth / 2) - (texture.Width / 2) + aimX, 
-					(capi.Render.FrameHeight / 2) - (texture.Height / 2) + aimY, 
-					texture.Width, texture.Height, 10000f)
+					(capi.Render.FrameWidth / 2) - (defaultAimTexFullCharge.Width / 2) + clientAimingSystem.aim.X, 
+					(capi.Render.FrameHeight / 2) - (defaultAimTexFullCharge.Height / 2) + clientAimingSystem.aim.Y, 
+					defaultAimTexFullCharge.Width, defaultAimTexFullCharge.Height, 10000f)
 				;*/
 
 				if (clientAimingSystem.WeaponStats.weaponType == BullseyeRangedWeaponType.Throw)

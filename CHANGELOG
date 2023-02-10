@@ -1,8 +1,10 @@
 = 2.4.2 =
 
-- Arrow upgrade recipe now refunds arrowheads
-- Fixed some JSON still not conforming to strict JSON standard
-- Finished ability to compile and debug Bullseye on Linux (NodeJS required to debug multiplayer)
+- Tweak: Arrow upgrade recipe now refunds arrowheads
+- Fix: occasional crashes when player dies while using bow or sling
+- Fix: some JSON still not conforming to strict JSON standard
+- Minor bug fixes and code improvements
+- Finished ability to compile and debug on Linux (NodeJS required to debug multiplayer)
 
 = 2.4.1 =
 
