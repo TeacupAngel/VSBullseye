@@ -43,7 +43,7 @@ namespace Bullseye
 
 		public override void OnAimingCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, EnumItemUseCancelReason cancelReason) 
 		{
-			byEntity.StopAnimation("aim");
+			byEntity?.StopAnimation("aim");
 		}
 
 		public override List<ItemStack> GetAvailableAmmoTypes(ItemSlot slot, IClientPlayer forPlayer)

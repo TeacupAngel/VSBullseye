@@ -52,14 +52,16 @@ namespace Bullseye
 
 		public override void OnAimingCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, EnumItemUseCancelReason cancelReason) 
 		{
+			if (byEntity == null) return;
+
 			if (cancelReason != EnumItemUseCancelReason.ReleasedMouse || secondsUsed < GetChargeNeeded(api, byEntity))
 			{
 				if (byEntity.World is IClientWorldAccessor)
 				{
-					slot.Itemstack.TempAttributes.RemoveAttribute("renderVariant");
+					slot.Itemstack?.TempAttributes.RemoveAttribute("renderVariant");
 				}
 
-				slot.Itemstack.Attributes.SetInt("renderVariant", 0);
+				slot.Itemstack?.Attributes.SetInt("renderVariant", 0);
 				(byEntity as EntityPlayer)?.Player?.InventoryManager.BroadcastHotbarSlot();
 
 				byEntity.AnimManager.StopAnimation("slingaimbalearic");
