@@ -307,10 +307,7 @@ namespace Bullseye
 
 		public virtual ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot, bool isStartCheck = false)
 		{
-			if (AmmoType == null)
-			{
-				return null;
-			}
+			if (AmmoType == null || byEntity == null || weaponSlot.Itemstack == null) return null;
 
 			ItemSlot ammoSlot = null;
 
@@ -318,7 +315,7 @@ namespace Bullseye
 
 			byEntity.WalkInventory((invslot) =>
 			{
-				if (invslot is ItemSlotCreative) return true;
+				if (invslot == null || invslot is ItemSlotCreative) return true;
 
 				if (invslot.Itemstack != null && AmmoType == invslot.Itemstack.ItemAttributes?["ammoType"].AsString())
 				{

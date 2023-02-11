@@ -135,18 +135,14 @@ namespace Bullseye
 
 		public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot, bool isStartCheck = false)
 		{
-			if (AmmoType == null)
-			{
-				return null;
-			}
+			if (AmmoType == null || byEntity == null || weaponSlot.Itemstack == null) return null;
 
 			ItemSlot arrowSlot = null;
-
 			ItemStack ammoType = isStartCheck ? GetEntitySelectedAmmoType(byEntity) : weaponSlot.Itemstack?.TempAttributes?.GetItemstack("loadedAmmo", null);
 
 			byEntity.WalkInventory((invslot) =>
 			{
-				if (invslot is ItemSlotCreative) return true;
+				if (invslot == null || invslot is ItemSlotCreative) return true;
 
 				if (invslot.Itemstack != null && (AmmoType == invslot.Itemstack.ItemAttributes?["ammoType"].AsString() || invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-")))
 				{
