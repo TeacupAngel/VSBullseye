@@ -37,5 +37,10 @@ namespace Bullseye
 		{
 			return (BullseyeConfigSynced)SyncedConfig;
 		}
+
+		public BullseyeConfigClient GetClientConfig()
+		{
+			return (BullseyeConfigClient)ClientConfig;
+		}
 	}
 }

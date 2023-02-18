@@ -47,8 +47,6 @@ namespace Bullseye
 		}
 
 		// Aiming system
-		private BullseyeAimControlStyle aimStyle = BullseyeAimControlStyle.Free;
-
 		public Vec2f aim {get; private set;} = new Vec2f();
 		public Vec2f aimOffset {get; private set;} = new Vec2f();
 
@@ -95,7 +93,7 @@ namespace Bullseye
 				ResetAimOffset();
 			}
 
-			if (aimStyle == BullseyeAimControlStyle.Fixed)
+			if (configSystem.GetClientConfig().AimStyle == BullseyeAimControlStyle.Fixed)
 			{
 				SetFixedAimPoint(capi.Render.FrameWidth, capi.Render.FrameHeight);
 			}
@@ -151,7 +149,7 @@ namespace Bullseye
 					default: UpdateAimOffsetSimple(__instance, dt); break;
 				}
 
-				if (aimStyle == BullseyeAimControlStyle.Free)
+				if (configSystem.GetClientConfig().AimStyle == BullseyeAimControlStyle.Free)
 				{
 					UpdateMouseDelta(__instance, ref ___MouseDeltaX, ref ___MouseDeltaY, ref ___DelayedMouseDeltaX, ref ___DelayedMouseDeltaY);
 				}

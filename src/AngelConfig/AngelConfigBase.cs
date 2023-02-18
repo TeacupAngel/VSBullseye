@@ -87,10 +87,7 @@ namespace AngelConfig
 			return null;
 		}
 
-		public virtual AngelConfigSetting[] GetConfigSettings()
-		{
-			return null;
-		}
+		public abstract AngelConfigSetting[] GetConfigSettings();
 
 		public void MakeLatest(ModInfo modInfo)
 		{

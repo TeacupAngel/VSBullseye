@@ -22,11 +22,11 @@ namespace Bullseye
 
 		public override AngelConfigSetting[] GetConfigSettings() =>	new AngelConfigSetting[] 
 		{
-			new AngelConfigSettingSimpleFloat("AimDifficulty", "Aim Difficulty", 0, 1000),
+			new AngelConfigSettingFloat("AimDifficulty", "Aim Difficulty", 0, 1000),
 
-			new AngelConfigSettingSimpleFloat("ArrowDamage", "Arrow Damage", 0, 1000),
-			new AngelConfigSettingSimpleFloat("SpearDamage", "Spear Damage", 0, 1000),
-			new AngelConfigSettingSimpleFloat("SlingDamage", "Sling Damage", 0, 1000),
+			new AngelConfigSettingFloat("ArrowDamage", "Arrow Damage", 0, 1000),
+			new AngelConfigSettingFloat("SpearDamage", "Spear Damage", 0, 1000),
+			new AngelConfigSettingFloat("SlingDamage", "Sling Damage", 0, 1000),
 
 			new AngelConfigSetting("AllDamage", null, () => {throw new AngelConfigArgumentException("This command is only a shortcut. Please use ArrowDamage, SpearDamage, and SlingDamage instead");}, (args) => 
 			{
