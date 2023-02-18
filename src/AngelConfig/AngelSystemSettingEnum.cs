@@ -34,7 +34,7 @@ namespace AngelConfig
 
 					if (String.IsNullOrEmpty(param)) throw new AngelConfigArgumentException("Parameter is not a proper string");
 
-					if (!Enum.TryParse<T>(param, true, out T parsedEnum)) throw new AngelConfigArgumentException("Parameter is invalid. Choose one from: X");
+					if (!Enum.TryParse<T>(param, true, out T parsedEnum)) throw new AngelConfigArgumentException($"Parameter is invalid. Choose one from: {String.Join(", ", Enum.GetNames(typeof(T)))}");
 
 					PropertyInfo propertyInfo = Config.GetType().GetProperty(code);
 
