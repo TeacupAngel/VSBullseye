@@ -219,7 +219,7 @@ namespace AngelConfig
 						return;
 					}
 
-					if (setting.Set is null)
+					if (setting.Set == null)
 					{
 						CommandUniversalMessage($"{Mod.Info.Name}: cannot use set with '{code}'", EnumChatType.CommandSuccess, api, player, groupId);
 						return;
@@ -241,7 +241,7 @@ namespace AngelConfig
 
 					if (success)
 					{
-						if (result is not null)
+						if (result != null)
 						{
 							CommandUniversalMessage($"{Mod.Info.Name}: set '{setting.Code}' to {result}", EnumChatType.CommandSuccess, api, player, groupId);
 						}
@@ -288,7 +288,7 @@ namespace AngelConfig
 					if (setting.Config.ConfigType == EnumAngelConfigType.Client && api.Side == EnumAppSide.Server) return;
 					if (setting.Config.ConfigType == EnumAngelConfigType.Server && api.Side == EnumAppSide.Client) return;
 
-					if (setting.Get is null)
+					if (setting.Get == null)
 					{
 						CommandUniversalMessage($"{Mod.Info.Name}: cannot use get with '{code}'", EnumChatType.CommandSuccess, api, player, groupId);
 
@@ -306,7 +306,7 @@ namespace AngelConfig
 						CommandUniversalMessage($"{Mod.Info.Name}: error reading '{setting.Code}': {exception.Message}", EnumChatType.CommandSuccess, api, player, groupId);
 					}
 
-					if (result is not null)
+					if (result != null)
 					{
 						CommandUniversalMessage($"{Mod.Info.Name}: '{setting.Code}' is currently {result}", EnumChatType.CommandSuccess, api, player, groupId);
 					}

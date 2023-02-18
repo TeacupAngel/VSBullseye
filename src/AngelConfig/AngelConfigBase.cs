@@ -50,7 +50,7 @@ namespace AngelConfig
 
 			AngelConfigMigration[] migrationList = GetMigrations();
 
-			if (migrationList is not null)
+			if (migrationList != null)
 			{
 				for (int i = migrationList.Length - 1; i >=0; i--)
 				{

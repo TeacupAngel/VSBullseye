@@ -30,6 +30,7 @@ namespace Bullseye
 		public override void LoadConfigs(ICoreAPI api)
 		{
 			SyncedConfig = LoadConfig<BullseyeConfigSynced>(api);
+			ClientConfig = LoadConfig<BullseyeConfigClient>(api);
 		}
 
 		public BullseyeConfigSynced GetSyncedConfig()

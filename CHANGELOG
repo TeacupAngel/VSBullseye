@@ -1,3 +1,10 @@
+= 2.X.X =
+
+- New: experimental 'static' aiming style 
+- Tweak: smoother reticle movement when beginning a shot
+- Fix: crash when trying to shoot a bow with no arrows
+- Code improvements
+
 = 2.4.2 =
 
 - Tweak: Arrow upgrade recipe now refunds arrowheads

@@ -97,17 +97,7 @@ namespace Bullseye
 			{
 				clientAimingSystem.Aiming = IsAiming;
 
-				if (IsAiming)
-				{
-					if (rangedWeaponSystem?.GetEntityCooldownTime(entity.EntityId) > 15f)
-					{
-						clientAimingSystem.ResetAim();
-					}
-					else
-					{
-						clientAimingSystem.ResetAimOffset();
-					}
-				}
+				if (IsAiming) {	clientAimingSystem.StartAiming(); } else {	clientAimingSystem.StopAiming(); }
 			}
 		}
 

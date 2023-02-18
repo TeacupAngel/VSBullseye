@@ -35,7 +35,6 @@ namespace Bullseye
 
 			StartAimSystem(capi);
 
-			//random = new Random((int)(capi.World.Seed * capi.World.Calendar.TotalHours));
 			random = new Random();
 
 			reticleRenderer = new BullseyeReticleRenderer(capi, this);
@@ -48,6 +47,8 @@ namespace Bullseye
 		}
 
 		// Aiming system
+		private BullseyeAimControlStyle aimStyle = BullseyeAimControlStyle.Free;
+
 		public Vec2f aim {get; private set;} = new Vec2f();
 		public Vec2f aimOffset {get; private set;} = new Vec2f();
 
@@ -61,9 +62,7 @@ namespace Bullseye
 		private long twitchLastChangeMilliseconds;
 		private long twitchLastStepMilliseconds;
 
-		private float twitchX;
-		private float twitchY;
-		private float twitchLength;
+		private Vec2f twitch  = new Vec2f();
 
 		public Vec3d TargetVec {get; private set;} = new Vec3d(); 
 
@@ -79,6 +78,38 @@ namespace Bullseye
 			ResetAim();
 		}
 
+		private float aimingDt;
+		private long lastAimingEndTime = 0;
+
+		const long aimResetTime = 15000;
+
+		public void StartAiming()
+		{
+			// If 15 seconds passed since we last made a shot, reset aim to centre of the screen
+			if (capi.World.ElapsedMilliseconds - lastAimingEndTime > aimResetTime)
+			{
+				ResetAim();
+			}
+			else
+			{
+				ResetAimOffset();
+			}
+
+			if (aimStyle == BullseyeAimControlStyle.Fixed)
+			{
+				SetFixedAimPoint(capi.Render.FrameWidth, capi.Render.FrameHeight);
+			}
+
+			aimingDt = 0f;
+		}
+
+		public void StopAiming()
+		{
+			lastAimingEndTime = capi.World.ElapsedMilliseconds;
+		}
+
+		const float aimStartInterpolationTime = 0.3f;
+
 		// Once .NET 7 arrives, currentAim should be deleted and GetCurrentAim() should return a ReadOnlySpan instead
 		private Vec2f currentAim = new Vec2f();
 		public Vec2f GetCurrentAim()
@@ -90,16 +121,18 @@ namespace Bullseye
 				offsetMagnitude /= GameMath.Max(capi.World.Player.Entity.Stats.GetBlended("rangedWeaponsAcc"), 0.001f);
 			}
 
-			currentAim.X = aim.X + aimOffset.X * offsetMagnitude * WeaponStats.horizontalAccuracyMult;
-			currentAim.Y = aim.Y + aimOffset.Y * offsetMagnitude * WeaponStats.verticalAccuracyMult;
+			float interpolation = GameMath.Sqrt(GameMath.Min(aimingDt / aimStartInterpolationTime, 1f));
+
+			currentAim.X = (aim.X + aimOffset.X * offsetMagnitude * WeaponStats.horizontalAccuracyMult) * interpolation;
+			currentAim.Y = (aim.Y + aimOffset.Y * offsetMagnitude * WeaponStats.verticalAccuracyMult) * interpolation;
 
 			return currentAim;
 		}
 
+		private float currentFovRatio;
+
 		// TODO: For a rewrite, consider switching aimX and aimY from pixels to % of screen width/height. That way it's consistent on all resolutions
 		// (still will have to account for FoV though).
-		// Also, on high-resolution screen, the aim cursor is tiny and tricks people into thinking high res like 4K have a harder time.
-		// Consider scaling the cursor up with resolution.
 		public void UpdateAimPoint(ClientMain __instance, 
 				ref double ___MouseDeltaX, ref double ___MouseDeltaY, 
 				ref double ___DelayedMouseDeltaX, ref double ___DelayedMouseDeltaY,
@@ -107,86 +140,51 @@ namespace Bullseye
 		{			
 			if (Aiming)
 			{
-				// = Aiming system #3 - simpler, Receiver-inspired =
+				// Default FOV is 70, and 1920 is the screen width of my dev machine :) 
+				currentFovRatio = (__instance.Width / 1920f) * (GameMath.Tan((70f / 2 * GameMath.DEG2RAD)) / GameMath.Tan((ClientSettings.FieldOfView / 2 * GameMath.DEG2RAD)));
+				aimingDt += dt;
+
+				// Update
 				switch (WeaponStats.weaponType)
 				{
 					case BullseyeRangedWeaponType.Sling: UpdateAimOffsetSling(__instance, dt); break;
 					default: UpdateAimOffsetSimple(__instance, dt); break;
 				}
 
-				// Aiming itself
-				//
-				// Ideas for "static" aim (similar to spears)
-				// - randomly pick aimX and aimY for each shot; but make sure aimOffsetX/Y always start in the middle of the screen, otherwise it ruins the effect!
-				// - if not enough, make aimX and aimY slowly drift around in this mode
-				//
-				// - take dt from slings and generalise it for all weaponTypes
-				// - this will allow interpolating aimOffset from X:0 Y:0 to over half a second or so
-				//
-				// - implement a new StartAim function (and possibly EndAim() too) to handle things like resetting the dt 
-				float horizontalAimLimit = (__instance.Width / 2f) * WeaponStats.horizontalLimit;
-				float verticalAimLimit = (__instance.Height / 2f) * WeaponStats.verticalLimit;
-				float verticalAimOffset = (__instance.Height / 2f) * WeaponStats.verticalOffset;
-
-				float deltaX = (float)(___MouseDeltaX - ___DelayedMouseDeltaX);
-				float deltaY = (float)(___MouseDeltaY - ___DelayedMouseDeltaY);
-
-				if (Math.Abs(aim.X + deltaX) > horizontalAimLimit)
+				if (aimStyle == BullseyeAimControlStyle.Free)
 				{
-					aim.X = aim.X > 0 ? horizontalAimLimit : -horizontalAimLimit;
-				}
-				else
-				{
-					aim.X += deltaX;
-					___DelayedMouseDeltaX = ___MouseDeltaX;
-				}
-
-				if (Math.Abs(aim.Y + deltaY - verticalAimOffset) > verticalAimLimit)
-				{
-					aim.Y = (aim.Y > 0 ? verticalAimLimit : -verticalAimLimit) + verticalAimOffset;
-				}
-				else
-				{
-					aim.Y += deltaY;
-					___DelayedMouseDeltaY = ___MouseDeltaY;
+					UpdateMouseDelta(__instance, ref ___MouseDeltaX, ref ___MouseDeltaY, ref ___DelayedMouseDeltaX, ref ___DelayedMouseDeltaY);
 				}
 
 				SetAim();
 			}
 		}
 
-		// 
 		public void UpdateAimOffsetSimple(ClientMain __instance, float dt)
 		{
-			// Default FOV is 70, and 1920 is the screen width of my dev machine :) 
-			float fovRatio = (__instance.Width / 1920f) * (GameMath.Tan((70f / 2 * GameMath.DEG2RAD)) / GameMath.Tan((ClientSettings.FieldOfView / 2 * GameMath.DEG2RAD)));
-
-			UpdateAimOffsetSimpleDrift(__instance, dt, fovRatio);
-			UpdateAimOffsetSimpleTwitch(__instance, dt, fovRatio);
+			UpdateAimOffsetSimpleDrift(__instance, dt);
+			UpdateAimOffsetSimpleTwitch(__instance, dt);
 		}
 		
-		public void UpdateAimOffsetSimpleDrift(ClientMain __instance, float dt, float fovRatio)
+		public void UpdateAimOffsetSimpleDrift(ClientMain __instance, float dt)
 		{
-			float fovModAimOffsetX = aimOffset.X * fovRatio;
-			float fovModAimOffsetY = aimOffset.Y * fovRatio;
-
 			const float driftMaxRatio = 1.1f;
 
 			float xNoise = ((float)noisegen.Noise(__instance.ElapsedMilliseconds * WeaponStats.aimDriftFrequency, 1000f) - 0.5f);
 			float yNoise = ((float)noisegen.Noise(-1000f, __instance.ElapsedMilliseconds * WeaponStats.aimDriftFrequency) - 0.5f);
 
-			float maxDrift = GameMath.Max(WeaponStats.aimDrift * driftMaxRatio * DriftMultiplier, 1f) * fovRatio;
+			float maxDrift = GameMath.Max(WeaponStats.aimDrift * driftMaxRatio * DriftMultiplier, 1f) * currentFovRatio;
 
-			aimOffset.X += ((xNoise - aimOffset.X / maxDrift) * WeaponStats.aimDrift * DriftMultiplier * dt * fovRatio);
-			aimOffset.Y += ((yNoise - aimOffset.Y / maxDrift) * WeaponStats.aimDrift * DriftMultiplier * dt * fovRatio);
+			aimOffset.X += ((xNoise - aimOffset.X / maxDrift) * WeaponStats.aimDrift * DriftMultiplier * dt * currentFovRatio);
+			aimOffset.Y += ((yNoise - aimOffset.Y / maxDrift) * WeaponStats.aimDrift * DriftMultiplier * dt * currentFovRatio);
 		}
 
-		public void UpdateAimOffsetSimpleTwitch(ClientMain __instance, float dt, float fovRatio)
+		public void UpdateAimOffsetSimpleTwitch(ClientMain __instance, float dt)
 		{
 			// Don't ask me why aimOffset needs to be multiplied by fovRatio here, but not in the Drift function
 			// Frankly the whole thing is up for a full rework anyway, but I don't want to get into that until I get started on crossbows and stuff
-			float fovModAimOffsetX = aimOffset.X * fovRatio;
-			float fovModAimOffsetY = aimOffset.Y * fovRatio;
+			float fovModAimOffsetX = aimOffset.X * currentFovRatio;
+			float fovModAimOffsetY = aimOffset.Y * currentFovRatio;
 
 			const float twitchMaxRatio = 1 / 7f;
 
@@ -195,15 +193,15 @@ namespace Bullseye
 				twitchLastChangeMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 				twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 
-				float twitchMax = GameMath.Max(WeaponStats.aimTwitch * twitchMaxRatio * TwitchMultiplier, 1f) * fovRatio;
+				float twitchMax = GameMath.Max(WeaponStats.aimTwitch * twitchMaxRatio * TwitchMultiplier, 1f) * currentFovRatio;
 
-				twitchX = (((float)random.NextDouble() - 0.5f) * 2f) * twitchMax - fovModAimOffsetX / twitchMax;
-				twitchY = (((float)random.NextDouble() - 0.5f) * 2f) * twitchMax - fovModAimOffsetY / twitchMax;
+				twitch.X = (((float)random.NextDouble() - 0.5f) * 2f) * twitchMax - fovModAimOffsetX / twitchMax;
+				twitch.Y = (((float)random.NextDouble() - 0.5f) * 2f) * twitchMax - fovModAimOffsetY / twitchMax;
 
-				twitchLength = GameMath.Max(GameMath.Sqrt(twitchX * twitchX + twitchY * twitchY), 1f);
+				float twitchLength = GameMath.Max(GameMath.Sqrt(twitch.X * twitch.X + twitch.Y * twitch.Y), 1f);
 
-				twitchX = twitchX / twitchLength;
-				twitchY = twitchY / twitchLength;
+				twitch.X = twitch.X / twitchLength;
+				twitch.Y = twitch.Y / twitchLength;
 			}
 
 			float lastStep = (twitchLastStepMilliseconds - twitchLastChangeMilliseconds) / (float)WeaponStats.aimTwitchDuration;
@@ -211,34 +209,31 @@ namespace Bullseye
 
 			float stepSize = ((1f - lastStep) * (1f - lastStep)) - ((1f - currentStep) * (1f - currentStep));
 
-			aimOffset.X += (twitchX * stepSize * (WeaponStats.aimTwitch * TwitchMultiplier * dt) * (WeaponStats.aimTwitchDuration / 20) * fovRatio);
-			aimOffset.Y += (twitchY * stepSize * (WeaponStats.aimTwitch * TwitchMultiplier * dt) * (WeaponStats.aimTwitchDuration / 20) * fovRatio);
+			aimOffset.X += (twitch.X * stepSize * (WeaponStats.aimTwitch * TwitchMultiplier * dt) * (WeaponStats.aimTwitchDuration / 20) * currentFovRatio);
+			aimOffset.Y += (twitch.Y * stepSize * (WeaponStats.aimTwitch * TwitchMultiplier * dt) * (WeaponStats.aimTwitchDuration / 20) * currentFovRatio);
 
 			twitchLastStepMilliseconds = __instance.Api.World.ElapsedMilliseconds;
 		}
 
-		private float slingDt;
-
 		private float slingHorizRandomOffset;
+
+		const float slingCycleLength = 0.75f;
+		const float slingCycleStartDeadzone = 0.2f;
+		const float slingCycleEndCoyoteTime = 0.1f; // Human visual reaction time is 250ms on average, a little 'coyote time' makes shooting more satisfying
 
 		public void UpdateAimOffsetSling(ClientMain __instance, float dt)
 		{
 			float fovRatio = (__instance.Width / 1920f) * (GameMath.Tan((70f / 2 * GameMath.DEG2RAD)) / GameMath.Tan((ClientSettings.FieldOfView / 2 * GameMath.DEG2RAD)));
-
-			const float slingCycleLength = 0.75f;
-			const float slingCycleStartDeadzone = 0.2f;
-			const float slingCycleEndCoyoteTime = 0.1f; // Human visual reaction time is 250ms on average, a little 'coyote time' makes shooting more satisfying
 
 			float slingRiseArea = 450 * fovRatio;
 			float slingHorizArea = 45 * fovRatio;
 
 			float slingHorizTwitch = WeaponStats.aimTwitch * TwitchMultiplier * fovRatio;
 
-			slingDt += dt;
+			float slingDt = aimingDt % slingCycleLength;
 			
-			if (slingDt >= slingCycleLength)
+			if (slingDt <= dt)
 			{
-				slingDt -= slingCycleLength;
 				slingHorizRandomOffset = slingHorizTwitch * (((float)random.NextDouble() - 0.5f) * 2f);
 			}
 
@@ -251,6 +246,48 @@ namespace Bullseye
 
 			aimOffset.X = slingHorizRandomOffset - slingHorizArea * slingCurrentPoint;
 			aimOffset.Y = (slingRiseArea / 2f) - (slingRiseArea * slingCurrentPoint);
+		}
+
+		public void UpdateMouseDelta(ClientMain __instance, 
+				ref double ___MouseDeltaX, ref double ___MouseDeltaY, 
+				ref double ___DelayedMouseDeltaX, ref double ___DelayedMouseDeltaY)
+		{			
+			float horizontalAimLimit = (__instance.Width / 2f) * WeaponStats.horizontalLimit;
+			float verticalAimLimit = (__instance.Height / 2f) * WeaponStats.verticalLimit;
+			float verticalAimOffset = (__instance.Height / 2f) * WeaponStats.verticalOffset;
+
+			float deltaX = (float)(___MouseDeltaX - ___DelayedMouseDeltaX);
+			float deltaY = (float)(___MouseDeltaY - ___DelayedMouseDeltaY);
+
+			if (Math.Abs(aim.X + deltaX) > horizontalAimLimit)
+			{
+				aim.X = aim.X > 0 ? horizontalAimLimit : -horizontalAimLimit;
+			}
+			else
+			{
+				aim.X += deltaX;
+				___DelayedMouseDeltaX = ___MouseDeltaX;
+			}
+
+			if (Math.Abs(aim.Y + deltaY - verticalAimOffset) > verticalAimLimit)
+			{
+				aim.Y = (aim.Y > 0 ? verticalAimLimit : -verticalAimLimit) + verticalAimOffset;
+			}
+			else
+			{
+				aim.Y += deltaY;
+				___DelayedMouseDeltaY = ___MouseDeltaY;
+			}
+		}
+
+		public void SetFixedAimPoint(int screenWidth, int screenHeight)
+		{			
+			float horizontalAimLimit = (screenWidth / 2f) * WeaponStats.horizontalLimit;
+			float verticalAimLimit = (screenHeight / 2f) * WeaponStats.verticalLimit;
+			float verticalAimOffset = (screenHeight / 2f) * WeaponStats.verticalOffset;
+
+			aim.X = -horizontalAimLimit + ((float)random.NextDouble() * horizontalAimLimit * 2f);
+			aim.Y = -verticalAimLimit + ((float)random.NextDouble() * verticalAimLimit * 2f) + verticalAimOffset;
 		}
 
 		public void SetAim()
@@ -288,20 +325,18 @@ namespace Bullseye
 			TargetVec.Z = offsetZ;
 		}
 
-		public void ResetAimOffset()
+		private void ResetAimOffset()
 		{
 			aimOffset.X = 0f;
 			aimOffset.Y = 0f;
 
-			twitchX = 0f;
-			twitchY = 0f;
+			twitch.X = 0f;
+			twitch.Y = 0f;
 
 			ShowReticle = true;
-
-			slingDt = 0;
 		}
 
-		public void ResetAim()
+		private void ResetAim()
 		{
 			aim.X = 0f;
 			aim.Y = 0f;
