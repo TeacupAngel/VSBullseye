@@ -314,10 +314,10 @@ namespace Bullseye
 				prog.BindTexture2D("itemTex", renderInfo.TextureId, 0);
 				prog.UniformMatrix("projectionMatrix", rpi.CurrentProjectionMatrix);
 				
-				prog.UniformMatrices(
+				prog.UniformMatrices4x3(
 					"elementTransforms",
 					GlobalConstants.MaxAnimatedElements,
-					Animator.Matrices
+					Animator.Matrices4x3
 				);
 
 				capi.Render.RenderMesh(currentMeshRef);

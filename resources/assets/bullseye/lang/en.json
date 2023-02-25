@@ -8,9 +8,9 @@
 	"bullseye:blockcraftdesc-toolmold-raw-bullets": "For casting sling bullets out of lead. Useless if you can't make a Malefactor sling! 32 bullets per ingot.",
 	"bullseye:blockdesc-toolmold-burned-bullets": "A mold for creating sling bullets. Only useful to Malefactors who can craft a sling. Creates 32 bullets per each ingot.",
 
-	"game:item-spear-iron": "Iron spear",
-    "game:item-spear-meteoriciron": "Meteoric iron spear",
-    "game:item-spear-steel": "Steel spear",
+	"game:item-spear-generic-iron": "Iron spear",
+    "game:item-spear-generic-meteoriciron": "Meteoric iron spear",
+    "game:item-spear-generic-steel": "Steel spear",
 
 	"game:item-spearhead-iron": "Iron spear head",
 	"game:item-spearhead-meteoriciron": "Meteoric iron spear head",

@@ -510,10 +510,10 @@ namespace AnimatableCollectible
 				prog.BindTexture2D("itemTex", renderInfo.TextureId, 0);
 				prog.UniformMatrix("projectionMatrix", rpi.CurrentProjectionMatrix);
 				
-				prog.UniformMatrices(
+				prog.UniformMatrices4x3(
 					"elementTransforms",
 					GlobalConstants.MaxAnimatedElements,
-					entityAnimator.Animator.Matrices
+					entityAnimator.Animator.Matrices4x3
 				);
 
 				capi.Render.RenderMesh(currentMeshRef);
@@ -603,14 +603,14 @@ namespace AnimatableCollectible
 					Mat4f.Mul(tmpMvMat, capi.Render.CurrentModelviewMatrix, itemModelMat.Values);
                 	capi.Render.CurrentActiveShader.UniformMatrix("modelViewMatrix", tmpMvMat);
 					capi.Render.CurrentActiveShader.UniformMatrix("projectionMatrix", rapi.CurrentProjectionMatrix);
-					capi.Render.CurrentActiveShader.BindTexture2D("entityTex", capi.ItemTextureAtlas.AtlasTextureIds[0], 0);
+					capi.Render.CurrentActiveShader.BindTexture2D("entityTex", capi.ItemTextureAtlas.AtlasTextures[0].TextureId, 0);
 					capi.Render.CurrentActiveShader.Uniform("addRenderFlags", 0);
 				}
 
-				prog.UniformMatrices(
+				prog.UniformMatrices4x3(
 					"elementTransforms",
 					GlobalConstants.MaxAnimatedElements,
-					entityAnimator.Animator.Matrices
+					entityAnimator.Animator.Matrices4x3
 				);
 
 				capi.Render.RenderMesh(currentMeshRef);

@@ -1,12 +1,12 @@
 [ 
-	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/variantgroups/0/states/-", "value": "iron" },
-	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/variantgroups/0/states/-", "value": "meteoriciron" },
-	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/variantgroups/0/states/-", "value": "steel" },
+	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/variantgroups/1/states/-", "value": "iron" },
+	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/variantgroups/1/states/-", "value": "meteoriciron" },
+	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/variantgroups/1/states/-", "value": "steel" },
 
 	{ "side": "Server", "file": "game:entities/spear", "op": "move", "frompath": "/client/shapeByType/*", "path": "/move-temp"},
-	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-iron", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
-	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-meteoriciron", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
-	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-steel", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
+	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-generic-iron", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
+	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-generic-meteoriciron", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
+	{ "side": "Server", "file": "game:entities/spear", "op": "add", "path": "/client/shapeByType/spear-generic-steel", "value": { "base": "bullseye:item/tool/spear/spear-iron", "offsetX": -0.8125 } },
 	{ "side": "Server", "file": "game:entities/spear", "op": "move", "frompath": "/move-temp", "path": "/client/shapeByType/*"},
 
 	{ "side": "Server", "file": "game:entities/spear", "op": "replace", "path": "/client/texturesByType/*", "value": { "material": { "base": "game:block/metal/ingot/{material}" } } }

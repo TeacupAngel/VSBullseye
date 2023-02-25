@@ -20,6 +20,7 @@ namespace AngelConfig
 		public Action<AngelConfigBase, ICoreAPI> Action {get; private set;}
 	}
 
+	[JsonObject(MemberSerialization.OptOut)]
 	public abstract class AngelConfigBase
 	{
 		[JsonIgnore]
@@ -69,6 +70,9 @@ namespace AngelConfig
 				}
 			}
 
+			// Version config doesn't get saved right now unless a migration happens. That's not the way it should be really
+			// TODO: Save every time config file version doesn't match mod version
+			// also split the MakeLatest and config saving into a separate method from ApplyMigrations
 			MakeLatest(modInfo);
 
 			return saveConfig;
@@ -76,10 +80,7 @@ namespace AngelConfig
 
 		public void Save(ICoreAPI api)
 		{
-			MethodInfo method = api.GetType().GetMethod("StoreModConfig", BindingFlags.Instance | BindingFlags.Public);
-			MethodInfo genericMethod = method.MakeGenericMethod(GetType());
-
-			genericMethod.Invoke(api, new object[] {this, $"{ConfigName}.json"});
+			api.StoreModConfig(this, $"{ConfigName}.json");
 		}
 
 		public virtual AngelConfigMigration[] GetMigrations()

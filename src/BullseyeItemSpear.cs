@@ -181,7 +181,7 @@ namespace Bullseye
 					if (api.World.Rand.NextDouble() < 0.15 && canhackEntity)
 					{
 						SpawnEntityInPlaceOf(entitySel.Entity, entitySel.Entity.Properties.Attributes["hackedEntity"].AsString(), byEntity);
-						sapi.World.DespawnEntity(entitySel.Entity, new EntityDespawnReason() { reason = EnumDespawnReason.Removed });
+						sapi.World.DespawnEntity(entitySel.Entity, new EntityDespawnData() { Reason = EnumDespawnReason.Removed });
 					}
 				}
 			}

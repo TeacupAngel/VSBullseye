@@ -121,15 +121,14 @@
 	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-chargebow" },
 	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/interactionCollectibleCode", "value": "arrow-" },
 
-	{
+	/*{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
 		{
 			"name": "Bullseye_AnimatableAttach",
-			/*"name": "AnimatableWithAttach",*/
 			"properties": {
 				"animatedShape": "bullseye:item/tool/bow/{type}-animated",
 				"onlyWhenAnimating": false
 			}
 		}
-	}
+	}*/
 ]

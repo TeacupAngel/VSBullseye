@@ -1,10 +1,12 @@
-= 2.X.X =
+= 2.5.0-pre.1 =
 
 - New: experimental 'static' aiming style
 --- Switched by chat command '.bullseye set aimstyle fixed' (or '.bullseye set aimstyle free' to switch back) 
 - Tweak: smoother reticle movement when beginning a shot
 - Fix: crash when trying to shoot a bow with no arrows
+- Fix: Temporarily disabled broken bow animations
 - Code improvements
+
 
 = 2.4.2 =
 

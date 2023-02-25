@@ -14,7 +14,7 @@
 	"textures": {
 		"string": "game:item/tool/material/string",
 		"aged": "game:block/wood/debarked/aged",
-		"bone": "game:block/bone",
+		"bone": "game:block/creature/bone",
 		"leather": "game:block/leather/plain"
 	},
 	"elements": [
