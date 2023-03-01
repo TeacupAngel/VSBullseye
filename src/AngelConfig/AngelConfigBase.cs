@@ -29,16 +29,39 @@ namespace AngelConfig
 		[JsonIgnore]
 		public abstract EnumAngelConfigType ConfigType {get;}
 
-		public string Version {get; set;}
+		public string Version;
+
+		[JsonIgnore]
+		public SemVer SemVerVersion {get; private set;}
+
+		public bool SetVersion(ICoreAPI api, string version, ModInfo modInfo)
+		{
+			SemVer configVersion;
+
+			if (!SemVer.TryParse(version, out configVersion, out string configError))
+			{
+				api.Logger.Error($"{modInfo.Name}: Error trying to parse mod config version. Best guess: {configVersion} (error: {configError})");
+			}
+
+			bool wasUpdated = configVersion > SemVerVersion;
+			SemVerVersion = configVersion;
+			Version = version;
+			return wasUpdated;
+		}
+
+		public void InitialiseVersion(ICoreAPI api, ModInfo modInfo)
+		{
+			SetVersion(api, Version, modInfo);
+		}
 
 		public bool ApplyMigrations(ICoreAPI api, ModInfo modInfo)
 		{
 			SemVer configVersion;
 
-			if (Version is null)
+			if (Version == null)
 			{
 				api.Logger.Error($"Config version was null! Cannot migrate because data was lost, setting version to latest");
-				MakeLatest(modInfo);
+				SetVersion(api, modInfo.Version, modInfo);
 				return true;
 			}
 
@@ -47,7 +70,7 @@ namespace AngelConfig
 				api.Logger.Error($"Error trying to parse config version. Best guess: {configVersion} (error: {configError})");
 			}
 
-			bool saveConfig = false;
+			bool needsSave = false;
 
 			AngelConfigMigration[] migrationList = GetMigrations();
 
@@ -60,8 +83,7 @@ namespace AngelConfig
 					if (migration.Version > configVersion)
 					{
 						migration.Action(this, api);
-						Version = migration.Version.ToString();
-						saveConfig = true;
+						needsSave = true;
 
 						continue;
 					}
@@ -70,12 +92,9 @@ namespace AngelConfig
 				}
 			}
 
-			// Version config doesn't get saved right now unless a migration happens. That's not the way it should be really
-			// TODO: Save every time config file version doesn't match mod version
-			// also split the MakeLatest and config saving into a separate method from ApplyMigrations
-			MakeLatest(modInfo);
+			needsSave |= SetVersion(api, modInfo.Version, modInfo);
 
-			return saveConfig;
+			return needsSave;
 		}
 
 		public void Save(ICoreAPI api)
@@ -89,10 +108,5 @@ namespace AngelConfig
 		}
 
 		public abstract AngelConfigSetting[] GetConfigSettings();
-
-		public void MakeLatest(ModInfo modInfo)
-		{
-			Version = modInfo.Version;
-		}
 	}
 }

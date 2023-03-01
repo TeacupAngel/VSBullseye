@@ -59,52 +59,52 @@ namespace AngelConfig
 			T config = new T();
 
 			if (config.ConfigType == EnumAngelConfigType.Client && api.Side == EnumAppSide.Server) return null;
-			if ((config.ConfigType == EnumAngelConfigType.Server) && api.Side == EnumAppSide.Client) return null;
+			if (config.ConfigType == EnumAngelConfigType.Server && api.Side == EnumAppSide.Client) return null;
 
 			if (config.ConfigType == EnumAngelConfigType.Synced)
 			{
 				CreateNetworkChannels(api);
+
+				// Synced configs are loaded only serverside and then sent to clients; the client loads a default until server values can be sent
+				if (api.Side == EnumAppSide.Client) return config;
 			}
 
-			// Synced configs are loaded only serverside and then sent to clients; the client loads a default until server values can be sent
-			if (!(config.ConfigType == EnumAngelConfigType.Synced && api.Side == EnumAppSide.Client))
+			bool saveConfig = true;
+
+			try
 			{
-				bool saveConfig = true;
+				T loadedConfig = api.LoadModConfig<T>($"{config.ConfigName}.json");
 
-				try
+				if (loadedConfig != null)
 				{
-					T newConfig = api.LoadModConfig<T>($"{config.ConfigName}.json");
+					config = loadedConfig;
+					config.InitialiseVersion(api, Mod.Info);
+					saveConfig = false;
+				}
+				else
+				{
+					config.SetVersion(api, Mod.Info.Version, Mod.Info);
+				}
+			}
+			catch
+			{
+				config.SetVersion(api, Mod.Info.Version, Mod.Info);
 
-					if (newConfig is not null)
-					{
-						config = newConfig;
-						saveConfig = false;
-					}
-					else
-					{
-						config.MakeLatest(Mod.Info);
-					}
-				}
-				catch
-				{
-					config.MakeLatest(Mod.Info);
+				ConfigLoadError($"{Mod.Info.Name}: Failed to load {GetConfigTypeString(config.ConfigType)} config file {config.ConfigName}.json! Default values restored", config, api);
+			}
 
-					ConfigLoadError($"{Mod.Info.Name}: Failed to load {GetConfigTypeString(config.ConfigType)} config file {config.ConfigName}.json! Default values restored", config, api);
-				}
+			try
+			{
+				saveConfig |= config.ApplyMigrations(api, Mod.Info);
+			}
+			catch
+			{
+				ConfigLoadError($"{Mod.Info.Name}: Failed to migrate {GetConfigTypeString(config.ConfigType)} config file {config.ConfigName}.json to newest version. Could migrate up to {config.Version}", config, api);
+			}
 
-				try
-				{
-					saveConfig |= config.ApplyMigrations(api, Mod.Info);
-				}
-				catch
-				{
-					ConfigLoadError($"{Mod.Info.Name}: Failed to migrate {GetConfigTypeString(config.ConfigType)} config file {config.ConfigName}.json to newest version. Could migrate up to {config.Version.ToString()}", config, api);
-				}
-
-				if (saveConfig)
-				{
-					config.Save(api);
-				}
+			if (saveConfig)
+			{
+				config.Save(api);
 			}
 
 			foreach (AngelConfigSetting setting in config.GetConfigSettings())
@@ -175,11 +175,11 @@ namespace AngelConfig
 
 		private void CreateNetworkChannels(ICoreAPI api)
 		{
-			if (ServerNetworkChannel is null && api is ICoreServerAPI serverAPI)
+			if (ServerNetworkChannel == null && api is ICoreServerAPI serverAPI)
 			{
 				ServerNetworkChannel = serverAPI.Network.GetChannel("angelconfigserver");
 
-				if (ServerNetworkChannel is null) 
+				if (ServerNetworkChannel == null) 
 				{
 					ServerNetworkChannel = serverAPI.Network.RegisterChannel("angelconfigserver")
 					.RegisterMessageType<AngelSyncedConfigPacket>();
@@ -188,11 +188,11 @@ namespace AngelConfig
 				return;
 			}
 
-			if (ClientNetworkChannel is null && api is ICoreClientAPI clientAPI)
+			if (ClientNetworkChannel == null && api is ICoreClientAPI clientAPI)
 			{
 				ClientNetworkChannel = clientAPI.Network.GetChannel("angelconfigserver");
 
-				if (ClientNetworkChannel is null) 
+				if (ClientNetworkChannel == null) 
 				{
 					ClientNetworkChannel = clientAPI.Network.RegisterChannel("angelconfigserver")
 					.RegisterMessageType<AngelSyncedConfigPacket>()
@@ -440,7 +440,7 @@ namespace AngelConfig
 				return;
 			}
 		
-			if (incomingConfig is null)
+			if (incomingConfig == null)
 			{
 				capi.ShowChatMessage($"Failed to synchronise {packet.ModName} config from server!");
 				return;
