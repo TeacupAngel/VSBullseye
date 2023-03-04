@@ -117,7 +117,6 @@ namespace Bullseye
 
 		public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling, ref EnumHandling handling)
 		{
-			base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handHandling, ref handling);
             if (handHandling == EnumHandHandling.PreventDefault) return;
 
 			if (!RangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, WeaponStats.cooldownTime))
@@ -159,8 +158,6 @@ namespace Bullseye
 
 		public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
 		{
-			base.OnHeldInteractStep(secondsUsed, slot, byEntity, blockSel, entitySel, ref handling);
-
 			if (byEntity.Attributes.GetInt("bullseyeAiming") == 1)
 			{
 				OnAimingStep(secondsUsed, slot, byEntity);
@@ -179,16 +176,16 @@ namespace Bullseye
 					CoreClientSystem.WeaponReadiness = showBlocked ? EnumWeaponReadiness.Blocked : 
 														showPartCharged ? EnumWeaponReadiness.PartCharge : EnumWeaponReadiness.FullCharge;
 				}
+
+				handling = EnumHandling.PreventDefault;
 			}
-			
+
 			return true;
 		}
 
-		// CollectibleBehavior is missing this method, and unfortunately this is blocking for us as we can't tell if the user tries to cancel shooting.
-		// Here's hoping 1.18 fixes this
-		/*public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
+		public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason, ref EnumHandling handled)
 		{
-			base.OnHeldInteractCancel(secondsUsed, slot, byEntity, blockSel, entitySel, cancelReason);
+			if (byEntity.Attributes.GetInt("aimingCancel") == 1) return true;
 
 			byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
@@ -199,13 +196,13 @@ namespace Bullseye
 
 			OnAimingCancel(secondsUsed, slot, byEntity, cancelReason);
 
+			handled = EnumHandling.PreventDefault;
+
 			return true;
-		}*/
+		}
 
 		public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
 		{
-			base.OnHeldInteractStop(secondsUsed, slot, byEntity, blockSel, entitySel, ref handling);
-
 			if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
 			byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
@@ -236,6 +233,8 @@ namespace Bullseye
 
 				RangedWeaponSystem.SendRangedWeaponFirePacket(collObj.Id, targetVec);
 			}
+
+			handling = EnumHandling.PreventDefault;
 		}
 
 		public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot, ref EnumHandling handling)
@@ -380,7 +379,7 @@ namespace Bullseye
 			return WeaponStats.projectileSpread + (ammoSlot.Itemstack?.Collectible.Attributes?["spreadModifier"].AsFloat(0f) ?? 0f);
 		}
 
-		public virtual float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 1.1f;
+		public virtual float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 0f;
 		public virtual float GetProjectileWeight(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 0.1f;
 		public virtual int GetProjectileDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 0;
 
@@ -431,7 +430,7 @@ namespace Bullseye
 			ItemStack stack = ammoSlot.TakeOut(1);
 			ammoSlot.MarkDirty();
 
-			// Aaaaaa why doesn't EntityThrownStone inherit from EntityProjectile
+			// Aaaaaa why don't EntityThrownStone and EntityThrownBeenade inherit from EntityProjectile
 			// Tyron pls
 			// TODO: separate into its own method
 			//EntityProjectile entityProjectile = byEntity.World.ClassRegistry.CreateEntity(type) as EntityProjectile;
@@ -453,6 +452,12 @@ namespace Bullseye
 				entityThrownStone.FiredBy = byEntity;
 				entityThrownStone.Damage = damage;
 				entityThrownStone.ProjectileStack = stack;
+			}
+			else if (projectileEntity is EntityThrownBeenade entityThrownBeenade)
+			{
+				entityThrownBeenade.FiredBy = byEntity;
+				//entityThrownBeenade.Damage = damage;
+				entityThrownBeenade.ProjectileStack = stack;
 			}
 
 			// TODO: separate the entirety of getting the shot direction vector into its own method

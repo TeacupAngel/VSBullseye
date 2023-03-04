@@ -41,7 +41,7 @@ namespace Bullseye
 
 			private static void PatchCommon(Harmony harmony, ICoreAPI api)
 			{
-				ItemStonePatch.Patch(harmony, api);
+				//ItemStonePatch.Patch(harmony, api);
 				//ItemArrowPatch.Patch(harmony, api); // Disabled as a test fix for 2.4.0-rc.4
 			}
 
@@ -50,7 +50,7 @@ namespace Bullseye
 				SystemRenderAimClientPatch.Dispose();
 				ClientMainPatch.Dispose();
 
-				ItemStonePatch.Dispose();
+				//ItemStonePatch.Dispose();
 				//ItemArrowPatch.Dispose();
 			}
 		}
@@ -110,7 +110,8 @@ namespace Bullseye
 		}
 
 		// COMMON PATCHES
-		public class ItemStonePatch
+		// Disabled in 2.5.0 with the transition to CollectibleBehaviors
+		/*public class ItemStonePatch
 		{
 			private static BullseyeSystemConfig configSystem;
 
@@ -133,7 +134,7 @@ namespace Bullseye
 			{
 				configSystem = null;
 			}
-		}
+		}*/
 	}
 
 	/*public class ItemArrowPatch

@@ -1,5 +1,12 @@
 [
-	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "replace", "path": "/class", "value": "bullseye.ItemSling" },
+	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "remove", "path": "/class" },
+
+	{
+		"side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/behaviors", "value": 
+		[{
+			"name": "Bullseye.Sling"
+		}]
+	},
 
 	{ 
 		"side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 

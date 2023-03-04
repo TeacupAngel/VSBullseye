@@ -12,6 +12,7 @@ using Vintagestory.GameContent;
 
 namespace Bullseye
 {
+	[Obsolete("Use BullseyeCollectibleBehaviorBullet instead")]
 	public class BullseyeItemBullet : BullseyeItemAmmunition
 	{
 		protected BullseyeSystemConfig ConfigSystem {get; private set;}

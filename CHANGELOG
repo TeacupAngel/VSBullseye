@@ -1,18 +1,27 @@
+= 2.5.0-pre.2 =
+
+- Tweak: Beenades now use proper Bullseye aiming
+- Fixed: Incorrect break chance display for sling stones
+- API: All item code migrated to CollectibleBehaviors, for easier adding of Bullseye abilities to any item
+--- all BullseyeItem classes are now obsolete, but still preserved for compatibility with other mods
+--- legacy classes no longer support advanced features like ammo selection
+
+
 = 2.5.0-pre.1 =
 
 - New: experimental 'static' aiming style
---- Switched by chat command '.bullseye set aimstyle fixed' (or '.bullseye set aimstyle free' to switch back) 
+--- Switch on by chat command '.bullseye set aimstyle fixed' ('.bullseye set aimstyle free' to switch back) 
 - Tweak: smoother reticle movement when beginning a shot
-- Fix: crash when trying to shoot a bow with no arrows
-- Fix: Temporarily disabled broken bow animations
+- Fixed: crash when trying to shoot a bow with no arrows
+- Fixed: Temporarily disabled broken bow animations
 - Code improvements
 
 
 = 2.4.2 =
 
 - Tweak: Arrow upgrade recipe now refunds arrowheads
-- Fix: occasional crashes when player dies while using bow or sling
-- Fix: some JSON still not conforming to strict JSON standard
+- Fixed: occasional crashes when player dies while using bow or sling
+- Fixed: some JSON still not conforming to strict JSON standard
 - Minor bug fixes and code improvements
 - Finished ability to compile and debug on Linux (NodeJS required to debug multiplayer)
 

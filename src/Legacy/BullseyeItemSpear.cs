@@ -12,6 +12,7 @@ using Vintagestory.GameContent;
 
 namespace Bullseye
 {
+	[Obsolete("Use BullseyeCollectibleBehaviorSpear instead")]
 	public class BullseyeItemSpear : BullseyeItemRangedWeapon
 	{
 		public override void OnLoaded(ICoreAPI api)

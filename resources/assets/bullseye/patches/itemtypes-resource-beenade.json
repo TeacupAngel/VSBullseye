@@ -1,0 +1,42 @@
+[
+	{ "side": "Server", "file": "game:itemtypes/resource/beenade", "op": "remove", "path": "/classByType/*-closed" },
+
+	{
+		"side": "Server", "file": "game:itemtypes/resource/beenade", "op": "add", "path": "/behaviorsByType", "value": 
+		{
+			"*-closed":	[{
+				"name": "Bullseye.Throwable"
+			}]
+		}
+	},
+
+	{
+		"side": "Server", "file": "game:itemtypes/resource/beenade", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
+		{
+			"cooldownTime": 1.5, 
+
+			"aimDrift": 160,
+			"aimTwitch": 35,
+			"aimTwitchDuration": 450,
+
+			"horizontalLimit": 0,
+			"verticalLimit": 0,
+        	"verticalOffset": 0,
+			"projectileSpread": 0,
+			"projectileVelocity": 15,
+
+			"verticalAccuracyMult": 0.7,
+			"accuracyStart": 0.8,
+			"accuracyStartTime": 1.5,
+			"accuracyOvertime": 0,
+			"accuracyMovePenalty": 0.3,
+
+			"aimTexPartChargePath": "bullseye:gui/aimthrowpart.png",
+			"aimTexFullChargePath": "bullseye:gui/aimthrowfull.png"
+		}
+	},
+
+	{ "side": "Server", "file": "game:itemtypes/resource/beenade", "op": "add", "path": "/attributes/damage", "value": 0.5 },
+	{ "side": "Server", "file": "game:itemtypes/resource/beenade", "op": "add", "path": "/attributes/projectileEntityCode", "value": "game:thrownbeenade" },
+	{ "side": "Server", "file": "game:itemtypes/resource/beenade", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" }
+]

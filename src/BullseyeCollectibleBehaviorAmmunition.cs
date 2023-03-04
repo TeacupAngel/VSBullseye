@@ -12,11 +12,18 @@ using Vintagestory.GameContent;
 
 namespace Bullseye
 {
-	public class BullseyeItemAmmunition : Item
+	public class BullseyeCollectibleBehaviorAmmunition : CollectibleBehavior
 	{
+		public BullseyeCollectibleBehaviorAmmunition(CollectibleObject collObj) : base(collObj) {}
+
 		public virtual float GetDamage(ItemSlot inSlot, IWorldAccessor world)
 		{
 			return inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
+		}
+
+		public virtual string GetDamageString(float damage)
+		{
+			return Lang.Get("game:bow-piercingdamage", damage);
 		}
 
 		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
@@ -29,7 +36,7 @@ namespace Bullseye
 			if (inSlot.Itemstack.Collectible.Attributes == null) return;
 
 			float damage = GetDamage(inSlot, world);
-			if (damage != 0) dsc.AppendLine(damage + Lang.Get("game:piercing-damage"));
+			if (damage != 0) dsc.AppendLine(GetDamageString(damage));
 
 			float averageLifetimeDamage = 0f;
 			float breakChance = 0f;

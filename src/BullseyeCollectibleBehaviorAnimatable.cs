@@ -101,7 +101,7 @@ namespace Bullseye
 				InitAnimatable();
 
 				// Don't bother registering a renderer if we can't get the proper data. Should hopefully save us from some crashes
-				if (Animator is null || currentMeshRef is null) return;
+				if (Animator == null || currentMeshRef == null) return;
 
 				capi.Event.RegisterItemstackRenderer(collObj, (inSlot, renderInfo, modelMat, posX, posY, posZ, size, color, rotate, showStackSize) => RenderHandFp(inSlot, renderInfo, modelMat, posX, posY, posZ, size, color, rotate, showStackSize), EnumItemRenderTarget.HandFp);
 			}
@@ -117,7 +117,7 @@ namespace Bullseye
 			loc = loc.WithPathAppendixOnce(".json").WithPathPrefixOnce("shapes/");
 			currentShape = Shape.TryGet(capi, loc);
 
-			if (currentShape is null) return;
+			if (currentShape == null) return;
 
 			Vec3f rendererRot = new Vec3f(0f, 1f, 0f);
 
@@ -249,7 +249,7 @@ namespace Bullseye
 
 		public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
 		{
-			if (Animator is null || capi.IsGamePaused || target != EnumItemRenderTarget.HandFp) return; // We don't get entity here, so only do it for the FP target
+			if (Animator == null || capi.IsGamePaused || target != EnumItemRenderTarget.HandFp) return; // We don't get entity here, so only do it for the FP target
 
 			if (ActiveAnimationsByAnimCode.Count > 0 || Animator.ActiveAnimationCount > 0)
 			{

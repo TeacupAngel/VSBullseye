@@ -44,7 +44,7 @@ namespace AnimatableCollectible
 
 		public void OnClientFrameExtended(float dt)
 		{
-			if (capi is null) return; // Added in 1.17 since ClientFrame is apparently called before Init
+			if (capi == null) return; // Added in 1.17 since ClientFrame is apparently called before Init
 			if (capi.IsGamePaused || (!entity.IsRendered && entity.Alive && entity != capi.World.Player.Entity)) return;
 
 			if (leftHandAnimatorData != null && (leftHandAnimatorData.ActiveAnimationsByAnimCode.Count > 0 || leftHandAnimatorData.Animator.ActiveAnimationCount > 0))

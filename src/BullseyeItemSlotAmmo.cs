@@ -60,29 +60,31 @@ namespace Bullseye
 		{
 			string stackDescription = base.GetStackDescription(world, extendedDebugInfo);
 
-			if (inventory is BullseyeInventoryAmmoSelect inventoryAmmoSelect && inventoryAmmoSelect.PlayerEntity?.RightHandItemSlot?.Itemstack?.Item is BullseyeItemRangedWeapon itemRangedWeapon)
+			if (inventory is not BullseyeInventoryAmmoSelect inventoryAmmoSelect) return stackDescription;
+
+			BullseyeCollectibleBehaviorRangedWeapon behaviorRangedWeapon = inventoryAmmoSelect.PlayerEntity?.RightHandItemSlot?.Itemstack?.Item.GetCollectibleBehavior<BullseyeCollectibleBehaviorRangedWeapon>(true);
+			if (behaviorRangedWeapon == null) return stackDescription;
+
+			float weaponDamage = behaviorRangedWeapon.GetProjectileDamage(inventoryAmmoSelect.PlayerEntity, inventoryAmmoSelect.PlayerEntity.RightHandItemSlot, this);
+			
+			float breakChance = 1f - behaviorRangedWeapon.GetProjectileDropChance(inventoryAmmoSelect.PlayerEntity, inventoryAmmoSelect.PlayerEntity.RightHandItemSlot, this);
+
+			if (this.Itemstack.ItemAttributes?["benefitsFromClass"].AsBool(true) ?? true)
 			{
-				float weaponDamage = itemRangedWeapon.GetProjectileDamage(inventoryAmmoSelect.PlayerEntity, inventoryAmmoSelect.PlayerEntity.RightHandItemSlot, this);
-				
-				float breakChance = 1f - itemRangedWeapon.GetProjectileDropChance(inventoryAmmoSelect.PlayerEntity, inventoryAmmoSelect.PlayerEntity.RightHandItemSlot, this);
+				weaponDamage *= inventoryAmmoSelect.PlayerEntity.Stats.GetBlended("rangedWeaponsDamage");
+			}
 
-				if (this.Itemstack.ItemAttributes?["benefitsFromClass"].AsBool(true) ?? true)
-				{
-					weaponDamage *= inventoryAmmoSelect.PlayerEntity.Stats.GetBlended("rangedWeaponsDamage");
-				}
+			string weaponName = behaviorRangedWeapon.collObj.GetHeldItemName(inventoryAmmoSelect.PlayerEntity.RightHandItemSlot.Itemstack);
 
-				string weaponName = itemRangedWeapon.GetHeldItemName(inventoryAmmoSelect.PlayerEntity.RightHandItemSlot.Itemstack);
+			if (breakChance > 0f && breakChance < 1f)
+			{
+				stackDescription += "\n" + Lang.Get("bullseye:weapon-ranged-total-damage", weaponDamage, breakChance * 100f, weaponName);
+			}
+			else
+			{
+				stackDescription += "\n" + Lang.Get("bullseye:weapon-ranged-total-damage-no-drops", weaponDamage, weaponName);
 
-				if (breakChance > 0f && breakChance < 1f)
-				{
-					stackDescription += "\n" + Lang.Get("bullseye:weapon-ranged-total-damage", weaponDamage, breakChance * 100f, weaponName);
-				}
-				else
-				{
-					stackDescription += "\n" + Lang.Get("bullseye:weapon-ranged-total-damage-no-drops", weaponDamage, weaponName);
-
-					if (breakChance >= 1f) stackDescription += "\n" + Lang.Get("bullseye:projectile-always-breaks");
-				}
+				if (breakChance >= 1f) stackDescription += "\n" + Lang.Get("bullseye:projectile-always-breaks");
 			}
 
 			return stackDescription;

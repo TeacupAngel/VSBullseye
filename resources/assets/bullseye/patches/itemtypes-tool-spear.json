@@ -1,5 +1,12 @@
-[ 
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", "value": "bullseye.ItemSpear" },
+[
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", "value": "bullseye.ItemMeleeSpear" },
+
+	{
+		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/behaviors/-", "value": 
+		{
+			"name": "Bullseye.Spear"
+		}
+	},
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 

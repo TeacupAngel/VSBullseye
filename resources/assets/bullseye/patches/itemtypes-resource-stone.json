@@ -1,7 +1,14 @@
 [
+	{
+		"side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/behaviors", "value": 
+		[{
+			"name": "Bullseye.Bullet"
+		}]
+	},
+	
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes", "value": {} },
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/ammoType", "value": "slingbullet" },
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/entityCode", "value": "thrownstone-{rock}" },
+	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/projectileEntityCode", "value": "thrownstone-{rock}" },
 
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/damageByType", "value": 
 		{
@@ -9,6 +16,7 @@
 			"*": 4
 		}
 	},
+	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/breakChanceOnImpact", "value": 0.8 },
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/spreadModifier", "value": 2 },
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/benefitsFromClass", "value": false }
 ]

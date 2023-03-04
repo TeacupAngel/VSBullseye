@@ -39,8 +39,8 @@ namespace Bullseye
 
 		public override void Start(ICoreAPI api)
 		{
-			api.RegisterCollectibleBehaviorClass("Bullseye_Animatable", typeof(BullseyeCollectibleBehaviorAnimatable));
-			api.RegisterCollectibleBehaviorClass("Bullseye_AnimatableAttach", typeof(BullseyeCollectibleBehaviorAnimatableAttach));
+			api.RegisterCollectibleBehaviorClass("Bullseye.Animatable", typeof(BullseyeCollectibleBehaviorAnimatable));
+			api.RegisterCollectibleBehaviorClass("Bullseye.AnimatableAttach", typeof(BullseyeCollectibleBehaviorAnimatableAttach));
 		}
 
 		public override void Dispose()

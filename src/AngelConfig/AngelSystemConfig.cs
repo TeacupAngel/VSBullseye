@@ -336,7 +336,7 @@ namespace AngelConfig
 
 		private void CommandUniversalMessage(string message, EnumChatType messageType, ICoreAPI api, IServerPlayer player = null, int groupId = 0)
 		{
-			if (player is not null)
+			if (player != null)
 			{
 				player.SendMessage(groupId, message, messageType);
 			}

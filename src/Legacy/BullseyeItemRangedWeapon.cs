@@ -15,6 +15,7 @@ using System.Globalization;
 
 namespace Bullseye
 {
+	[Obsolete("Use BullseyeCollectibleBehaviorRangedWeapon instead")]
 	public class BullseyeItemRangedWeapon : Item
 	{
 		protected BullseyeSystemClientAiming CoreClientSystem {get; private set;}

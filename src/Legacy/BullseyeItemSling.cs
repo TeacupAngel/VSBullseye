@@ -11,6 +11,7 @@ using Vintagestory.GameContent;
 
 namespace Bullseye
 {
+	[Obsolete("Use BullseyeCollectibleBehaviorSling instead")]
 	public class BullseyeItemSling : BullseyeItemRangedWeapon
 	{
 		public override void OnLoaded(ICoreAPI api)
@@ -116,7 +117,7 @@ namespace Bullseye
 		{
 			string entityCode = ammoSlot.Itemstack.Collectible.Attributes["entityCode"].AsString();
 
-			return (entityCode is not null) ? byEntity.World.GetEntityType(new AssetLocation(entityCode)) : null;
+			return (entityCode != null) ? byEntity.World.GetEntityType(new AssetLocation(entityCode)) : null;
 		}
 
 		public override int GetWeaponDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)

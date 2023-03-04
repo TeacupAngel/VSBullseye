@@ -12,8 +12,10 @@ using Vintagestory.GameContent;
 
 namespace Bullseye
 {
-	public class BullseyeItemArrow : BullseyeItemAmmunition
+	public class BullseyeCollectibleBehaviorArrow : BullseyeCollectibleBehaviorAmmunition
 	{
+		public BullseyeCollectibleBehaviorArrow(CollectibleObject collObj) : base(collObj) {}
+
 		protected BullseyeSystemConfig ConfigSystem {get; private set;}
 
 		public override void OnLoaded(ICoreAPI api)

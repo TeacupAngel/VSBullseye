@@ -1,8 +1,15 @@
 [
-	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "replace", "path": "/class", "value": "bullseye.ItemBullet" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "remove", "path": "/class" },
+
+	{
+		"side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/behaviors", "value": 
+		[{
+			"name": "Bullseye.Bullet"
+		}]
+	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/attributes/ammoType", "value": "slingbullet" },
-	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/attributes/entityCode", "value": "bullseye:bullet-{material}" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/attributes/projectileEntityCode", "value": "bullseye:bullet-{material}" },
 
 	// Copied straight from the vanilla file
 	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "add", "path": "/creativeinventory", "value": { "general": ["*"], "items": ["*"], "tools": ["*"] } },

@@ -30,6 +30,7 @@ namespace Bullseye
 		{
 			RegisterItems(api);
 			RegisterEntityBehaviors(api);
+			RegisterCollectibleBehaviors(api);
 		}
 
 		public override void StartServerSide(ICoreServerAPI sapi)
@@ -50,17 +51,32 @@ namespace Bullseye
 
 		private void RegisterItems(ICoreAPI api)
 		{
-			api.RegisterItemClass("bullseye.ItemBow", typeof(Bullseye.BullseyeItemBow));
-			api.RegisterItemClass("bullseye.ItemSpear", typeof(Bullseye.BullseyeItemSpear));
-			api.RegisterItemClass("bullseye.ItemSling", typeof(Bullseye.BullseyeItemSling));
+			api.RegisterItemClass("bullseye.ItemMeleeSpear", typeof(BullseyeItemMeleeSpear));
 
-			api.RegisterItemClass("bullseye.ItemArrow", typeof(Bullseye.BullseyeItemArrow));
-			api.RegisterItemClass("bullseye.ItemBullet", typeof(Bullseye.BullseyeItemBullet));
+			// Legacy
+			api.RegisterItemClass("bullseye.ItemBow", typeof(BullseyeItemBow));
+			api.RegisterItemClass("bullseye.ItemSpear", typeof(BullseyeItemSpear));
+			api.RegisterItemClass("bullseye.ItemSling", typeof(BullseyeItemSling));
+
+			api.RegisterItemClass("bullseye.ItemArrow", typeof(BullseyeItemArrow));
+			api.RegisterItemClass("bullseye.ItemBullet", typeof(BullseyeItemBullet));
 		}
 
 		private void RegisterEntityBehaviors(ICoreAPI api)
 		{
-			api.RegisterEntityBehaviorClass("bullseye.aimingaccuracy", typeof(Bullseye.BullseyeEntityBehaviorAimingAccuracy));
+			api.RegisterEntityBehaviorClass("bullseye.aimingaccuracy", typeof(BullseyeEntityBehaviorAimingAccuracy));
+		}
+
+		private void RegisterCollectibleBehaviors(ICoreAPI api)
+		{
+			api.RegisterCollectibleBehaviorClass("Bullseye.Throwable", typeof(BullseyeCollectibleBehaviorThrowable));
+			api.RegisterCollectibleBehaviorClass("Bullseye.Bow", typeof(BullseyeCollectibleBehaviorBow));
+			api.RegisterCollectibleBehaviorClass("Bullseye.Spear", typeof(BullseyeCollectibleBehaviorSpear));
+			api.RegisterCollectibleBehaviorClass("Bullseye.Sling", typeof(BullseyeCollectibleBehaviorSling));
+
+			api.RegisterCollectibleBehaviorClass("Bullseye.Ammunition", typeof(BullseyeCollectibleBehaviorAmmunition));
+			api.RegisterCollectibleBehaviorClass("Bullseye.Arrow", typeof(BullseyeCollectibleBehaviorArrow));
+			api.RegisterCollectibleBehaviorClass("Bullseye.Bullet", typeof(BullseyeCollectibleBehaviorBullet));
 		}
 
 		public override void Dispose()

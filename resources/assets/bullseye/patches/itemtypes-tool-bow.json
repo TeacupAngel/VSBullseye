@@ -1,5 +1,23 @@
 [ 
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", "value": "bullseye.ItemBow" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/class" },
+
+	/*{
+		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
+		{
+			"name": "Bullseye.AnimatableAttach",
+			"properties": {
+				"animatedShape": "bullseye:item/tool/bow/{type}-animated",
+				"onlyWhenAnimating": false
+			}
+		}
+	}*/
+
+	{
+		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
+		{
+			"name": "Bullseye.Bow"
+		}
+	},
 
 	{ 
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/bullseyeWeaponStatsByType", "value": 
@@ -119,16 +137,5 @@
 	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-chargebow" },
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/interactionCollectibleCode", "value": "arrow-" },
-
-	/*{
-		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
-		{
-			"name": "Bullseye_AnimatableAttach",
-			"properties": {
-				"animatedShape": "bullseye:item/tool/bow/{type}-animated",
-				"onlyWhenAnimating": false
-			}
-		}
-	}*/
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/interactionCollectibleCode", "value": "arrow-" }
 ]

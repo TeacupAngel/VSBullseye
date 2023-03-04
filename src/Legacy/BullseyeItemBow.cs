@@ -11,6 +11,7 @@ using Vintagestory.GameContent;
 
 namespace Bullseye
 {
+	[Obsolete("Use BullseyeCollectibleBehaviorBow instead")]
 	public class BullseyeItemBow : BullseyeItemRangedWeapon
 	{
 		public override void OnLoaded(ICoreAPI api)
@@ -226,7 +227,7 @@ namespace Bullseye
 		{
 			string entityCode = ammoSlot.Itemstack.Collectible.Attributes["entityCode"].AsString();
 
-			if (entityCode is not null) return byEntity.World.GetEntityType(new AssetLocation(entityCode));
+			if (entityCode != null) return byEntity.World.GetEntityType(new AssetLocation(entityCode));
 
 			// Fallback for modded arrows that aren't made explicitly compatible
 			return byEntity.World.GetEntityType(new AssetLocation("arrow-" + ammoSlot.Itemstack.Collectible.Variant["material"]));
