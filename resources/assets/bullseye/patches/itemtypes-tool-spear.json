@@ -106,6 +106,7 @@
 	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-throw" },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/slotRefillIdentifier", "value": "spear" },
 
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/variantgroups/1/states/-", "value": "iron" },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/variantgroups/1/states/-", "value": "meteoriciron" },

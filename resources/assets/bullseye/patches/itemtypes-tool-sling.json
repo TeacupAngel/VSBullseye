@@ -8,7 +8,7 @@
 		}]
 	},
 
-	{ 
+	{
 		"side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
 			"ammoType": "slingbullet",
@@ -42,6 +42,7 @@
 	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "replace", "path": "/attributes/damage", "value": 0 },
+	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/attributes/damagePercent", "value": 3 },
 
 	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/attributes/interactionLangCode", "value": "heldhelp-chargesling" },
 	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/attributes/interactionCollectibleCode", "value": "stone-" }

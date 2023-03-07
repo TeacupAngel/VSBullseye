@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -143,7 +143,7 @@ namespace Bullseye
 
 			// Not ideal to code the aiming controls this way. Needs an elegant solution - maybe an event bus?
 			byEntity.Attributes.SetInt("bullseyeAiming", 1);
-			byEntity.Attributes.SetInt("aimingCancel", 0);
+			byEntity.Attributes.SetInt("bullseyeAimingCancel", 0);
 
 			if (!WeaponStats.allowSprint) 
 			{
@@ -185,13 +185,13 @@ namespace Bullseye
 
 		public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason, ref EnumHandling handled)
 		{
-			if (byEntity.Attributes.GetInt("aimingCancel") == 1) return true;
+			if (byEntity.Attributes.GetInt("bullseyeAimingCancel") == 1) return true;
 
 			byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
 			if (cancelReason != EnumItemUseCancelReason.ReleasedMouse)
 			{
-				byEntity.Attributes.SetInt("aimingCancel", 1);
+				byEntity.Attributes.SetInt("bullseyeAimingCancel", 1);
 			}
 
 			OnAimingCancel(secondsUsed, slot, byEntity, cancelReason);
@@ -203,7 +203,7 @@ namespace Bullseye
 
 		public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
 		{
-			if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
+			if (byEntity.Attributes.GetInt("bullseyeAimingCancel") == 1) return;
 			byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
 			EntityPlayer entityPlayer = byEntity as EntityPlayer;
@@ -301,7 +301,6 @@ namespace Bullseye
 				float yDamage = Y.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
 
 				// Sort by damage, or by name if damage is equal
-				//return xDamage > yDamage ? 1 : (xDamage < yDamage ? -1 : String.Compare(X.GetName(), Y.GetName())); 
 				return (xDamage - yDamage) switch
 				{
 					> 0 => 1,
@@ -421,10 +420,9 @@ namespace Bullseye
 			{
 				int durability = slot.Itemstack.Attributes.GetInt("durability", collObj.Durability);
 
-				ammoDurabilityCost--;
-				ammoDurabilityCost = ammoDurabilityCost >= durability ? durability - 1 : ammoDurabilityCost;
+				ammoDurabilityCost = ammoDurabilityCost >= durability ? durability : ammoDurabilityCost;
 
-				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, ammoDurabilityCost);
+				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, ammoDurabilityCost - 1);
 			}
 
 			ItemStack stack = ammoSlot.TakeOut(1);
@@ -450,13 +448,17 @@ namespace Bullseye
 			else if (projectileEntity is EntityThrownStone entityThrownStone)
 			{
 				entityThrownStone.FiredBy = byEntity;
-				entityThrownStone.Damage = damage;
+				entityThrownStone.Damage = damage * byEntity.Stats.GetBlended("rangedWeaponsDamage");
 				entityThrownStone.ProjectileStack = stack;
 			}
 			else if (projectileEntity is EntityThrownBeenade entityThrownBeenade)
 			{
 				entityThrownBeenade.FiredBy = byEntity;
-				//entityThrownBeenade.Damage = damage;
+				//entityThrownBeenade.Damage = damage * byEntity.Stats.GetBlended("rangedWeaponsDamage");
+				// Using reflection to set damage because it's internal
+				// It's not worth bugging Tyron about because Bullseye is gonna get its own projectile class anyway
+				FieldInfo fieldInfo = typeof(EntityThrownBeenade).GetField("Damage", BindingFlags.Instance | BindingFlags.NonPublic);
+				fieldInfo.SetValue(entityThrownBeenade, damage * byEntity.Stats.GetBlended("rangedWeaponsDamage"));
 				entityThrownBeenade.ProjectileStack = stack;
 			}
 

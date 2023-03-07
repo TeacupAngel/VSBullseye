@@ -16,7 +16,7 @@
 	
 	{ "side": "Server", "file": "game:itemtypes/tool/bullets", "op": "replace", "path": "/attributes/damageByType", "value": 
 		{
-			"*-lead" : 7
+			"*-lead" : 1.75
 		}
 	},
 

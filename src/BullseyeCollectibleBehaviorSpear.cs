@@ -33,13 +33,6 @@ namespace Bullseye
 			return byEntity.World.GetEntityType(new AssetLocation(entityCode));
 		}
 
-		public override void OnShot(ItemSlot slot, Entity projectileEntity, EntityAgent byEntity) 
-		{
-			//if (byEntity is EntityPlayer) collObj.RefillSlotIfEmpty(slot, byEntity, (itemstack) => itemstack.Collectible is BullseyeItemSpear);
-
-			base.OnShot(slot, projectileEntity, byEntity);
-		}
-
 		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
 			if (inSlot.Itemstack.Collectible.Attributes == null) return;

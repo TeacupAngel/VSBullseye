@@ -74,6 +74,15 @@ namespace Bullseye
 		{
 			byEntity.StopAnimation("aim");
 
+			if (byEntity is EntityPlayer) 
+			{
+				string refillIdentifier = collObj.Attributes?["slotRefillIdentifier"].ToString();
+
+				collObj.RefillSlotIfEmpty(slot, byEntity as EntityAgent, (stack) => {
+					return refillIdentifier != null ? stack.ItemAttributes?["slotRefillIdentifier"]?.ToString() == refillIdentifier : stack.Collectible.Id == collObj.Id;
+				});
+			}
+
 			(api as ICoreClientAPI)?.World.AddCameraShake(0.17f);
 
 			IPlayer byPlayer = null;
@@ -86,7 +95,7 @@ namespace Bullseye
             byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, pitch * 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.35f);
 		}
 
-		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
+		/*public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
 			if (inSlot.Itemstack.Collectible.Attributes == null) return;
 
@@ -94,10 +103,10 @@ namespace Bullseye
 
 			if (inSlot.Itemstack.Collectible.Attributes != null)
 			{
-				damage = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem.GetSyncedConfig().SpearDamage;
+				damage = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
 			}
 
 			dsc.AppendLine(damage + Lang.Get("piercing-damage-thrown"));
-		}
+		}*/
 	}
 }

@@ -1,22 +1,49 @@
 [
 	{
 		"side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/behaviors", "value": 
-		[{
-			"name": "Bullseye.Bullet"
-		}]
+		[
+			{ "name": "Bullseye.StoneThrowBlock" },
+			{ "name": "Bullseye.Throwable" },
+			{ "name": "Bullseye.Bullet" }
+		]
 	},
 	
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes", "value": {} },
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/ammoType", "value": "slingbullet" },
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/projectileEntityCode", "value": "thrownstone-{rock}" },
 
+	{
+		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
+		{
+			"cooldownTime": 0.75, 
+
+			"aimDrift": 160,
+			"aimTwitch": 35,
+			"aimTwitchDuration": 450,
+
+			"horizontalLimit": 0,
+			"verticalLimit": 0,
+        	"verticalOffset": 0,
+			"projectileSpread": 0,
+			"projectileVelocity": 19.5,
+
+			"verticalAccuracyMult": 0.7,
+			"accuracyStart": 0.8,
+			"accuracyStartTime": 1.5,
+			"accuracyOvertime": 0,
+			"accuracyMovePenalty": 0.3,
+
+			"aimTexPartChargePath": "bullseye:gui/aimthrowpart.png",
+			"aimTexFullChargePath": "bullseye:gui/aimthrowfull.png"
+		}
+	},
+
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/damageByType", "value": 
 		{
-			"stone-meteorite-iron": 6,
-			"*": 4
+			"stone-meteorite-iron": 1.5,
+			"*": 1
 		}
 	},
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/breakChanceOnImpact", "value": 0.8 },
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/spreadModifier", "value": 2 },
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/benefitsFromClass", "value": false }
+	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/spreadModifier", "value": 2 }
 ]

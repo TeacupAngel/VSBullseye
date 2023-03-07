@@ -44,15 +44,6 @@ namespace Bullseye
 		public override bool TryOpen()
 		{
 			ItemSlot activeHotbarSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;
-			//BullseyeItemRangedWeapon rangedWeaponItem = (activeHotbarSlot?.Itemstack?.Collectible) as BullseyeItemRangedWeapon;
-
-			/*if (rangedWeaponItem?.AmmoType == null)
-			{
-				return false;
-			}
-
-			inventoryAmmoSelect.AmmoCategory = rangedWeaponItem.AmmoType;*/
-
 			BullseyeCollectibleBehaviorRangedWeapon behaviorRangedWeapon = activeHotbarSlot?.Itemstack?.Collectible.GetCollectibleBehavior<BullseyeCollectibleBehaviorRangedWeapon>(true);
 
 			if (behaviorRangedWeapon?.AmmoType == null)
@@ -60,7 +51,17 @@ namespace Bullseye
 				return false;
 			}
 
+			List<ItemStack> ammoStacks = behaviorRangedWeapon.GetAvailableAmmoTypes(activeHotbarSlot, capi.World.Player);
+
+			if (ammoStacks == null || ammoStacks.Count == 0)
+			{
+				return false;
+			}
+
 			inventoryAmmoSelect.AmmoCategory = behaviorRangedWeapon.AmmoType;
+			inventoryAmmoSelect.SetAmmoStacks(ammoStacks);
+			inventoryAmmoSelect.SetSelectedAmmoItemStack(behaviorRangedWeapon.GetEntitySelectedAmmoType(capi.World.Player.Entity));
+			inventoryAmmoSelect.PlayerEntity = capi.World.Player.Entity;
 
 			return base.TryOpen();
 		}
@@ -72,39 +73,16 @@ namespace Bullseye
 
 		private void ComposeDialog()
 		{
-			ItemSlot activeHotbarSlot = capi.World.Player.InventoryManager.ActiveHotbarSlot;
-			//BullseyeItemRangedWeapon rangedWeaponItem = (activeHotbarSlot?.Itemstack?.Collectible) as BullseyeItemRangedWeapon;
-			BullseyeCollectibleBehaviorRangedWeapon behaviorRangedWeapon = activeHotbarSlot?.Itemstack?.Collectible.GetCollectibleBehavior<BullseyeCollectibleBehaviorRangedWeapon>(true);
-
 			ClearComposers();
 
-			if (behaviorRangedWeapon == null)
-			{
-				TryClose();
-				return;
-			}
-
-			//List<ItemStack> ammoStacks = rangedWeaponItem.GetAvailableAmmoTypes(activeHotbarSlot, capi.World.Player);
-			List<ItemStack> ammoStacks = behaviorRangedWeapon.GetAvailableAmmoTypes(activeHotbarSlot, capi.World.Player);
-
-			if (ammoStacks == null)
-			{
-				TryClose();
-				return;
-			}
-
-			inventoryAmmoSelect.SetAmmoStacks(ammoStacks);
-			//inventoryAmmoSelect.SetSelectedAmmoItemStack(rangedWeaponItem.GetEntitySelectedAmmoType(capi.World.Player.Entity));
-			inventoryAmmoSelect.SetSelectedAmmoItemStack(behaviorRangedWeapon.GetEntitySelectedAmmoType(capi.World.Player.Entity));
-			inventoryAmmoSelect.PlayerEntity = capi.World.Player.Entity;
+			int ammoStackCount = inventoryAmmoSelect.Count;
 
 			int maxItemsPerLine = 8;
-
-			int widestLineItems = GameMath.Min(ammoStacks.Count, maxItemsPerLine);
+			int widestLineItems = GameMath.Min(ammoStackCount, maxItemsPerLine);
 
 			double unscaledSlotPaddedSize = GuiElementPassiveItemSlot.unscaledSlotSize + GuiElementItemSlotGridBase.unscaledSlotPadding;
 			double lineWidth = widestLineItems * unscaledSlotPaddedSize;
-			int lineCount = 1 + (ammoStacks.Count - (ammoStacks.Count % maxItemsPerLine)) / maxItemsPerLine;
+			int lineCount = 1 + (ammoStackCount - (ammoStackCount % maxItemsPerLine)) / maxItemsPerLine;
 
 			ElementBounds elementBounds = ElementBounds.Fixed(0.0, 0.0, lineWidth, lineCount * unscaledSlotPaddedSize);
 			ElementBounds bounds = ElementBounds.Fixed(0.0, lineCount * (unscaledSlotPaddedSize + 2.0) + 5.0, lineWidth, 25.0);
