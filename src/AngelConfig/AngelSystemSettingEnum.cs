@@ -16,7 +16,7 @@ namespace AngelConfig
 
 					string param = args.PopWord();
 
-					if (String.IsNullOrEmpty(param)) throw new AngelConfigArgumentException("Parameter is not a proper string");
+					if (String.IsNullOrEmpty(param)) throw new AngelConfigArgumentException("Parameter cannot be empty");
 
 					if (!Enum.TryParse<T>(param, true, out T parsedEnum)) throw new AngelConfigArgumentException($"Parameter is invalid. Choose one from: {String.Join(", ", Enum.GetNames(typeof(T)))}");
 

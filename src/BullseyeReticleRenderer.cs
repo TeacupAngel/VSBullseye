@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Vintagestory.Client.NoObf;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Client;
-using Vintagestory.API.Datastructures;
-using ProtoBuf;
-using System.Reflection;
+using Vintagestory.API.Config;
 
 namespace Bullseye
 {
 	public class BullseyeReticleRenderer : IRenderer
 	{
 		private ICoreClientAPI capi;
-		public BullseyeSystemClientAiming clientAimingSystem;
+		private BullseyeSystemConfig configSystem;
+		private BullseyeSystemClientAiming clientAimingSystem;
 
 		// Renderer
 		public double RenderOrder => 0.98;
@@ -30,10 +28,11 @@ namespace Bullseye
 
 		private LoadedTexture aimTextureThrowCircle;
 
-		public BullseyeReticleRenderer(ICoreClientAPI capi, BullseyeSystemClientAiming clientAimingSystem)
+		public BullseyeReticleRenderer(ICoreClientAPI capi)
 		{
 			this.capi = capi;
-			this.clientAimingSystem = clientAimingSystem;
+			configSystem = capi.ModLoader.GetModSystem<BullseyeSystemConfig>();
+			clientAimingSystem = capi.ModLoader.GetModSystem<BullseyeSystemClientAiming>();;
 
 			defaultAimTexPartCharge = new LoadedTexture(capi);
 			defaultAimTexFullCharge = new LoadedTexture(capi);
@@ -62,10 +61,12 @@ namespace Bullseye
 				LoadedTexture texture = clientAimingSystem.WeaponReadiness == EnumWeaponReadiness.FullCharge ? currentAimTexFullCharge : 
 								(clientAimingSystem.WeaponReadiness == EnumWeaponReadiness.PartCharge ? currentAimTexPartCharge : currentAimTexBlocked);
 				
+				float reticleScale = configSystem.GetClientConfig().ReticleScaling ? RuntimeEnv.GUIScale : 1f;
+
 				capi.Render.Render2DTexture(texture.TextureId, 
-					(capi.Render.FrameWidth / 2) - (texture.Width / 2) + currentAim.X, 
-					(capi.Render.FrameHeight / 2) - (texture.Height / 2) + currentAim.Y, 
-					texture.Width, texture.Height, 10000f)
+					(capi.Render.FrameWidth / 2) - (texture.Width * reticleScale / 2) + currentAim.X, 
+					(capi.Render.FrameHeight / 2) - (texture.Height * reticleScale / 2) + currentAim.Y, 
+					texture.Width * reticleScale, texture.Height * reticleScale, 10000f)
 				;
 
 				// Puts a dot straight on the aiming spot. Useful for debugging

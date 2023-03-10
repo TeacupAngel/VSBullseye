@@ -190,10 +190,16 @@ namespace Bullseye
 		{
 			float modspeed = entity.Stats.GetBlended("rangedWeaponsSpeed");
 
-			// Consider changing the accuracy improvement from linear to exponential (ie 0.5 * 0.5 = 0.25, so inaccuracy is still 75% halfway through drawing)
-			// and/or adding a small degree of random spread when the crosshair is still yellow.
-			float bullseyeAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * weaponStats.accuracyStart; // Loss of accuracy from draw
-			bullseyeAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime; // Loss of accuracy from holding too long
+			// Linear inaccuracy from starting to aim - kept in reserve
+			//float bullseyeAccuracy = GameMath.Max((weaponStats.accuracyStartTime - SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f) * weaponStats.accuracyStart; // Linear inaccuracy from starting to aim
+			
+			// Squared inaccuracy when starting to aim
+			float accMod = GameMath.Clamp((SecondsSinceAimStart * modspeed) / weaponStats.accuracyStartTime, 0f, 1f);
+			accMod = 1f - (accMod * accMod); 
+			float bullseyeAccuracy = accMod * weaponStats.accuracyStart;
+
+			// Linear loss of accuracy from holding too long
+			bullseyeAccuracy += GameMath.Clamp((SecondsSinceAimStart - weaponStats.accuracyOvertimeStart - weaponStats.accuracyStartTime) / weaponStats.accuracyOvertimeTime, 0f, 1f) * weaponStats.accuracyOvertime;
 
 			if (clientAimingSystem != null)
 			{

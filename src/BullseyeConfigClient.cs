@@ -12,11 +12,13 @@ namespace Bullseye
 		public override EnumAngelConfigType ConfigType {get;} = EnumAngelConfigType.Client;
 
 		// Config data
-		public BullseyeAimControlStyle AimStyle {get; set;} = BullseyeAimControlStyle.Free;		
+		public BullseyeAimControlStyle AimStyle {get; set;} = BullseyeAimControlStyle.Free;
+		public bool ReticleScaling {get; set;} = true;
 
 		public override AngelConfigSetting[] GetConfigSettings() => new AngelConfigSetting[] 
 		{
 			new AngelConfigSettingEnum<BullseyeAimControlStyle>("AimStyle", "Aim Style"),
+			new AngelConfigSettingBool("ReticleScaling", "Reticle Scaling"),
 		};
 	}
 }

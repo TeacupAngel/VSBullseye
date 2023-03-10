@@ -12,7 +12,7 @@ namespace Bullseye
 {
 	public class BullseyeSystemClientAiming : ModSystem
 	{
-		public BullseyeSystemConfig configSystem;
+		private BullseyeSystemConfig configSystem;
 
 		public bool Aiming {get; set;} = false;
 		public bool ShowReticle {get; private set;} = true;
@@ -37,7 +37,7 @@ namespace Bullseye
 
 			random = new Random();
 
-			reticleRenderer = new BullseyeReticleRenderer(capi, this);
+			reticleRenderer = new BullseyeReticleRenderer(capi);
 			capi.Event.RegisterRenderer(reticleRenderer, EnumRenderStage.Ortho);
 		}
 

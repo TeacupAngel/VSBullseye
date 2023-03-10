@@ -1,7 +1,10 @@
 = 2.5.0-pre.2 =
 
+- New: Reticle size is now scaled with the rest of the GUI
+--- Can be switched off by chat command `.bullseye set reticlescaling off`
 - Tweak: Thrown stones and beenades now use Bullseye aiming
 - Tweak: Thrown stones, sling stones, and beenades now affected by class damage and velocity traits
+- Tweak: Higher reticle sway when reticle is yellow
 - Fixed: Spears don't break when thrown with 1 durability left
 - Fixed: Incorrect break chance display for sling stones
 - API: All item code migrated to CollectibleBehaviors
