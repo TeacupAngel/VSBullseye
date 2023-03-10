@@ -13,7 +13,7 @@
 	{
 		"side": "Server", "file": "game:itemtypes/resource/beenade", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
-			"cooldownTime": 1.5, 
+			"cooldownTime": 0.75, 
 
 			"aimDrift": 160,
 			"aimTwitch": 35,

@@ -95,9 +95,7 @@ namespace Bullseye
 			}
 			else if (entity.World is IClientWorldAccessor cWorld && cWorld.Player.Entity.EntityId == entity.EntityId)
 			{
-				clientAimingSystem.Aiming = IsAiming;
-
-				if (IsAiming) {	clientAimingSystem.StartAiming(); } else {	clientAimingSystem.StopAiming(); }
+				if (IsAiming) {	clientAimingSystem.StartAiming(); } else { clientAimingSystem.StopAiming(); }
 			}
 		}
 

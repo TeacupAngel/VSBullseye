@@ -77,8 +77,6 @@ namespace Bullseye
 			api.RegisterCollectibleBehaviorClass("Bullseye.Ammunition", typeof(BullseyeCollectibleBehaviorAmmunition));
 			api.RegisterCollectibleBehaviorClass("Bullseye.Arrow", typeof(BullseyeCollectibleBehaviorArrow));
 			api.RegisterCollectibleBehaviorClass("Bullseye.Bullet", typeof(BullseyeCollectibleBehaviorBullet));
-
-			api.RegisterCollectibleBehaviorClass("Bullseye.StoneThrowBlock", typeof(BullseyeCollectibleBehaviorStoneThrowBlock));
 		}
 
 		public override void Dispose()

@@ -116,12 +116,14 @@ namespace Bullseye
 		}
 
 		public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling, ref EnumHandling handling)
-		{
-            if (handHandling == EnumHandHandling.PreventDefault) return;
+		{			
+			if (byEntity.Controls.ShiftKey && byEntity.Controls.CtrlKey) return;
+			if (handHandling == EnumHandHandling.PreventDefault || handling == EnumHandling.PreventDefault) return;
 
 			if (!RangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, WeaponStats.cooldownTime))
 			{
-				handHandling = EnumHandHandling.NotHandled;
+				handHandling = EnumHandHandling.PreventDefault;
+				handling = EnumHandling.PreventDefault;
 				return;
 			}
 
@@ -158,6 +160,12 @@ namespace Bullseye
 
 		public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
 		{
+			if (!RangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, WeaponStats.cooldownTime))
+			{
+				handling = EnumHandling.PreventSubsequent;
+				return false;
+			}
+
 			if (byEntity.Attributes.GetInt("bullseyeAiming") == 1)
 			{
 				OnAimingStep(secondsUsed, slot, byEntity);
@@ -203,7 +211,11 @@ namespace Bullseye
 
 		public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, ref EnumHandling handling)
 		{
-			if (byEntity.Attributes.GetInt("bullseyeAimingCancel") == 1) return;
+			if (byEntity.Attributes.GetInt("bullseyeAimingCancel") == 1) 
+			{
+				handling = EnumHandling.PreventDefault;
+				return;
+			}
 			byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
 			EntityPlayer entityPlayer = byEntity as EntityPlayer;
@@ -211,6 +223,7 @@ namespace Bullseye
 			if (!byEntity.Alive || secondsUsed < GetChargeNeeded(api, byEntity))
 			{
 				OnAimingCancel(secondsUsed, slot, byEntity, !byEntity.Alive ? EnumItemUseCancelReason.Death : EnumItemUseCancelReason.ReleasedMouse);
+				handling = EnumHandling.PreventDefault;
 				return;
 			}
 

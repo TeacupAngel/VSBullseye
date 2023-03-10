@@ -98,11 +98,14 @@ namespace Bullseye
 				SetFixedAimPoint(capi.Render.FrameWidth, capi.Render.FrameHeight);
 			}
 
+			Aiming = true;
 			aimingDt = 0f;
 		}
 
 		public void StopAiming()
 		{
+			Aiming = false;
+
 			lastAimingEndTime = capi.World.ElapsedMilliseconds;
 		}
 

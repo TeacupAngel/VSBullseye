@@ -2,7 +2,6 @@
 	{
 		"side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/behaviors", "value": 
 		[
-			{ "name": "Bullseye.StoneThrowBlock" },
 			{ "name": "Bullseye.Throwable" },
 			{ "name": "Bullseye.Bullet" }
 		]
@@ -13,9 +12,9 @@
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/projectileEntityCode", "value": "thrownstone-{rock}" },
 
 	{
-		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
+		"side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/bullseyeWeaponStats", "value": 
 		{
-			"cooldownTime": 0.75, 
+			"cooldownTime": 0.5, 
 
 			"aimDrift": 160,
 			"aimTwitch": 35,
