@@ -48,7 +48,7 @@ namespace Bullseye
 				AttachmentPointAndPose apap = Animator.GetAttachmentPointPose("Arrow");
 				AttachmentPoint ap = apap.AttachPoint;
 
-				float originalArrowSize = 21f;
+				/*float originalArrowSize = 21f;
 				float bowArrowSize = 15f;
 
 				float arrowScale = bowArrowSize / originalArrowSize; // from 19 pixel long to 14 pixel long
@@ -64,6 +64,19 @@ namespace Bullseye
 					.RotateZ((float)(ap.RotationZ) * GameMath.DEG2RAD)
 					//.Translate(-renderInfo.Transform.Origin.X, -renderInfo.Transform.Origin.Y, -renderInfo.Transform.Origin.Z)
 					.Scale(arrowScale * AttachedRenderInfo.Transform.ScaleXYZ.X, arrowScale * AttachedRenderInfo.Transform.ScaleXYZ.Y, arrowScale * AttachedRenderInfo.Transform.ScaleXYZ.Z)
+					.Translate(-AttachedRenderInfo.Transform.Origin.X / 16f, -AttachedRenderInfo.Transform.Origin.Y / 16f, -AttachedRenderInfo.Transform.Origin.Z / 16f)
+					.Translate(-renderInfo.Transform.Origin.X, -renderInfo.Transform.Origin.Y, -renderInfo.Transform.Origin.Z)
+				;*/
+
+				AttachedMeshMat = modelMat.Clone()
+					.Translate(-renderInfo.Transform.Origin.X, -renderInfo.Transform.Origin.Y, -renderInfo.Transform.Origin.Z)
+					.Mul(apap.AnimModelMatrix)
+					.Translate((ap.PosX + AttachedRenderInfo.Transform.Translation.X) / 16f, (ap.PosY + AttachedRenderInfo.Transform.Translation.Y) / 16f, (ap.PosZ + AttachedRenderInfo.Transform.Translation.Z) / 16f)
+					.Translate(renderInfo.Transform.Origin.X, renderInfo.Transform.Origin.Y, renderInfo.Transform.Origin.Z)
+					.RotateX((float)(ap.RotationX) * GameMath.DEG2RAD)
+					.RotateY((float)(ap.RotationY) * GameMath.DEG2RAD)
+					.RotateZ((float)(ap.RotationZ) * GameMath.DEG2RAD)
+					.Scale(AttachedRenderInfo.Transform.ScaleXYZ.X, AttachedRenderInfo.Transform.ScaleXYZ.Y, AttachedRenderInfo.Transform.ScaleXYZ.Z)
 					.Translate(-AttachedRenderInfo.Transform.Origin.X / 16f, -AttachedRenderInfo.Transform.Origin.Y / 16f, -AttachedRenderInfo.Transform.Origin.Z / 16f)
 					.Translate(-renderInfo.Transform.Origin.X, -renderInfo.Transform.Origin.Y, -renderInfo.Transform.Origin.Z)
 				;

@@ -173,15 +173,26 @@ namespace Bullseye
 				{
 					ItemRenderInfo renderInfo = capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground);
 
-					float arrowScale = weaponSlot.Itemstack?.Collectible?.Attributes?["arrowScale"].AsFloat(1) ?? 1f;
+					/*float arrowScale = weaponSlot.Itemstack?.Collectible?.Attributes?["arrowScale"].AsFloat(1) ?? 1f;
 
 					renderInfo.Transform = renderInfo.Transform.Clone();
 					renderInfo.Transform.ScaleXYZ.X = arrowScale;
 					renderInfo.Transform.ScaleXYZ.Y = arrowScale;
-					renderInfo.Transform.ScaleXYZ.Z = arrowScale;
+					renderInfo.Transform.ScaleXYZ.Z = arrowScale;*/
 
-					/*GetBehavior<CollectibleBehaviorAnimatableSimpleWithAttach>()?.SetAttachedRenderInfo(capi.TesselatorManager.GetDefaultItemMeshRef(arrowSlot.Itemstack.Item),
-						capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground));*/
+					renderInfo.Transform = renderInfo.Transform.Clone();
+
+					// Scale arrows down - ground model of arrows is 21 voxels long, but in bows, the arrows are only 15 arrows long
+					float originalArrowSize = 21f;
+					float bowArrowSize = 15f;
+					float groundScaleFactor = bowArrowSize / originalArrowSize;
+
+					float arrowScale = weaponSlot.Itemstack?.Collectible?.Attributes?["arrowScale"].AsFloat(1) ?? 1f;
+
+					renderInfo.Transform.Translation.Z = -(bowArrowSize / 2f) * arrowScale;
+					renderInfo.Transform.ScaleXYZ.X = arrowScale * groundScaleFactor;
+					renderInfo.Transform.ScaleXYZ.Y = arrowScale * groundScaleFactor;
+					renderInfo.Transform.ScaleXYZ.Z = arrowScale * groundScaleFactor;
 
 					collObj.GetBehavior<BullseyeCollectibleBehaviorAnimatableAttach>()?.SetAttachedRenderInfo(renderInfo);
 				}
@@ -201,7 +212,7 @@ namespace Bullseye
 			damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
 			damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
 
-			damage *= ConfigSystem.GetSyncedConfig().ArrowDamage;
+			damage *= ConfigSystem?.GetSyncedConfig()?.ArrowDamage ?? 1f;
 
 			return damage;
 		}
@@ -267,7 +278,7 @@ namespace Bullseye
 		{
 			if (inSlot.Itemstack.Collectible.Attributes == null) return;
 
-			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem.GetSyncedConfig().ArrowDamage;
+			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.ArrowDamage ?? 1f;
 			if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
 
 			float dmgPercent = inSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0) * 100f;

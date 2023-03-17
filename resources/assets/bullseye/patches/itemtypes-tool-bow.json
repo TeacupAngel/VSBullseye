@@ -1,7 +1,7 @@
 [ 
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/class" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", "value": "Bullseye.BullseyeItemNoTpUseAnimation" },
 
-	/*{
+	{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
 		{
 			"name": "Bullseye.AnimatableAttach",
@@ -10,7 +10,7 @@
 				"onlyWhenAnimating": false
 			}
 		}
-	}*/
+	},
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 

@@ -1,5 +1,5 @@
 [
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", "value": "bullseye.ItemMeleeSpear" },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/class", "value": "Bullseye.ItemMeleeSpear" },
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/behaviors/-", "value": 
@@ -50,8 +50,8 @@
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-bismuthbronze", "value": 360 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-tinbronze", "value": 310 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-blackbronze", "value": 375 },
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-ornategold", "value": 400 },
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-ornatesilver", "value": 400 },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-ornategold", "value": 550 },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-ornatesilver", "value": 550 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-hacking", "value": 310 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/*-ruined", "value": 18 },
 
@@ -95,8 +95,8 @@
 			"*-bismuthbronze": 3,
 			"*-tinbronze": 3,
 			"*-blackbronze": 3,
-			"*-ornate-gold": 3,
-			"*-ornate-silver": 3,
+			"*-ornate-gold": 4,
+			"*-ornate-silver": 4,
 			"*-iron": 4,
 			"*-meteoriciron": 4,
 			"*-steel": 5,

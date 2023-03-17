@@ -90,7 +90,7 @@ namespace Bullseye
 			damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
 			damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
 
-			damage *= ConfigSystem.GetSyncedConfig().SlingDamage;
+			damage *= ConfigSystem?.GetSyncedConfig()?.SlingDamage ?? 1f;
 
 			return damage;
 		}
@@ -155,7 +155,7 @@ namespace Bullseye
 
 			if (inSlot.Itemstack.Collectible.Attributes == null) return;
 
-			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem.GetSyncedConfig().SlingDamage;
+			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.SlingDamage ?? 1f;
 			if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
 
 			float dmgPercent = inSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0) * 100f;

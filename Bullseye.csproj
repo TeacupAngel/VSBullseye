@@ -91,6 +91,6 @@
     <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(ReleasePack)' == ''"></Target>
     <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(ReleasePack)' == 1">
         <MakeDir Directories="$(MSBuildProjectDirectory)/release/$(Version)" />
-        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/resources" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName) $(Version)$(ReleasePackName).zip" Overwrite="true" />
+        <ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)/resources" DestinationFile="$(MSBuildProjectDirectory)/release/$(Version)/$(TargetName)_$(Version)$(ReleasePackName).zip" Overwrite="true" />
     </Target>
 </Project>

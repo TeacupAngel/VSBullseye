@@ -85,7 +85,6 @@ namespace Bullseye
 			int lineCount = 1 + (ammoStackCount - (ammoStackCount % maxItemsPerLine)) / maxItemsPerLine;
 
 			ElementBounds elementBounds = ElementBounds.Fixed(0.0, 0.0, lineWidth, lineCount * unscaledSlotPaddedSize);
-			ElementBounds bounds = ElementBounds.Fixed(0.0, lineCount * (unscaledSlotPaddedSize + 2.0) + 5.0, lineWidth, 25.0);
 			SingleComposer = capi.Gui.CreateCompo("ammotypeselect", ElementStdBounds.AutosizedMainDialog).AddShadedDialogBG(ElementStdBounds.DialogBackground().WithFixedPadding(GuiStyle.ElementToDialogPadding / 2.0), withTitleBar: false).BeginChildElements();
 
 			SingleComposer.AddItemSlotGrid(inventoryAmmoSelect, null, 8, elementBounds, "inventoryAmmoSelectGrid");

@@ -60,7 +60,7 @@ namespace Bullseye
 		public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
 			float damage = weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
-			damage *= ConfigSystem.GetSyncedConfig().SpearDamage;
+			damage *= ConfigSystem?.GetSyncedConfig()?.SpearDamage ?? 1f;
 
 			return damage;
 		}
@@ -245,7 +245,7 @@ namespace Bullseye
 
 			if (inSlot.Itemstack.Collectible.Attributes != null)
 			{
-				damage = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem.GetSyncedConfig().SpearDamage;
+				damage = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.SpearDamage ?? 1f;
 			}
 
 			dsc.AppendLine(damage + Lang.Get("piercing-damage-thrown"));

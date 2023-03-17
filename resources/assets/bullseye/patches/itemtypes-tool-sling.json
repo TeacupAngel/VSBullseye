@@ -1,5 +1,5 @@
 [
-	{ "side": "Server", "file": "game:itemtypes/tool/sling", "op": "remove", "path": "/class" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", "value": "Bullseye.BullseyeItemNoTpUseAnimation" },
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/sling", "op": "add", "path": "/behaviors", "value": 

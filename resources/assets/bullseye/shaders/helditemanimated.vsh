@@ -13,7 +13,7 @@ uniform vec4 rgbaGlowIn;
 uniform int extraGlow;
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
-uniform mat4 elementTransforms[35];
+uniform mat4x3 elementTransforms[46];
 
 out vec2 uv;
 out vec4 color;
@@ -33,9 +33,8 @@ out vec4 gnormal;
 
 void main(void)
 {
-	mat4 animModelMat = modelViewMatrix * elementTransforms[jointId];
+	mat4 animModelMat = modelViewMatrix * mat4(elementTransforms[jointId]);
 	vec4 cameraPos = animModelMat * vec4(vertexPositionIn, 1.0);
-	//vec4 cameraPos = modelViewMatrix * vec4(vertexPositionIn, 1.0);
 	
 	int glow = min(255, extraGlow + (flags & GlowLevelBitMask));
 	glowLevel = glow / 255.0;

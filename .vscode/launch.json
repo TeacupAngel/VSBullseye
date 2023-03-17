@@ -7,7 +7,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
+			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
 			"--addModPath", "${workspaceFolder}",
 			"--playStyle", "preset-surviveandbuild",
 			"--openWorld", "Survival ${workspaceFolderBasename}",
@@ -27,7 +27,7 @@
 		"preLaunchTask": "build (Debug)",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
+			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
 			"--addModPath", "${workspaceFolder}",
 			"--playStyle", "creativebuilding",
 			"--openWorld", "Superflat ${workspaceFolderBasename}",
@@ -45,7 +45,7 @@
 		"preLaunchTask": "Prepare Server (Survival)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
+			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/server",
 			"--addModPath", "${workspaceFolder}",
 		],
 		"linux": {
@@ -62,7 +62,7 @@
 		"preLaunchTask": "Prepare Server (Superflat)",
 		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/server",
+			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/server",
 			"--addModPath", "${workspaceFolder}",
 		],
 		"linux": {
@@ -78,7 +78,7 @@
 		"request": "launch",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/client",
+			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
 			"--addModPath", "${workspaceFolder}",
 			"--connect", "127.0.0.1"
 		],
@@ -94,7 +94,7 @@
 		"request": "launch",
 		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
 		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DATA}/client2",
+			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client2",
 			"--addModPath", "${workspaceFolder}"
 		],
 		"linux": {

@@ -44,14 +44,15 @@ namespace Bullseye
 			api.Logger.Notification("[Bullseye] Applying client-side Harmony patches");
 			HarmonyPatches.PatchManager.PatchClientside(harmony, capi);
 
-			capi.Input.RegisterHotKey("bullseye.ammotypeselect", Lang.Get("bullseye:select-ammo"), GlKeys.F, HotkeyType.GUIOrOtherControls);
+			capi.Input.RegisterHotKey("Bullseye.ammotypeselect", Lang.Get("bullseye:select-ammo"), GlKeys.F, HotkeyType.GUIOrOtherControls);
 
 			capi.Gui.RegisterDialog(new BullseyeGuiDialogAmmoSelect(capi));
 		}
 
 		private void RegisterItems(ICoreAPI api)
 		{
-			api.RegisterItemClass("bullseye.ItemMeleeSpear", typeof(BullseyeItemMeleeSpear));
+			api.RegisterItemClass("Bullseye.ItemMeleeSpear", typeof(BullseyeItemMeleeSpear));
+			api.RegisterItemClass("Bullseye.BullseyeItemNoTpUseAnimation", typeof(BullseyeItemNoTpUseAnimation));
 
 			// Legacy
 			api.RegisterItemClass("bullseye.ItemBow", typeof(BullseyeItemBow));
@@ -64,7 +65,7 @@ namespace Bullseye
 
 		private void RegisterEntityBehaviors(ICoreAPI api)
 		{
-			api.RegisterEntityBehaviorClass("bullseye.aimingaccuracy", typeof(BullseyeEntityBehaviorAimingAccuracy));
+			api.RegisterEntityBehaviorClass("Bullseye.aimingaccuracy", typeof(BullseyeEntityBehaviorAimingAccuracy));
 		}
 
 		private void RegisterCollectibleBehaviors(ICoreAPI api)

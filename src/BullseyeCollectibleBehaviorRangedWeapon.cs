@@ -313,7 +313,7 @@ namespace Bullseye
 				float xDamage = X.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
 				float yDamage = Y.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
 
-				// Sort by damage, or by name if damage is equal
+				// Ascending sort by damage, or by name if damage is equal
 				return (xDamage - yDamage) switch
 				{
 					> 0 => 1,
