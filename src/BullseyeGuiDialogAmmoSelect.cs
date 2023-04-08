@@ -21,26 +21,6 @@ namespace Bullseye
 			inventoryAmmoSelect = new BullseyeInventoryAmmoSelect(api);
 		}
 
-		/*private void OnEventBusEvent(string eventName, ref EnumHandling handling, IAttribute data)
-		{
-			capi.Event.EnqueueMainThreadTask(() =>
-			{
-				TryOpen();
-			}, "reopentoolmodedlg");
-		}*/
-
-		// internal won't be removed from this method until 1.17 :(
-		/*internal override bool OnKeyCombinationToggle(KeyCombination viaKeyComb)
-		{
-			ItemSlot itemSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;
-			if (itemSlot?.Itemstack?.Collectible.GetToolModes(itemSlot, capi.World.Player, capi.World.Player.CurrentBlockSelection) == null)
-			{
-				return false;
-			}
-			blockSele = capi.World.Player.CurrentBlockSelection?.Clone();
-			return base.OnKeyCombinationToggle(viaKeyComb);
-		}*/
-
 		public override bool TryOpen()
 		{
 			ItemSlot activeHotbarSlot = capi.World.Player?.InventoryManager?.ActiveHotbarSlot;

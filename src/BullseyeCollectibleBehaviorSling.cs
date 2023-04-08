@@ -82,15 +82,7 @@ namespace Bullseye
 
 		public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			float damage = 0f;
-
-			// Ammo damage
-			damage += ammoSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
-
-			// Sling damage
-			damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
-			damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
-
+			float damage = base.GetProjectileDamage(byEntity, weaponSlot, ammoSlot);
 			damage *= ConfigSystem?.GetSyncedConfig()?.SlingDamage ?? 1f;
 
 			return damage;
@@ -116,7 +108,7 @@ namespace Bullseye
 
 		public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			string entityCode = ammoSlot.Itemstack.Collectible.Attributes["projectileEntityCode"].AsString();
+			string entityCode = ammoSlot.Itemstack.ItemAttributes["projectileEntityCode"].AsString();
 
 			return (entityCode != null) ? byEntity.World.GetEntityType(new AssetLocation(entityCode)) : null;
 		}
@@ -152,12 +144,12 @@ namespace Bullseye
 
 		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
-			if (inSlot.Itemstack.Collectible.Attributes == null) return;
+			if (inSlot.Itemstack.ItemAttributes == null) return;
 
-			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.SlingDamage ?? 1f;
+			float dmg = inSlot.Itemstack.ItemAttributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.SlingDamage ?? 1f;
 			if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
 
-			float dmgPercent = inSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0) * 100f;
+			float dmgPercent = inSlot.Itemstack.ItemAttributes["damagePercent"].AsFloat(0) * 100f;
 			if (dmgPercent != 0) dsc.AppendLine((dmgPercent > 0 ? "+" : "") + Lang.Get("bullseye:weapon-bonus-damage-ranged", dmgPercent));
 		}
 	}

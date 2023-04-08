@@ -35,14 +35,9 @@ namespace Bullseye
 
 		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
-			if (inSlot.Itemstack.Collectible.Attributes == null) return;
+			if (inSlot.Itemstack?.ItemAttributes == null) return;
 
-			float damage = 0f;
-
-			if (inSlot.Itemstack.Collectible.Attributes != null)
-			{
-				damage = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.SpearDamage ?? 1f;
-			}
+			float damage = inSlot.Itemstack.ItemAttributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.SpearDamage ?? 1f;
 
 			dsc.AppendLine(damage + Lang.Get("piercing-damage-thrown"));
 		}

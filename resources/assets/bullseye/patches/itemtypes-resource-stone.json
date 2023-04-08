@@ -2,13 +2,12 @@
 	{
 		"side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/behaviors", "value": 
 		[
-			{ "name": "Bullseye.Throwable" },
-			{ "name": "Bullseye.Bullet" }
+			{ "name": "Bullseye.ThrowableStone" },
+			{ "name": "Bullseye.Ammunition" }
 		]
 	},
 	
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes", "value": {} },
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/ammoType", "value": "slingbullet" },
 	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/projectileEntityCode", "value": "thrownstone-{rock}" },
 
 	{
@@ -24,7 +23,7 @@
 			"verticalLimit": 0,
         	"verticalOffset": 0,
 			"projectileSpread": 0,
-			"projectileVelocity": 19.5,
+			"projectileVelocity": 15,
 
 			"verticalAccuracyMult": 0.7,
 			"accuracyStart": 0.8,
@@ -34,6 +33,14 @@
 
 			"aimTexPartChargePath": "bullseye:gui/aimthrowpart.png",
 			"aimTexFullChargePath": "bullseye:gui/aimthrowfull.png"
+		}
+	},
+
+	{ 
+		"side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/ammoTypesByType", "value":
+		{
+			"stone-meteorite-iron": { "slingbullet": { "damage": 6, "langCode": "bullseye:damage-with-sling" } },
+			"*": { "slingbullet": { "damage": 4, "langCode": "bullseye:damage-with-sling" } } 
 		}
 	},
 

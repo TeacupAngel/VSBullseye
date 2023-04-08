@@ -93,7 +93,7 @@ namespace Bullseye
 				ResetAimOffset();
 			}
 
-			if (configSystem.GetClientConfig().AimStyle == BullseyeAimControlStyle.Fixed)
+			if (configSystem.GetClientConfig().AimStyle == BullseyeEnumAimControlStyle.Fixed)
 			{
 				SetFixedAimPoint(capi.Render.FrameWidth, capi.Render.FrameHeight);
 			}
@@ -152,7 +152,7 @@ namespace Bullseye
 					default: UpdateAimOffsetSimple(__instance, dt); break;
 				}
 
-				if (configSystem.GetClientConfig().AimStyle == BullseyeAimControlStyle.Free)
+				if (configSystem.GetClientConfig().AimStyle == BullseyeEnumAimControlStyle.Free)
 				{
 					UpdateMouseDelta(__instance, ref ___MouseDeltaX, ref ___MouseDeltaY, ref ___DelayedMouseDeltaX, ref ___DelayedMouseDeltaY);
 				}
@@ -218,16 +218,18 @@ namespace Bullseye
 
 		private float slingHorizRandomOffset;
 
-		const float slingCycleLength = 0.75f;
-		const float slingCycleStartDeadzone = 0.2f;
+		/*const float slingCycleLength = 0.75f;
+		const float slingCycleStartDeadzone = 0.2f;*/
+		const float slingCycleLength = 0.9f;
+		const float slingCycleStartDeadzone = 0.1f;
 		const float slingCycleEndCoyoteTime = 0.1f; // Human visual reaction time is 250ms on average, a little 'coyote time' makes shooting more satisfying
 
 		public void UpdateAimOffsetSling(ClientMain __instance, float dt)
 		{
 			float fovRatio = (__instance.Width / 1920f) * (GameMath.Tan((70f / 2 * GameMath.DEG2RAD)) / GameMath.Tan((ClientSettings.FieldOfView / 2 * GameMath.DEG2RAD)));
 
-			float slingRiseArea = 450 * fovRatio;
-			float slingHorizArea = 45 * fovRatio;
+			float slingRiseArea = 350 * fovRatio;
+			float slingHorizArea = 35 * fovRatio;
 
 			float slingHorizTwitch = WeaponStats.aimTwitch * TwitchMultiplier * fovRatio;
 
@@ -345,9 +347,9 @@ namespace Bullseye
 			ResetAimOffset();
 		}
 
-		public EnumWeaponReadiness WeaponReadiness {get; set;} = EnumWeaponReadiness.Blocked;
+		public BullseyeEnumWeaponReadiness WeaponReadiness {get; set;} = BullseyeEnumWeaponReadiness.Blocked;
 
-		public void SetWeaponReadinessState(EnumWeaponReadiness state)
+		public void SetWeaponReadinessState(BullseyeEnumWeaponReadiness state)
 		{
 			WeaponReadiness = state;
 		}

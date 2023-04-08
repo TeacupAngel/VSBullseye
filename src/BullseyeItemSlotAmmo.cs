@@ -66,7 +66,6 @@ namespace Bullseye
 			if (behaviorRangedWeapon == null) return stackDescription;
 
 			float weaponDamage = behaviorRangedWeapon.GetProjectileDamage(inventoryAmmoSelect.PlayerEntity, inventoryAmmoSelect.PlayerEntity.RightHandItemSlot, this);
-			
 			float breakChance = 1f - behaviorRangedWeapon.GetProjectileDropChance(inventoryAmmoSelect.PlayerEntity, inventoryAmmoSelect.PlayerEntity.RightHandItemSlot, this);
 
 			// No longer used by Bullseye, but preserved for compatibility with other mods

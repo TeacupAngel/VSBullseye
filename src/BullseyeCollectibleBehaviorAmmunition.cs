@@ -8,22 +8,30 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
+using Vintagestory.API.Datastructures;
 using Vintagestory.GameContent;
 
+using Newtonsoft.Json.Linq;
+
 namespace Bullseye
-{
+{  
 	public class BullseyeCollectibleBehaviorAmmunition : CollectibleBehavior
 	{
 		public BullseyeCollectibleBehaviorAmmunition(CollectibleObject collObj) : base(collObj) {}
 
-		public virtual float GetDamage(ItemSlot inSlot, IWorldAccessor world)
+		public virtual float GetDamage(ItemSlot inSlot, string weaponType, IWorldAccessor world)
 		{
-			return inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
-		}
+			if (!String.IsNullOrEmpty(weaponType) && inSlot.Itemstack.ItemAttributes != null)
+			{
+				JsonObject damageObject = inSlot.Itemstack.ItemAttributes["ammoTypes"][weaponType]["damage"];
 
-		public virtual string GetDamageString(float damage)
-		{
-			return Lang.Get("game:bow-piercingdamage", damage);
+				if (damageObject.Exists)
+				{
+					return damageObject.AsFloat(0f);
+				}
+			}
+
+			return inSlot.Itemstack.ItemAttributes?["damage"].AsFloat(0) ?? 0f;
 		}
 
 		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
@@ -32,16 +40,32 @@ namespace Bullseye
 
 			// ItemSlotAmmo displays data with relevant weapon and class bonuses applied, so we don't have to
 			if (inSlot is BullseyeItemSlotAmmo) return;
+			if (inSlot.Itemstack.ItemAttributes == null) return;
 
-			if (inSlot.Itemstack.Collectible.Attributes == null) return;
+			float damage = 0;
 
-			float damage = GetDamage(inSlot, world);
-			if (damage != 0) dsc.AppendLine(GetDamageString(damage));
+			if (inSlot.Itemstack.ItemAttributes["ammoTypes"].Exists && inSlot.Itemstack.ItemAttributes["ammoTypes"].Token is JObject ammoTypeJObject)
+			{
+				foreach (var ammoTypeToken in ammoTypeJObject)
+				{
+					string ammoType = ammoTypeToken.Key;
+					JsonObject ammoTypeObject = inSlot.Itemstack.ItemAttributes["ammoTypes"][ammoType];
+					
+					if (!inSlot.Itemstack.ItemAttributes["ammoTypes"][ammoType]["langCode"].Exists) continue;
+
+					damage = inSlot.Itemstack.ItemAttributes["ammoTypes"][ammoType]["damage"].AsFloat(0f);
+					if (damage != 0) dsc.AppendLine(Lang.Get(inSlot.Itemstack.ItemAttributes["ammoTypes"][ammoType]["langCode"].AsString(), damage));
+				}
+			}
+
+			damage = GetDamage(inSlot, null, world);
+			string damageString = inSlot.Itemstack.ItemAttributes["damageLangCode"].AsString();
+			if (damage != 0 && damageString != null) dsc.AppendLine(Lang.Get(damageString, damage));
 
 			float averageLifetimeDamage = 0f;
 			float breakChance = 0f;
 
-			if (inSlot.Itemstack.Collectible.Attributes.KeyExists("averageLifetimeDamage"))
+			if (inSlot.Itemstack.ItemAttributes.KeyExists("averageLifetimeDamage"))
 			{
 				averageLifetimeDamage = inSlot.Itemstack.ItemAttributes["averageLifetimeDamage"].AsFloat();
 				breakChance = damage / averageLifetimeDamage;

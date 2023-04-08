@@ -278,8 +278,8 @@ namespace Bullseye
 					bool showPartCharged = secondsUsed < WeaponStats.accuracyStartTime / byEntity.Stats.GetBlended("rangedWeaponsSpeed") + WeaponStats.aimFullChargeLeeway;
 					showPartCharged = showPartCharged || secondsUsed > WeaponStats.accuracyOvertimeStart + WeaponStats.accuracyStartTime && WeaponStats.accuracyOvertime > 0;
 
-					CoreClientSystem.WeaponReadiness = showBlocked ? EnumWeaponReadiness.Blocked : 
-														showPartCharged ? EnumWeaponReadiness.PartCharge : EnumWeaponReadiness.FullCharge;
+					CoreClientSystem.WeaponReadiness = showBlocked ? BullseyeEnumWeaponReadiness.Blocked : 
+														showPartCharged ? BullseyeEnumWeaponReadiness.PartCharge : BullseyeEnumWeaponReadiness.FullCharge;
 				}
 			}
 			

@@ -1,6 +1,6 @@
 namespace Bullseye
 {
-	public enum BullseyeAimControlStyle
+	public enum BullseyeEnumAimControlStyle
 	{
 		Free,
 		Fixed

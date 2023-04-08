@@ -44,7 +44,7 @@ namespace Bullseye
 			api.Logger.Notification("[Bullseye] Applying client-side Harmony patches");
 			HarmonyPatches.PatchManager.PatchClientside(harmony, capi);
 
-			capi.Input.RegisterHotKey("Bullseye.ammotypeselect", Lang.Get("bullseye:select-ammo"), GlKeys.F, HotkeyType.GUIOrOtherControls);
+			capi.Input.RegisterHotKey("bullseye.ammotypeselect", Lang.Get("bullseye:select-ammo"), GlKeys.F, HotkeyType.GUIOrOtherControls);
 
 			capi.Gui.RegisterDialog(new BullseyeGuiDialogAmmoSelect(capi));
 		}
@@ -74,10 +74,11 @@ namespace Bullseye
 			api.RegisterCollectibleBehaviorClass("Bullseye.Bow", typeof(BullseyeCollectibleBehaviorBow));
 			api.RegisterCollectibleBehaviorClass("Bullseye.Spear", typeof(BullseyeCollectibleBehaviorSpear));
 			api.RegisterCollectibleBehaviorClass("Bullseye.Sling", typeof(BullseyeCollectibleBehaviorSling));
+			api.RegisterCollectibleBehaviorClass("Bullseye.ThrowableStone", typeof(BullseyeCollectibleBehaviorThrowableStone));
 
 			api.RegisterCollectibleBehaviorClass("Bullseye.Ammunition", typeof(BullseyeCollectibleBehaviorAmmunition));
-			api.RegisterCollectibleBehaviorClass("Bullseye.Arrow", typeof(BullseyeCollectibleBehaviorArrow));
-			api.RegisterCollectibleBehaviorClass("Bullseye.Bullet", typeof(BullseyeCollectibleBehaviorBullet));
+			//api.RegisterCollectibleBehaviorClass("Bullseye.Arrow", typeof(BullseyeCollectibleBehaviorArrow));
+			//api.RegisterCollectibleBehaviorClass("Bullseye.Bullet", typeof(BullseyeCollectibleBehaviorBullet));
 		}
 
 		public override void Dispose()

@@ -94,19 +94,5 @@ namespace Bullseye
 			float pitch = (byEntity as EntityPlayer)?.talkUtil.pitchModifier ?? 1f;
             byPlayer.Entity.World.PlaySoundAt(new AssetLocation("sounds/player/strike"), byPlayer.Entity, byPlayer, pitch * 0.9f + (float)api.World.Rand.NextDouble() * 0.2f, 16, 0.35f);
 		}
-
-		/*public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
-		{
-			if (inSlot.Itemstack.Collectible.Attributes == null) return;
-
-			float damage = 0f;
-
-			if (inSlot.Itemstack.Collectible.Attributes != null)
-			{
-				damage = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0);
-			}
-
-			dsc.AppendLine(damage + Lang.Get("piercing-damage-thrown"));
-		}*/
 	}
 }

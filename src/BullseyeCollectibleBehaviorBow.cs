@@ -88,82 +88,14 @@ namespace Bullseye
 			}
 		}
 
-		public override List<ItemStack> GetAvailableAmmoTypes(ItemSlot slot, IClientPlayer forPlayer)
+		public override bool CanUseAmmoSlot(ItemSlot checkedSlot)
 		{
-			if (AmmoType == null)
-			{
-				return null;
-			}
-
-			List<ItemStack> ammoTypes = new List<ItemStack>();
-
-			forPlayer.Entity.WalkInventory((invslot) =>
-			{
-				if (invslot is ItemSlotCreative) return true;
-
-				if (invslot.Itemstack != null && (AmmoType == invslot.Itemstack.ItemAttributes?["ammoType"].AsString() || invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-")))
-				{
-					ItemStack ammoStack = ammoTypes.Find(itemstack => itemstack.Equals(api.World, invslot.Itemstack, GlobalConstants.IgnoredStackAttributes));
-
-					if (ammoStack == null)
-					{
-						ammoStack = invslot.Itemstack.GetEmptyClone();
-						ammoStack.StackSize = invslot.StackSize;
-						ammoTypes.Add(ammoStack);
-					}
-					else
-					{
-						ammoStack.StackSize += invslot.StackSize;
-					}
-				}
-
-				return true;
-			});
-
-			if (ammoTypes.Count <= 0)
-			{
-				return null;
-			}
-
-			ammoTypes.Sort((ItemStack X, ItemStack Y) => {
-				float xDamage = X.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
-				float yDamage = Y.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
-
-				return xDamage > yDamage ? 1 : (xDamage < yDamage ? -1 : String.Compare(X.GetName(), Y.GetName())); 
-			});
-
-			return ammoTypes;
+			return base.CanUseAmmoSlot(checkedSlot) || checkedSlot.Itemstack.Collectible.Code.Path.StartsWith("arrow-");
 		}
 
 		public override ItemSlot GetNextAmmoSlot(EntityAgent byEntity, ItemSlot weaponSlot, bool isStartCheck = false)
 		{
-			if (AmmoType == null || byEntity == null || weaponSlot.Itemstack == null) return null;
-
-			ItemSlot arrowSlot = null;
-			ItemStack ammoType = isStartCheck ? GetEntitySelectedAmmoType(byEntity) : weaponSlot.Itemstack?.TempAttributes?.GetItemstack("loadedAmmo", null);
-
-			byEntity.WalkInventory((invslot) =>
-			{
-				if (invslot == null || invslot is ItemSlotCreative) return true;
-
-				if (invslot.Itemstack != null && (AmmoType == invslot.Itemstack.ItemAttributes?["ammoType"].AsString() || invslot.Itemstack.Collectible.Code.Path.StartsWith("arrow-")))
-				{
-					// If we found the selected ammo type or no ammo type is specifically selected, return the first one we find
-					if (ammoType == null || invslot.Itemstack.Equals(api.World, ammoType, GlobalConstants.IgnoredStackAttributes))
-					{
-						arrowSlot = invslot;
-						return false;
-					}
-
-					// Otherwise just get the first ammo stack we find, if we only just started drawing the bow
-					if (arrowSlot == null && isStartCheck)
-					{
-						arrowSlot = invslot;
-					}
-				}
-
-				return true;
-			});
+			ItemSlot arrowSlot = base.GetNextAmmoSlot(byEntity, weaponSlot, isStartCheck);
 
 			if (isStartCheck && arrowSlot != null)
 			{
@@ -172,17 +104,9 @@ namespace Bullseye
 				if (api is ICoreClientAPI capi)
 				{
 					ItemRenderInfo renderInfo = capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground);
-
-					/*float arrowScale = weaponSlot.Itemstack?.Collectible?.Attributes?["arrowScale"].AsFloat(1) ?? 1f;
-
-					renderInfo.Transform = renderInfo.Transform.Clone();
-					renderInfo.Transform.ScaleXYZ.X = arrowScale;
-					renderInfo.Transform.ScaleXYZ.Y = arrowScale;
-					renderInfo.Transform.ScaleXYZ.Z = arrowScale;*/
-
 					renderInfo.Transform = renderInfo.Transform.Clone();
 
-					// Scale arrows down - ground model of arrows is 21 voxels long, but in bows, the arrows are only 15 arrows long
+					// Scale arrows down - ground model of arrows is 21 voxels long, but in bows, the arrows are only 15 units long
 					float originalArrowSize = 21f;
 					float bowArrowSize = 15f;
 					float groundScaleFactor = bowArrowSize / originalArrowSize;
@@ -203,15 +127,7 @@ namespace Bullseye
 
 		public override float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			float damage = 0f;
-
-			// Arrow damage
-			damage += ammoSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0f;
-
-			// Bow damage
-			damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
-			damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
-
+			float damage = base.GetProjectileDamage(byEntity, weaponSlot, ammoSlot);
 			damage *= ConfigSystem?.GetSyncedConfig()?.ArrowDamage ?? 1f;
 
 			return damage;
@@ -237,7 +153,7 @@ namespace Bullseye
 
 		public override EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			string entityCode = ammoSlot.Itemstack.Collectible.Attributes["projectileEntityCode"].AsString();
+			string entityCode = ammoSlot.Itemstack.ItemAttributes["projectileEntityCode"].AsString();
 
 			if (entityCode != null) return byEntity.World.GetEntityType(new AssetLocation(entityCode));
 
@@ -276,12 +192,12 @@ namespace Bullseye
 
 		public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
-			if (inSlot.Itemstack.Collectible.Attributes == null) return;
+			if (inSlot.Itemstack.ItemAttributes == null) return;
 
-			float dmg = inSlot.Itemstack.Collectible.Attributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.ArrowDamage ?? 1f;
+			float dmg = inSlot.Itemstack.ItemAttributes["damage"].AsFloat(0) * ConfigSystem?.GetSyncedConfig()?.ArrowDamage ?? 1f;
 			if (dmg != 0) dsc.AppendLine(dmg + Lang.Get("piercing-damage"));
 
-			float dmgPercent = inSlot.Itemstack.Collectible.Attributes["damagePercent"].AsFloat(0) * 100f;
+			float dmgPercent = inSlot.Itemstack.ItemAttributes["damagePercent"].AsFloat(0) * 100f;
 			if (dmgPercent != 0) dsc.AppendLine((dmgPercent > 0 ? "+" : "") + Lang.Get("bullseye:weapon-bonus-damage-ranged", dmgPercent));
 		}
 	}

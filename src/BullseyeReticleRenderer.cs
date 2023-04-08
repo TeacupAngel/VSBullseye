@@ -46,20 +46,15 @@ namespace Bullseye
 
 			capi.Render.GetOrLoadTexture(new AssetLocation("bullseye", "gui/throw_circle.png"), ref aimTextureThrowCircle);
 		}
-
-		// Issue https://github.com/Rahjital/VSBullseye/issues/8
-		// Aim wobble appears to get worse on higher resolutions because the aim texutre is smaller
-		// Scale it up or down depending on the resolution
-		// Try snapping it to the nearest power of 2 if at all possible?
-		// And base it on a clientside config setting, default on (options: on-snap, on-direct-scale, off)
+		
 		public void OnRenderFrame(float deltaTime, EnumRenderStage stage)
 		{
 			if (clientAimingSystem.Aiming && clientAimingSystem.ShowReticle)
 			{
 				Vec2f currentAim = clientAimingSystem.GetCurrentAim();
 
-				LoadedTexture texture = clientAimingSystem.WeaponReadiness == EnumWeaponReadiness.FullCharge ? currentAimTexFullCharge : 
-								(clientAimingSystem.WeaponReadiness == EnumWeaponReadiness.PartCharge ? currentAimTexPartCharge : currentAimTexBlocked);
+				LoadedTexture texture = clientAimingSystem.WeaponReadiness == BullseyeEnumWeaponReadiness.FullCharge ? currentAimTexFullCharge : 
+								(clientAimingSystem.WeaponReadiness == BullseyeEnumWeaponReadiness.PartCharge ? currentAimTexPartCharge : currentAimTexBlocked);
 				
 				float reticleScale = configSystem.GetClientConfig().ReticleScaling ? RuntimeEnv.GUIScale : 1f;
 

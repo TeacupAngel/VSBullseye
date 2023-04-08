@@ -115,17 +115,24 @@ namespace Bullseye
 			}
 		}
 
-		public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling, ref EnumHandling handling)
-		{			
-			if (byEntity.Controls.ShiftKey && byEntity.Controls.CtrlKey) return;
-			if (handHandling == EnumHandHandling.PreventDefault || handling == EnumHandling.PreventDefault) return;
+		protected virtual bool CanStartAiming(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling, ref EnumHandling handling)
+		{
+			if (byEntity.Controls.ShiftKey && byEntity.Controls.CtrlKey) return false;
 
 			if (!RangedWeaponSystem.HasEntityCooldownPassed(byEntity.EntityId, WeaponStats.cooldownTime))
 			{
 				handHandling = EnumHandHandling.PreventDefault;
 				handling = EnumHandling.PreventDefault;
-				return;
+				return false;
 			}
+
+			return true;
+		}
+
+		public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handHandling, ref EnumHandling handling)
+		{
+			if (handHandling == EnumHandHandling.PreventDefault || handling == EnumHandling.PreventDefault) return;
+			if (!CanStartAiming(slot, byEntity, blockSel, entitySel, firstEvent, ref handHandling, ref handling)) return;
 
 			ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot, true);
 			if (ammoSlot == null) return;
@@ -181,8 +188,8 @@ namespace Bullseye
 					bool showPartCharged = secondsUsed < WeaponStats.accuracyStartTime / byEntity.Stats.GetBlended("rangedWeaponsSpeed") + WeaponStats.aimFullChargeLeeway;
 					showPartCharged = showPartCharged || secondsUsed > WeaponStats.accuracyOvertimeStart + WeaponStats.accuracyStartTime && WeaponStats.accuracyOvertime > 0;
 
-					CoreClientSystem.WeaponReadiness = showBlocked ? EnumWeaponReadiness.Blocked : 
-														showPartCharged ? EnumWeaponReadiness.PartCharge : EnumWeaponReadiness.FullCharge;
+					CoreClientSystem.WeaponReadiness = showBlocked ? BullseyeEnumWeaponReadiness.Blocked : 
+														showPartCharged ? BullseyeEnumWeaponReadiness.PartCharge : BullseyeEnumWeaponReadiness.FullCharge;
 				}
 
 				handling = EnumHandling.PreventDefault;
@@ -272,6 +279,13 @@ namespace Bullseye
 			transform.Rotation.Y = DefaultFpHandTransform.Rotation.Y - (currentAim.X / 15f);
 		}
 
+		public virtual bool CanUseAmmoSlot(ItemSlot checkedSlot)
+		{
+			if (checkedSlot.Itemstack.ItemAttributes?["ammoTypes"]?[AmmoType]?.Exists ?? false) return true;
+
+			return AmmoType == checkedSlot.Itemstack.ItemAttributes?["ammoType"].AsString();
+		}
+
 		public virtual List<ItemStack> GetAvailableAmmoTypes(ItemSlot slot, IClientPlayer forPlayer)
 		{
 			if (AmmoType == null)
@@ -285,13 +299,13 @@ namespace Bullseye
 			{
 				if (invslot is ItemSlotCreative) return true;
 
-				if (invslot.Itemstack != null && AmmoType == invslot.Itemstack.ItemAttributes?["ammoType"].AsString())
+				if (invslot.Itemstack != null && CanUseAmmoSlot(invslot))
 				{
-					ItemStack ammoStack = ammoTypes.Find(itemstack => itemstack.Id == invslot.Itemstack.Id);
+					ItemStack ammoStack = ammoTypes.Find(itemstack => itemstack.Equals(api.World, invslot.Itemstack, GlobalConstants.IgnoredStackAttributes));
 
 					if (ammoStack == null)
 					{
-						ammoStack = new ItemStack(api.World.GetItem(invslot.Itemstack.Id));
+						ammoStack = invslot.Itemstack.GetEmptyClone();
 						ammoStack.StackSize = invslot.StackSize;
 						ammoTypes.Add(ammoStack);
 					}
@@ -350,17 +364,16 @@ namespace Bullseye
 			if (AmmoType == null || byEntity == null || weaponSlot.Itemstack == null) return null;
 
 			ItemSlot ammoSlot = null;
-
-			ItemStack ammoType = GetEntitySelectedAmmoType(byEntity);
+			ItemStack selectedAmmoType = GetEntitySelectedAmmoType(byEntity);
 
 			byEntity.WalkInventory((invslot) =>
 			{
 				if (invslot == null || invslot is ItemSlotCreative) return true;
 
-				if (invslot.Itemstack != null && AmmoType == invslot.Itemstack.ItemAttributes?["ammoType"].AsString())
+				if (invslot.Itemstack != null && CanUseAmmoSlot(invslot))
 				{
 					// If we found the selected ammo type or no ammo type is specifically selected, return the first one we find
-					if (ammoType == null || invslot.Itemstack.Equals(api.World, ammoType, GlobalConstants.IgnoredStackAttributes))
+					if (selectedAmmoType == null || invslot.Itemstack.Equals(api.World, selectedAmmoType, GlobalConstants.IgnoredStackAttributes))
 					{
 						ammoSlot = invslot;
 						return false;
@@ -379,16 +392,31 @@ namespace Bullseye
 			return ammoSlot;
 		}
 
-		public virtual float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 0f;
-
-		public virtual float GetProjectileSpeed(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		public virtual float GetProjectileDamage(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			return WeaponStats.projectileVelocity + (ammoSlot.Itemstack?.Collectible.Attributes?["speedModifier"].AsFloat(0f) ?? 0f);
+			float damage = 0f;
+
+			if (ammoSlot?.Itemstack?.Collectible != null) 
+			{
+				BullseyeCollectibleBehaviorAmmunition cbAmmunition = ammoSlot.Itemstack.Collectible.GetCollectibleBehavior<BullseyeCollectibleBehaviorAmmunition>(true);
+				damage = cbAmmunition != null ? cbAmmunition.GetDamage(ammoSlot, WeaponStats.ammoType, byEntity.World) : ammoSlot.Itemstack.ItemAttributes?["damage"].AsFloat(0) ?? 0f;
+			}
+
+			// Weapon modifiers
+			damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
+			damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
+
+			return damage;
+		}
+
+		public virtual float GetProjectileVelocity(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		{
+			return WeaponStats.projectileVelocity + (ammoSlot.Itemstack?.ItemAttributes?["velocityModifier"].AsFloat(0f) ?? 0f);
 		}
 
 		public virtual float GetProjectileSpread(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			return WeaponStats.projectileSpread + (ammoSlot.Itemstack?.Collectible.Attributes?["spreadModifier"].AsFloat(0f) ?? 0f);
+			return WeaponStats.projectileSpread + (ammoSlot.Itemstack?.ItemAttributes?["spreadModifier"].AsFloat(0f) ?? 0f);
 		}
 
 		public virtual float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 0f;
@@ -419,7 +447,7 @@ namespace Bullseye
 			if (type == null) return;
 
 			float damage = GetProjectileDamage(byEntity, slot, ammoSlot);
-			float speed = GetProjectileSpeed(byEntity, slot, ammoSlot);
+			float speed = GetProjectileVelocity(byEntity, slot, ammoSlot);
 			float spread = GetProjectileSpread(byEntity, slot, ammoSlot);
 			float dropChance = GetProjectileDropChance(byEntity, slot, ammoSlot);
 			float weight = GetProjectileWeight(byEntity, slot, ammoSlot);

@@ -1,6 +1,6 @@
 namespace Bullseye
 {
-	public enum EnumWeaponReadiness
+	public enum BullseyeEnumWeaponReadiness
 	{
 		Blocked,
 		PartCharge,

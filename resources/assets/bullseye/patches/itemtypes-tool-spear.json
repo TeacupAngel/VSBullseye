@@ -53,7 +53,7 @@
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-ornategold", "value": 550 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-ornatesilver", "value": 550 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/spear-generic-hacking", "value": 310 },
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/*-ruined", "value": 18 },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/durabilitybytype/*-ruined", "value": 22 },
 
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/durabilitybytype/spear-generic-iron", "value": 550 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/durabilitybytype/spear-generic-meteoriciron", "value": 700 },
@@ -74,7 +74,7 @@
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/attributes/damageByType/*-ornategold", "value": 9 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/attributes/damageByType/*-ornatesilver", "value": 9 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/attributes/damageByType/*-hacking", "value": 8.25 },
-	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/attributes/damageByType/*-ruined", "value": 8.75 },
+	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "replace", "path": "/attributes/damageByType/*-ruined", "value": 9 },
 
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/damageByType/*-iron", "value": 9 },
 	{ "side": "Server", "file": "game:itemtypes/tool/spear", "op": "add", "path": "/attributes/damageByType/*-meteoriciron", "value": 9.25 },

@@ -4,12 +4,13 @@
 	{
 		"side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/behaviors", "value": 
 		[{
-			"name": "Bullseye.Arrow"
+			"name": "Bullseye.Ammunition"
 		}]
 	},
 
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/ammoType", "value": "arrow" },
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/projectileEntityCode", "value": "arrow-{material}" },
+	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "add", "path": "/attributes/damageLangCode", "value": "game:bow-piercingdamage" },
 	
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-crude", "value": 3 },
 	{ "side": "Server", "file": "game:itemtypes/tool/arrow", "op": "replace", "path": "/attributes/damageByType/*-flint", "value": 3.5 },
