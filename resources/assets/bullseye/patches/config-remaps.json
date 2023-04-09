@@ -1,0 +1,10 @@
+[ 
+	{ 
+		"file": "game:config/remaps", "op": "add", "path": "/bullseye:v2.5.0-rc.1", "value": 
+		[
+			"/iir remapq game:spear-generic-iron game:spear-iron force",
+			"/iir remapq game:spear-generic-meteoriciron game:spear-meteoriciron force",
+			"/iir remapq game:spear-generic-steel game:spear-steel force"
+		]
+	}
+]

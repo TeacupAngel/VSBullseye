@@ -3,13 +3,14 @@
 - Tweak: Reduced sling aiming difficulty
 - Tweak: Silver/gold arrows, spears, and ruined spears buffed to iron level stats to be consistent with other weapons
 - Fixed: Broken first person bow animations
+- Fixed: Player model twitching in 3rd person when aiming with bow or sling
 - Fixed: Thrown stones much faster than intended
 - Fixed: Unable to knap throwable stones
-- Fixed: Player model twitching in 3rd person when aiming with bow or sling
+- Fixed: Iron and steel spears from 1.17 worlds appearing as unknown items
 - Fixed: Rare crash caused by config loading in too late
 - API: Renamed GetProjectileSpeed method to GetProjectileVelocity
 - API: Projectile types can now be part of mutliple ammo categories, with separate damage values
-- Other: Breaking change for developers, VINTAGE_STORY_DATA environment variable renamed to VINTAGE_STORY_DEV_DATA
+- Other: Breaking change for mod developers, VINTAGE_STORY_DATA environment variable renamed to VINTAGE_STORY_DEV_DATA
 - Other: Replaced spaces with underscores in mod filenames
 - Other: Removed unfinished code for 3rd person item animations
 
