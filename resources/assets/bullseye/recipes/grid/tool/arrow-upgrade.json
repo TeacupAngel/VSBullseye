@@ -136,7 +136,7 @@
 	}
 ]
 
-// Sadly this generic recipe randomly breaks - when allowedVariants is added,the game seems to confuse the two 'name' properties ({material} and {origina})
+// Sadly this generic recipe randomly breaks - when allowedVariants is added,the game seems to confuse the two 'name' properties ({material} and {original})
 // and adds a whole bunch of recipes to combine flint arrows with flint arrowheads, copper arrows with copper arrowheads, etc., but nothing else
 // Which is exactly the opposite of what we want! So we have to do it manually for now
 //

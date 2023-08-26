@@ -84,11 +84,6 @@ namespace Bullseye
 			playerBot.RightHandItemSlot.Itemstack = new ItemStack(sapi.World.SearchItems(new AssetLocation("bow-simple"))[0], 1);
 		}
 
-		private void CommandServersideCrash(ICoreServerAPI sapi, IServerPlayer player, int groupId, CmdArgs args)
-		{
-			throw new Exception("Serverside modded exception crash");
-		}
-
 		public override void StartServerSide(ICoreServerAPI sapi)
 		{
 			sapi.RegisterCommand("bsedbg", "", "", (IServerPlayer player, int groupId, CmdArgs args) => {
@@ -103,9 +98,6 @@ namespace Bullseye
 							return;
 						case "archerbot":
 							CommandSpawnArcherbot(sapi, player, groupId, args);
-							return;
-						case "crash":
-							CommandServersideCrash(sapi, player, groupId, args);
 							return;
 					}
 				}
@@ -203,11 +195,6 @@ namespace Bullseye
 			autofireSwitchAmmo = args.PopBool() ?? false;
 		}
 
-		private void CommandClientsideCrash(ICoreClientAPI api, IClientPlayer player, int groupId, CmdArgs args)
-		{
-			throw new Exception("Clientside modded exception crash");
-		}
-
 		public override void StartClientSide(ICoreClientAPI capi)
 		{
 			capi.RegisterCommand("bsedbg", "", "", (int groupId, CmdArgs args) => {
@@ -219,9 +206,6 @@ namespace Bullseye
 					{
 						case "autofire":
 							CommandAutofire(capi, capi.World.Player, groupId, args);
-							return;
-						case "crash":
-							CommandClientsideCrash(capi, capi.World.Player, groupId, args);
 							return;
 					}
 				}
