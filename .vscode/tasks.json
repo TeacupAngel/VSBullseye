@@ -1,6 +1,7 @@
 {
     "version": "2.0.0",
-    "tasks": [
+    "tasks": 
+	[
         {
             "label": "clean",
             "group": "none",
@@ -122,6 +123,56 @@
             },
             "dependsOrder": "sequence",
             "dependsOn": ["build (Debug)"]
-        }
+        },
+
+		{
+            "label": "build Launcher",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile",
+            "type": "shell",
+            "command": "dotnet",
+            "linux": {
+                "options": {
+                    "env": {
+                        "FrameworkPathOverride": "/lib/mono/4.6.1-api/"
+                    }
+                }
+            },
+            "args": [
+                "build",
+				"Launcher/VSCodeDevLauncher.csproj",
+                "-c",
+                "Debug"
+            ]
+        },
+		{
+			"label": "watchTask",
+			"command": "dotnet",
+			"isBackground": true,
+			"type": "process",
+			"linux": {
+				"options": {
+					"env": {
+						"DOTNET_USE_POLLING_FILE_WATCHER": "true"
+					}
+				}
+			},
+			"args": [
+				"watch",
+				"--project",
+				"VSCodeDevLauncher.csproj",
+				"--verbose",
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/Launcher"
+			},
+			"problemMatcher": "$msCompile"
+		}
     ]
   }

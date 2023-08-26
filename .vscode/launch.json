@@ -1,106 +1,148 @@
 {
 	"version": "0.2.0",
-	"configurations": [{
-		"name": "Launch Survival",
-		"type": "clr",
-		"request": "launch",
-		"preLaunchTask": "build (Debug)",
-		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
-			"--addModPath", "${workspaceFolder}",
-			"--playStyle", "preset-surviveandbuild",
-			"--openWorld", "Survival ${workspaceFolderBasename}",
-		],
-		// If you get warnings for linux launch attributes, that seems to be a VSCode bug: 
-		// https://github.com/microsoft/vscode/issues/129071
-		"linux": {
-			"type": "mono"
-		},
-		"console": "internalConsole",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Superflat",
-		"type": "clr",
-		"request": "launch",
-		"preLaunchTask": "build (Debug)",
-		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
-			"--addModPath", "${workspaceFolder}",
-			"--playStyle", "creativebuilding",
-			"--openWorld", "Superflat ${workspaceFolderBasename}",
-		],
-		"linux": {
-			"type": "mono"
-		},
-		"console": "internalConsole",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Survival Server",
-		"type": "clr",
-		"request": "launch",
-		"preLaunchTask": "Prepare Server (Survival)",
-		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/server",
-			"--addModPath", "${workspaceFolder}",
-		],
-		"linux": {
-			"type": "mono",
-			"console": "integratedTerminal",
-		},
-		"console": "externalTerminal",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Superflat Server",
-		"type": "clr",
-		"request": "launch",
-		"preLaunchTask": "Prepare Server (Superflat)",
-		"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/server",
-			"--addModPath", "${workspaceFolder}",
-		],
-		"linux": {
-			"type": "mono",
+	"configurations": 
+	[
+		{
+			"name": "Launch Survival",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build (Debug)",
+			"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+			"args": [
+				"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
+				"--addModPath", "${workspaceFolder}",
+				"--playStyle", "preset-surviveandbuild",
+				"--openWorld", "Survival ${workspaceFolderBasename}",
+			],
 			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
 		},
-		"console": "externalTerminal",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Multiplayer Client",
-		"type": "clr",
-		"request": "launch",
-		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
-			"--addModPath", "${workspaceFolder}",
-			"--connect", "127.0.0.1"
-		],
-		"linux": {
-			"type": "mono"
+		{
+			"name": "Launch Creative",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build (Debug)",
+			"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+			"args": [
+				"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
+				"--addModPath", "${workspaceFolder}",
+				"--playStyle", "creativebuilding",
+				"--openWorld", "Superflat ${workspaceFolderBasename}",
+			],
+			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
 		},
-		"console": "internalConsole",
-		"internalConsoleOptions": "openOnSessionStart"
-	},
-	{
-		"name": "Launch Multiplayer Client #2",
-		"type": "clr",
-		"request": "launch",
-		"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
-		"args": [
-			"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client2",
-			"--addModPath", "${workspaceFolder}"
-		],
-		"linux": {
-			"type": "mono"
+		{
+			"name": "Launch Survival Server",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "Prepare Server (Survival)",
+			"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
+			"args": [
+				"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/server",
+				"--addModPath", "${workspaceFolder}",
+			],
+			"linux": {
+				"console": "integratedTerminal",
+			},
+			"console": "externalTerminal",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
 		},
-		"console": "internalConsole",
-		"internalConsoleOptions": "openOnSessionStart"
-	}]
+		{
+			"name": "Launch Creative Server",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "Prepare Server (Creative)",
+			"program": "${env:VINTAGE_STORY}/VintagestoryServer.exe",
+			"args": [
+				"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/server",
+				"--addModPath", "${workspaceFolder}",
+			],
+			"linux": {
+				"console": "internalConsole",
+			},
+			"console": "externalTerminal",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
+		},
+		{
+			"name": "Launch Multiplayer Client",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+			"args": [
+				"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
+				"--addModPath", "${workspaceFolder}",
+				"--connect", "127.0.0.1"
+			],
+			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
+		},
+		{
+			"name": "Launch Multiplayer Client #2",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+			"args": [
+				"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client2",
+				"--addModPath", "${workspaceFolder}"
+			],
+			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
+		},
+
+		{
+			"name": "Dotnet Watch (Creative)",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "dotnet",
+			"args": [
+				"watch",
+				"--verbose",
+				"--project",
+				"Launcher/VSCodeDevLauncher.csproj",
+				// Passing arguments isn't yet supported by dotnet, so we do it through environment variables instead
+				/*"--dataPath", "${env:VINTAGE_STORY_DEV_DATA}/client",
+				"--addModPath", "${workspaceFolder}",
+				"--playStyle", "creativebuilding",
+				"--openWorld", "Superflat ${workspaceFolderBasename}",*/
+			],
+			"env": {
+				"VS_LAUNCH_DATAPATH": "${env:VINTAGE_STORY_DEV_DATA}/client",
+				"VS_LAUNCH_MODPATH": "${workspaceFolder}",
+				"VS_LAUNCH_PLAYSTYLE": "creativebuilding",
+				"VS_LAUNCH_WORLDNAME": "Superflat ${workspaceFolderBasename}"
+			},
+			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
+		},
+
+		{
+			"name": "Dotnet Watch (Survival)",
+			"type": "coreclr",
+			"request": "launch",
+			"program": "dotnet",
+			"args": [
+				"watch",
+				"--verbose",
+				"--project",
+				"Launcher/VSCodeDevLauncher.csproj",
+			],
+			"env": {
+				"VS_LAUNCH_DATAPATH": "${env:VINTAGE_STORY_DEV_DATA}/client",
+				"VS_LAUNCH_MODPATH": "${workspaceFolder}",
+				"VS_LAUNCH_PLAYSTYLE": "preset-surviveandbuild",
+				"VS_LAUNCH_WORLDNAME": "Survival ${workspaceFolderBasename}"
+			},
+			"console": "internalConsole",
+			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false
+		},
+	]
 }
