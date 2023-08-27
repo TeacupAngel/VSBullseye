@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -15,11 +16,15 @@ namespace Bullseye
 	{
 		public BullseyeCollectibleBehaviorSling(CollectibleObject collObj) : base(collObj) {}
 
+		private CharacterSystem characterSystem;
+
 		public override void OnLoaded(ICoreAPI api)
 		{
 			base.OnLoaded(api);
 
 			WeaponStats.weaponType = BullseyeRangedWeaponType.Sling;
+
+			characterSystem = api.ModLoader.GetModSystem<CharacterSystem>();
 		}
 
 		public override void OnAimingStart(ItemSlot slot, EntityAgent byEntity)
@@ -85,7 +90,64 @@ namespace Bullseye
 			float damage = base.GetProjectileDamage(byEntity, weaponSlot, ammoSlot);
 			damage *= ConfigSystem?.GetSyncedConfig()?.SlingDamage ?? 1f;
 
+			if (byEntity is EntityPlayer entityPlayer && (characterSystem?.HasTrait(entityPlayer.Player, "improviser") ?? false))
+			{
+				// Good candidate for a GetEntityPlayerTraits extension method in TeaLib?
+				string playerClass = byEntity.WatchedAttributes.GetString("characterClass");
+
+				double rangedWeaponsDamage = 1f;
+
+				if (characterSystem.characterClassesByCode.TryGetValue(playerClass, out CharacterClass characterClass))
+				{
+					IEnumerable<string> traitCodes = characterClass.Traits.Concat(entityPlayer.WatchedAttributes.GetStringArray("extraTraits", Array.Empty<string>()));
+
+					foreach (string traitCode in traitCodes)
+					{
+						characterSystem.TraitsByCode.TryGetValue(traitCode, out Trait trait);
+
+						if (!trait.Attributes.TryGetValue("rangedWeaponsDamage", out double rangedWeaponsDamageMod)) continue;
+						if (rangedWeaponsDamageMod >= 0) continue;
+
+						rangedWeaponsDamage += rangedWeaponsDamageMod;
+					}
+				}
+
+				damage /= (float)rangedWeaponsDamage;
+			}
+
 			return damage;
+		}
+
+		public override float GetProjectileVelocity(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
+		{
+			float velocity = base.GetProjectileVelocity(byEntity, weaponSlot, ammoSlot);
+
+			if (byEntity is EntityPlayer entityPlayer && (characterSystem?.HasTrait(entityPlayer.Player, "improviser") ?? false))
+			{
+				// Good candidate for a GetEntityPlayerTraits extension method in TeaLib?
+				string playerClass = byEntity.WatchedAttributes.GetString("characterClass");
+
+				double totalDrawingStrength = 1f;
+
+				if (characterSystem.characterClassesByCode.TryGetValue(playerClass, out CharacterClass characterClass))
+				{
+					IEnumerable<string> traitCodes = characterClass.Traits.Concat(entityPlayer.WatchedAttributes.GetStringArray("extraTraits", Array.Empty<string>()));
+
+					foreach (string traitCode in traitCodes)
+					{
+						characterSystem.TraitsByCode.TryGetValue(traitCode, out Trait trait);
+
+						if (!trait.Attributes.TryGetValue("bowDrawingStrength", out double bowDrawingStrengthMod)) continue;
+						if (bowDrawingStrengthMod >= 0) continue;
+
+						totalDrawingStrength += bowDrawingStrengthMod;
+					}
+				}
+
+				velocity /= (float)totalDrawingStrength;
+			}
+
+			return velocity;
 		}
 
 		public override float GetProjectileDropChance(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
@@ -151,6 +213,13 @@ namespace Bullseye
 
 			float dmgPercent = inSlot.Itemstack.ItemAttributes["damagePercent"].AsFloat(0) * 100f;
 			if (dmgPercent != 0) dsc.AppendLine((dmgPercent > 0 ? "+" : "") + Lang.Get("bullseye:weapon-bonus-damage-ranged", dmgPercent));
+		}
+
+		public override void OnUnloaded(ICoreAPI api)
+		{
+			base.OnUnloaded(api);
+
+			characterSystem = null;
 		}
 	}
 }
