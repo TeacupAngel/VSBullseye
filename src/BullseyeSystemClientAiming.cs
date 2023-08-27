@@ -242,8 +242,8 @@ namespace Bullseye
 
 			ShowReticle = slingDt > slingCycleStartDeadzone && slingDt < slingCycleLength - slingCycleEndCoyoteTime;
 
-			float slingRatioCurrent = (slingDt - slingCycleStartDeadzone);
-			float slingRatioMax = (slingCycleLength - slingCycleStartDeadzone - slingCycleEndCoyoteTime);
+			float slingRatioCurrent = slingDt - slingCycleStartDeadzone;
+			float slingRatioMax = slingCycleLength - slingCycleStartDeadzone - slingCycleEndCoyoteTime;
 
 			float slingCurrentPoint = GameMath.Min(slingRatioCurrent / slingRatioMax, 1f);
 
@@ -259,8 +259,10 @@ namespace Bullseye
 			float verticalAimLimit = (__instance.Height / 2f) * WeaponStats.verticalLimit;
 			float verticalAimOffset = (__instance.Height / 2f) * WeaponStats.verticalOffset;
 
+			float yInversionFactor = ClientSettings.InvertMouseYAxis ? -1 : 1;
+
 			float deltaX = (float)(___MouseDeltaX - ___DelayedMouseDeltaX);
-			float deltaY = (float)(___MouseDeltaY - ___DelayedMouseDeltaY);
+			float deltaY = (float)(___MouseDeltaY - ___DelayedMouseDeltaY) * yInversionFactor;
 
 			if (Math.Abs(aim.X + deltaX) > horizontalAimLimit)
 			{
