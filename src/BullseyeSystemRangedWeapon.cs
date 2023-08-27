@@ -179,12 +179,12 @@ namespace Bullseye
 
 		public float GetEntityCooldownTime(long entityId)
 		{
-			return cooldownByEntityId.ContainsKey(entityId) ? (world.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
+			return cooldownByEntityId.TryGetValue(entityId, out long cooldownMilliseconds) ? (world.ElapsedMilliseconds - cooldownByEntityId[entityId]) / 1000f : 0;
 		}
 
 		public bool HasEntityCooldownPassed(long entityId, double cooldownTime)
 		{
-			return cooldownByEntityId.ContainsKey(entityId) ? world.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
+			return cooldownByEntityId.TryGetValue(entityId, out long cooldownMilliseconds) ? world.ElapsedMilliseconds > cooldownByEntityId[entityId] + (cooldownTime * 1000) : true;
 		}
 
 		public void SetLastEntityRangedChargeData(long entityId, ItemSlot itemSlot)
@@ -195,12 +195,12 @@ namespace Bullseye
 
 		public ItemSlot GetLastEntityRangedItemSlot(long entityId)
 		{
-			return lastRangedSlotByEntityId.ContainsKey(entityId) ? lastRangedSlotByEntityId[entityId] : null;
+			return lastRangedSlotByEntityId.TryGetValue(entityId, out ItemSlot itemSlot) ? itemSlot : null;
 		}
 
 		public float GetEntityChargeStart(long entityId)
 		{
-			return rangedChargeStartByEntityId.ContainsKey(entityId) ? rangedChargeStartByEntityId[entityId] / 1000f : 0;
+			return rangedChargeStartByEntityId.TryGetValue(entityId, out long chargeStartMilliseconds) ? chargeStartMilliseconds / 1000f : 0;
 		}
 
 		public void EntitySetAmmoType(EntityAgent entity, string ammoCategory, ItemStack ammoItemStack)

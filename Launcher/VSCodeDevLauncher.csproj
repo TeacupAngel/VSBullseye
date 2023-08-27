@@ -10,7 +10,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\TeaLib.csproj">
+		<ProjectReference Include="..\Bullseye.csproj">
 			<Private>true</Private>
 		</ProjectReference>
 	</ItemGroup>

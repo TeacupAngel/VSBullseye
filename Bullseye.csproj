@@ -61,7 +61,8 @@
      <PropertyGroup>
         <DebugType>portable</DebugType>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>    
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+		<AnalysisMode>Minimum</AnalysisMode>
     </PropertyGroup>
 	<PropertyGroup>
 		<DefaultItemExcludes>$(DefaultItemExcludes);Launcher/**</DefaultItemExcludes>

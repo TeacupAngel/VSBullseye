@@ -148,7 +148,7 @@ namespace Bullseye
 		{            
 			MeshRef meshRef = null;
 
-			if (RuntimeEnv.MainThreadId == System.Threading.Thread.CurrentThread.ManagedThreadId)
+			if (RuntimeEnv.MainThreadId == Environment.CurrentManagedThreadId)
 			{
 				meshRef = capi.Render.UploadMesh(meshdata);
 			} else
@@ -235,16 +235,13 @@ namespace Bullseye
 		{
 			if (capi.Side != EnumAppSide.Client) throw new NotImplementedException("Server side animation system not implemented.");
 
-			if (ActiveAnimationsByAnimCode.ContainsKey(code))
+			if (ActiveAnimationsByAnimCode.ContainsKey(code) && forceImmediate)
 			{
-				ActiveAnimationsByAnimCode.Remove(code);
-
-				if (forceImmediate)
-				{
-					RunningAnimation anim = Array.Find(Animator.anims, (anim) => {return anim.Animation.Code == code;});
-					anim.EasingFactor = 0f;
-				}
+				RunningAnimation anim = Array.Find(Animator.anims, (anim) => {return anim.Animation.Code == code;});
+				anim.EasingFactor = 0f;
 			}
+
+			ActiveAnimationsByAnimCode.Remove(code);
 		}
 
 		public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)

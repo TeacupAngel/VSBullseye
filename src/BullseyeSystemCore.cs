@@ -55,12 +55,14 @@ namespace Bullseye
 			api.RegisterItemClass("Bullseye.BullseyeItemNoTpUseAnimation", typeof(BullseyeItemNoTpUseAnimation));
 
 			// Legacy
+			#pragma warning disable CS0618
 			api.RegisterItemClass("bullseye.ItemBow", typeof(BullseyeItemBow));
 			api.RegisterItemClass("bullseye.ItemSpear", typeof(BullseyeItemSpear));
 			api.RegisterItemClass("bullseye.ItemSling", typeof(BullseyeItemSling));
 
 			api.RegisterItemClass("bullseye.ItemArrow", typeof(BullseyeItemArrow));
 			api.RegisterItemClass("bullseye.ItemBullet", typeof(BullseyeItemBullet));
+			#pragma warning restore CS0618
 		}
 
 		private void RegisterEntityBehaviors(ICoreAPI api)

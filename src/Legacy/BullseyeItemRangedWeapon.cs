@@ -30,7 +30,7 @@ namespace Bullseye
 		protected LoadedTexture AimTexFullCharge;
 		protected LoadedTexture AimTexBlocked;
 
-		private WorldInteraction[] interactions = {};
+		private WorldInteraction[] interactions = Array.Empty<WorldInteraction>();
 
 		public string AmmoType => WeaponStats.ammoType;
 
