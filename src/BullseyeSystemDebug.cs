@@ -1,6 +1,7 @@
 #if DEBUG
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -84,6 +85,33 @@ namespace Bullseye
 			playerBot.RightHandItemSlot.Itemstack = new ItemStack(sapi.World.SearchItems(new AssetLocation("bow-simple"))[0], 1);
 		}
 
+		private void CommandGiveExtraTrait(ICoreServerAPI sapi, IServerPlayer player, int groupId, CmdArgs args)
+		{
+			string traitName = args.PopWord();
+
+			if (string.IsNullOrEmpty(traitName))
+			{
+				player.SendMessage(groupId, "Bullseye: trait name required", EnumChatType.CommandError);
+				return;
+			}
+
+			List<string> extraTraits = player.Entity.WatchedAttributes.GetStringArray("extraTraits", Array.Empty<string>()).ToList();
+
+			if (extraTraits.Contains(traitName))
+			{
+				player.SendMessage(groupId, "Bullseye: player already has this trait", EnumChatType.CommandError);
+				return;
+			}
+			extraTraits.Add(traitName);
+
+			player.Entity.WatchedAttributes.SetStringArray("extraTraits", extraTraits.ToArray());
+		}
+
+		private void CommandResetTraits(ICoreServerAPI sapi, IServerPlayer player, int groupId, CmdArgs args)
+		{
+			player.Entity.WatchedAttributes.SetStringArray("extraTraits", Array.Empty<string>());
+		}
+
 		public override void StartServerSide(ICoreServerAPI sapi)
 		{
 			sapi.RegisterCommand("bsedbg", "", "", (IServerPlayer player, int groupId, CmdArgs args) => {
@@ -98,6 +126,12 @@ namespace Bullseye
 							return;
 						case "archerbot":
 							CommandSpawnArcherbot(sapi, player, groupId, args);
+							return;
+						case "givetrait":
+							CommandGiveExtraTrait(sapi, player, groupId, args);
+							return;
+						case "resettraits":
+							CommandResetTraits(sapi, player, groupId, args);
 							return;
 					}
 				}
