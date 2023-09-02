@@ -22,7 +22,7 @@
 			"horizontalLimit": 0,
 			"verticalLimit": 0,
         	"verticalOffset": 0,
-			"projectileSpread": 0,
+			"projectileSpread": 2,
 			"projectileVelocity": 15,
 
 			"verticalAccuracyMult": 0.7,
@@ -50,6 +50,5 @@
 			"*": 1
 		}
 	},
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/breakChanceOnImpact", "value": 0.8 },
-	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/spreadModifier", "value": 2 }
+	{ "side": "Server", "file": "game:itemtypes/resource/stone", "op": "add", "path": "/attributes/breakChanceOnImpact", "value": 0.8 }
 ]

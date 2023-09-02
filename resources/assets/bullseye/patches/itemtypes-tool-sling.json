@@ -21,7 +21,7 @@
 			"verticalLimit": 0.05,
         	"verticalOffset": 0,
 
-			"projectileVelocity": 27,
+			"projectileVelocity": 35,
 
 			"chargeTime": 0.9,
 			"accuracyStartTime": 1.5,
