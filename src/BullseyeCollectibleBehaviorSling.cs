@@ -103,8 +103,7 @@ namespace Bullseye
 
 					foreach (string traitCode in traitCodes)
 					{
-						characterSystem.TraitsByCode.TryGetValue(traitCode, out Trait trait);
-
+						if (!characterSystem.TraitsByCode.TryGetValue(traitCode, out Trait trait)) continue;
 						if (!trait.Attributes.TryGetValue("rangedWeaponsDamage", out double rangedWeaponsDamageMod)) continue;
 						if (rangedWeaponsDamageMod >= 0) continue;
 
@@ -135,8 +134,7 @@ namespace Bullseye
 
 					foreach (string traitCode in traitCodes)
 					{
-						characterSystem.TraitsByCode.TryGetValue(traitCode, out Trait trait);
-
+						if (!characterSystem.TraitsByCode.TryGetValue(traitCode, out Trait trait)) continue;
 						if (!trait.Attributes.TryGetValue("bowDrawingStrength", out double bowDrawingStrengthMod)) continue;
 						if (bowDrawingStrengthMod >= 0) continue;
 

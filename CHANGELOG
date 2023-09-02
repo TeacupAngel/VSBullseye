@@ -1,3 +1,16 @@
+= 2.5.0 =
+- Bullseye now targets .NET 7, and is no longer compatible with .NET Framework 4.6.1
+- Fixed aiming mode has been significantly improved and is considered ready to use now
+- Tweak: Malefactors no longer receive ranged penalties to slings (also applies to any modded class with Improviser trait)
+- Tweak: Sling stone inaccuracy reduced from 2 degrees to 0
+- Tweak: Sling stone and lead bullet velocity increased from 27 m/s to 35 m/s
+- Fixed: Broken aiming when mouse Y axis is inverted
+- Fixed: Class bonuses/penalties to damage doubled in ammo select menu
+- API: Refactored BehaviorRangedWeapon method Shoot into smaller methods, for easier extensibility and cross-mod support
+- API: Ranged damage and velocity modifiers moved to GetProjectileDamage and GetProjectileVelocity methods
+- Other: Minor code performance improvements
+
+
 = 2.5.0-rc.1 =
 
 - Tweak: Reduced sling aiming difficulty
