@@ -7,6 +7,7 @@ using Vintagestory.API.Client;
 using Vintagestory.API.Datastructures;
 using ProtoBuf;
 using System.Reflection;
+using Vintagestory.Common;
 
 namespace Bullseye
 {
@@ -286,13 +287,28 @@ namespace Bullseye
 		}
 
 		public void SetFixedAimPoint(int screenWidth, int screenHeight)
-		{			
-			float horizontalAimLimit = (screenWidth / 2f) * WeaponStats.horizontalLimit;
-			float verticalAimLimit = (screenHeight / 2f) * WeaponStats.verticalLimit;
-			float verticalAimOffset = (screenHeight / 2f) * WeaponStats.verticalOffset;
+		{
+			float difficultyModifier = GameMath.Clamp(configSystem.GetSyncedConfig().AimDifficulty, 0, 1);
 
-			aim.X = -horizontalAimLimit + ((float)random.NextDouble() * horizontalAimLimit * 2f);
-			aim.Y = -verticalAimLimit + ((float)random.NextDouble() * verticalAimLimit * 2f) + verticalAimOffset;
+			float horizontalLimit = GameMath.Min(WeaponStats.horizontalLimit, 0.25f);
+			float verticalLimit = GameMath.Min(WeaponStats.verticalLimit, 0.25f);
+			float verticalOffset = GameMath.Clamp(WeaponStats.verticalOffset, -0.05f, 0.1f);
+
+			float horizontalAimLimit = (screenWidth / 2f) * horizontalLimit;
+			float verticalAimLimit = (screenHeight / 2f) * verticalLimit;
+			float verticalAimOffset = (screenHeight / 2f) * verticalOffset;
+
+			float maxHorizontalShift = horizontalAimLimit / 2.25f;
+			float maxVerticalShift = verticalAimLimit / 2.25f;
+
+			maxHorizontalShift = GameMath.Max(maxHorizontalShift, GameMath.Min(maxVerticalShift, horizontalAimLimit));
+			maxVerticalShift = GameMath.Max(maxVerticalShift, GameMath.Min(maxHorizontalShift, verticalAimLimit));
+
+			float horizontalCenter = GameMath.Clamp(aim.X, -maxHorizontalShift, maxHorizontalShift);
+			float verticalCenter = GameMath.Clamp(aim.Y, -maxVerticalShift, maxVerticalShift);
+
+			aim.X = (horizontalCenter + (-maxHorizontalShift + ((float)random.NextDouble() * maxHorizontalShift * 2f))) * difficultyModifier;
+			aim.Y = (verticalCenter + (-maxVerticalShift + ((float)random.NextDouble() * maxVerticalShift * 2f)) + verticalAimOffset) * difficultyModifier;
 		}
 
 		public void SetAim()
