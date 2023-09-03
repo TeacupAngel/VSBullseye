@@ -4,6 +4,7 @@
 - Tweak: Malefactors no longer receive ranged penalties to slings (also applies to any modded class with Improviser trait)
 - Tweak: Sling stone inaccuracy reduced from 2 degrees to 0
 - Tweak: Sling stone and lead bullet velocity increased from 27 m/s to 35 m/s
+- Tweak: Sling lead bullet drag reduced from 0.1 to 0.05
 - Fixed: Broken aiming when mouse Y axis is inverted
 - Fixed: Class bonuses/penalties to damage doubled in ammo select menu
 - API: Refactored BehaviorRangedWeapon method Shoot into smaller methods, for easier extensibility and cross-mod support
