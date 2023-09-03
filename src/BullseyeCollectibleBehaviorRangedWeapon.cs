@@ -31,7 +31,7 @@ namespace Bullseye
 		protected LoadedTexture AimTexFullCharge;
 		protected LoadedTexture AimTexBlocked;
 
-		private WorldInteraction[] interactions = {};
+		private WorldInteraction[] interactions = Array.Empty<WorldInteraction>();
 
 		public string AmmoType => WeaponStats.ammoType;
 
@@ -405,13 +405,14 @@ namespace Bullseye
 			// Weapon modifiers
 			damage *= (1f + weaponSlot.Itemstack?.Collectible?.Attributes?["damagePercent"].AsFloat(0) ?? 0f);
 			damage += weaponSlot.Itemstack?.Collectible?.Attributes?["damage"].AsFloat(0) ?? 0;
+			damage *= byEntity.Stats.GetBlended("rangedWeaponsDamage");
 
 			return damage;
 		}
 
 		public virtual float GetProjectileVelocity(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			return WeaponStats.projectileVelocity + (ammoSlot.Itemstack?.ItemAttributes?["velocityModifier"].AsFloat(0f) ?? 0f);
+			return (WeaponStats.projectileVelocity + (ammoSlot.Itemstack?.ItemAttributes?["velocityModifier"].AsFloat(0f) ?? 0f)) * byEntity.Stats.GetBlended("bowDrawingStrength");
 		}
 
 		public virtual float GetProjectileSpread(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
@@ -425,7 +426,7 @@ namespace Bullseye
 
 		public virtual EntityProperties GetProjectileEntityType(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot)
 		{
-			throw new NotImplementedException(String.Format("Ranged weapon CollectibleBehavior of {0} has no implementation for GetProjectileEntityType()!", collObj.Code));
+			throw new NotImplementedException($"[Bullseye] Ranged weapon CollectibleBehavior of {collObj.Code} has no implementation for GetProjectileEntityType()!");
 		}
 
 		public virtual int GetWeaponDurabilityCost(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot) => 0;
@@ -436,74 +437,78 @@ namespace Bullseye
 			return api.Side == EnumAppSide.Server ? GetEntityChargeTime(entity) : GetEntityChargeTime(entity) + 0.1f;
 		}
 
-		public void Shoot(ItemSlot slot, EntityAgent byEntity, Vec3d targetVec)
+		public void Shoot(ItemSlot weaponSlot, EntityAgent byEntity, Vec3d targetVec)
 		{
 			byEntity.Attributes.SetInt("bullseyeAiming", 0);
 
-			ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, slot);
+			ItemSlot ammoSlot = GetNextAmmoSlot(byEntity, weaponSlot);
 			if (ammoSlot == null) return;
 
-			EntityProperties type = GetProjectileEntityType(byEntity, slot, ammoSlot);
-			if (type == null) return;
+			EntityProperties projectileEntityType = GetProjectileEntityType(byEntity, weaponSlot, ammoSlot);
+			if (projectileEntityType == null) return;
 
-			float damage = GetProjectileDamage(byEntity, slot, ammoSlot);
-			float speed = GetProjectileVelocity(byEntity, slot, ammoSlot);
-			float spread = GetProjectileSpread(byEntity, slot, ammoSlot);
-			float dropChance = GetProjectileDropChance(byEntity, slot, ammoSlot);
-			float weight = GetProjectileWeight(byEntity, slot, ammoSlot);
+			float damage = GetProjectileDamage(byEntity, weaponSlot, ammoSlot);
+			float speed = GetProjectileVelocity(byEntity, weaponSlot, ammoSlot);
+			float spread = GetProjectileSpread(byEntity, weaponSlot, ammoSlot);
+			float dropChance = GetProjectileDropChance(byEntity, weaponSlot, ammoSlot);
+			float weight = GetProjectileWeight(byEntity, weaponSlot, ammoSlot);
 
-			int ammoDurabilityCost = GetProjectileDurabilityCost(byEntity, slot, ammoSlot);
-			int weaponDurabilityCost = GetWeaponDurabilityCost(byEntity, slot, ammoSlot);
+			int ammoDurabilityCost = GetProjectileDurabilityCost(byEntity, weaponSlot, ammoSlot);
+			int weaponDurabilityCost = GetWeaponDurabilityCost(byEntity, weaponSlot, ammoSlot);
 
 			// If we need to damage the projectile by more than 1 durability per shot, do it here, but leave at least 1 durability
-			// TODO: separate into its own method
-			if (GetProjectileDurabilityCost(byEntity, slot, ammoSlot) > 1)
+			ammoDurabilityCost = DamageProjectile(byEntity, weaponSlot, ammoSlot, ammoDurabilityCost);
+
+			Vec3d velocity = GetVelocityVector(byEntity, targetVec, speed, spread);
+
+			ItemStack ammoStack = ammoSlot.TakeOut(1);
+			ammoSlot.MarkDirty();
+
+			Entity projectileEntity = CreateProjectileEntity(byEntity, projectileEntityType, ammoStack, damage, dropChance, weight, ammoDurabilityCost);
+			if (projectileEntity == null)
 			{
-				int durability = slot.Itemstack.Attributes.GetInt("durability", collObj.Durability);
+				api.Logger.Error($"[Bullseye] Ranged weapon {collObj.Code} tried to shoot, but failed to create the projectile entity!");
+				return;
+			}
+
+			// Used in vanilla spears but feels awful, might redo later with proper offset to the right
+			//projectileEntity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
+			projectileEntity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
+			projectileEntity.ServerPos.Motion.Set(velocity);
+
+			projectileEntity.Pos.SetFrom(projectileEntity.ServerPos);
+			projectileEntity.World = byEntity.World;
+
+			FinalizeProjectileEntity(projectileEntity, byEntity);
+
+			byEntity.World.SpawnEntity(projectileEntity);
+
+			RangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);
+
+			OnShot(weaponSlot, projectileEntity, byEntity);
+
+			if (weaponDurabilityCost > 0)
+			{
+				weaponSlot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, weaponSlot, weaponDurabilityCost);
+			}
+		}
+
+		protected int DamageProjectile(EntityAgent byEntity, ItemSlot weaponSlot, ItemSlot ammoSlot, int ammoDurabilityCost)
+		{
+			if (GetProjectileDurabilityCost(byEntity, weaponSlot, ammoSlot) > 1)
+			{
+				int durability = weaponSlot.Itemstack.Attributes.GetInt("durability", collObj.Durability);
 
 				ammoDurabilityCost = ammoDurabilityCost >= durability ? durability : ammoDurabilityCost;
 
-				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, ammoDurabilityCost - 1);
+				weaponSlot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, weaponSlot, ammoDurabilityCost - 1);
 			}
 
-			ItemStack stack = ammoSlot.TakeOut(1);
-			ammoSlot.MarkDirty();
+			return ammoDurabilityCost;
+		}
 
-			// Aaaaaa why don't EntityThrownStone and EntityThrownBeenade inherit from EntityProjectile
-			// Tyron pls
-			// TODO: separate into its own method
-			//EntityProjectile entityProjectile = byEntity.World.ClassRegistry.CreateEntity(type) as EntityProjectile;
-			Entity projectileEntity = byEntity.World.ClassRegistry.CreateEntity(type);
-
-			EntityProjectile entityProjectile = projectileEntity as EntityProjectile;
-
-			if (entityProjectile != null)
-			{
-				entityProjectile.FiredBy = byEntity;
-				entityProjectile.Damage = damage;
-				entityProjectile.ProjectileStack = stack;
-				entityProjectile.DropOnImpactChance = dropChance;
-				entityProjectile.DamageStackOnImpact = ammoDurabilityCost > 0;
-				entityProjectile.Weight = weight;
-			}
-			else if (projectileEntity is EntityThrownStone entityThrownStone)
-			{
-				entityThrownStone.FiredBy = byEntity;
-				entityThrownStone.Damage = damage * byEntity.Stats.GetBlended("rangedWeaponsDamage");
-				entityThrownStone.ProjectileStack = stack;
-			}
-			else if (projectileEntity is EntityThrownBeenade entityThrownBeenade)
-			{
-				entityThrownBeenade.FiredBy = byEntity;
-				//entityThrownBeenade.Damage = damage * byEntity.Stats.GetBlended("rangedWeaponsDamage");
-				// Using reflection to set damage because it's internal
-				// It's not worth bugging Tyron about because Bullseye is gonna get its own projectile class anyway
-				FieldInfo fieldInfo = typeof(EntityThrownBeenade).GetField("Damage", BindingFlags.Instance | BindingFlags.NonPublic);
-				fieldInfo.SetValue(entityThrownBeenade, damage * byEntity.Stats.GetBlended("rangedWeaponsDamage"));
-				entityThrownBeenade.ProjectileStack = stack;
-			}
-
-			// TODO: separate the entirety of getting the shot direction vector into its own method
+		protected Vec3d GetVelocityVector(EntityAgent byEntity, Vec3d targetVec, float projectileSpeed, float spread)
+		{
 			// Might as well reuse these attributes for now
 			double spreadAngle = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1);
 			double spreadMagnitude = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1);
@@ -513,11 +518,11 @@ namespace Bullseye
 			Vec3d groundVec = new Vec3d(GameMath.Cos(byEntity.SidedPos.Yaw), 0, GameMath.Sin(targetVec.Z)).Normalize();
 			Vec3d up = new Vec3d(0, 1, 0);
 
-			Vec3d horizAxis = groundVec.Cross(up);
+			Vec3d horizontalAxis = groundVec.Cross(up);
 
 			double[] matrix = Mat4d.Create();
-			Mat4d.Rotate(matrix, matrix, WeaponStats.zeroingAngle * GameMath.DEG2RAD, new double[] {horizAxis.X, horizAxis.Y, horizAxis.Z});
-			double[] matrixVec = new double[] {targetVec.X, targetVec.Y, targetVec.Z, 0};
+			Mat4d.Rotate(matrix, matrix, WeaponStats.zeroingAngle * GameMath.DEG2RAD, new double[] { horizontalAxis.X, horizontalAxis.Y, horizontalAxis.Z });
+			double[] matrixVec = new double[] { targetVec.X, targetVec.Y, targetVec.Z, 0 };
 			matrixVec = Mat4d.MulWithVec4(matrix, matrixVec);
 
 			Vec3d zeroedTargetVec = new Vec3d(matrixVec[0], matrixVec[1], matrixVec[2]);
@@ -534,7 +539,7 @@ namespace Bullseye
 			Vec3d deviation = magnitude * perp * GameMath.Cos(angle) + magnitude * perp2 * GameMath.Sin(angle);
 			Vec3d newAngle = (zeroedTargetVec + deviation) * (zeroedTargetVec.Length() / (zeroedTargetVec.Length() + deviation.Length()));
 
-			Vec3d velocity = newAngle * byEntity.Stats.GetBlended("bowDrawingStrength") * (speed * GlobalConstants.PhysicsFrameTime);
+			Vec3d velocity = newAngle * projectileSpeed * GlobalConstants.PhysicsFrameTime;
 
 			// What the heck? Server's SidedPos.Motion is somehow twice that of client's!
 			velocity += api.Side == EnumAppSide.Client ? byEntity.SidedPos.Motion : byEntity.SidedPos.Motion / 2;
@@ -544,36 +549,62 @@ namespace Bullseye
 				velocity += api.Side == EnumAppSide.Client ? mountedEntity.SidedPos.Motion : mountedEntity.SidedPos.Motion / 2;
 			}
 
-			// Used in vanilla spears but feels awful, might redo later with zeroing and proper offset to the right
-			//projectileEntity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0));
-			projectileEntity.ServerPos.SetPos(byEntity.SidedPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y, 0));
-			projectileEntity.ServerPos.Motion.Set(velocity);
+			return velocity;
+		}
 
-			projectileEntity.Pos.SetFrom(projectileEntity.ServerPos);
-			projectileEntity.World = byEntity.World;
+		protected virtual Entity CreateProjectileEntity(EntityAgent byEntity, EntityProperties type, ItemStack ammoStack, float damage, float dropChance, float weight, int ammoDurabilityCost)
+		{
+			/* 
+			/ Aaaaaa why don't EntityThrownStone and EntityThrownBeenade inherit from EntityProjectile
+			/ Tyron pls
+			/
+			/ Anyways, we check for all vanilla entity types here just in case some mod tries to make beenades shootable from the sling, or something like that
+			*/ 
+			Entity projectileEntity = byEntity.World.ClassRegistry.CreateEntity(type);
 
-			if (entityProjectile != null)
+			if (projectileEntity is EntityProjectile entityProjectile)
+			{
+				entityProjectile.FiredBy = byEntity;
+				entityProjectile.Damage = damage;
+				entityProjectile.ProjectileStack = ammoStack;
+				entityProjectile.DropOnImpactChance = dropChance;
+				entityProjectile.DamageStackOnImpact = ammoDurabilityCost > 0;
+				entityProjectile.Weight = weight;
+			}
+			else if (projectileEntity is EntityThrownStone entityThrownStone)
+			{
+				entityThrownStone.FiredBy = byEntity;
+				entityThrownStone.Damage = damage;
+				entityThrownStone.ProjectileStack = ammoStack;
+			}
+			else if (projectileEntity is EntityThrownBeenade entityThrownBeenade)
+			{
+				entityThrownBeenade.FiredBy = byEntity;
+				// Using reflection to set damage because it's internal
+				// It's not worth bugging Tyron about because Bullseye is gonna get its own projectile class anyway
+				FieldInfo fieldInfo = typeof(EntityThrownBeenade).GetField("Damage", BindingFlags.Instance | BindingFlags.NonPublic);
+				fieldInfo.SetValue(entityThrownBeenade, damage);
+				entityThrownBeenade.ProjectileStack = ammoStack;
+			}
+
+			return projectileEntity;
+		}
+
+		protected virtual Entity FinalizeProjectileEntity(Entity projectileEntity, EntityAgent byEntity)
+		{
+			if (projectileEntity is EntityProjectile entityProjectile)
 			{
 				entityProjectile.SetRotation();
 
-				#if DEBUG
+#if DEBUG
 				if (byEntity.World.Side == EnumAppSide.Server && byEntity is EntityPlayer entityPlayer)
 				{
 					api.ModLoader.GetModSystem<BullseyeSystemDebug>().SetFollowArrow(entityProjectile, entityPlayer);
 				}
-				#endif
+#endif
 			}
-			
-			byEntity.World.SpawnEntity(projectileEntity);
 
-			RangedWeaponSystem.StartEntityCooldown(byEntity.EntityId);
-
-			OnShot(slot, projectileEntity, byEntity);
-
-			if (weaponDurabilityCost > 0)
-			{
-				slot.Itemstack.Collectible.DamageItem(byEntity.World, byEntity, slot, weaponDurabilityCost);
-			}
+			return projectileEntity;
 		}
 
 		private void ServerHandleFire(string eventName, ref EnumHandling handling, IAttribute data)
@@ -604,7 +635,7 @@ namespace Bullseye
 			return WeaponStats.chargeTime / entity.Stats.GetBlended("rangedWeaponsSpeed");
 		}
 
-		public virtual void PrepareHeldInteractionHelp()
+		protected virtual void PrepareHeldInteractionHelp()
 		{
 			if (collObj.Attributes["interactionLangCode"].AsString() != null)
 			{
