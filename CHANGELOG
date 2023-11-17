@@ -1,3 +1,9 @@
+= 2.5.1 =
+
+- Fixed: Class ranged damage bonus accidentally applied twice
+- Fixed: Chalk stones did not use Bullseye aiming
+- New: Russian translation by Vulpeep
+
 = 2.5.0 =
 - Bullseye now targets .NET 7, and is no longer compatible with .NET Framework 4.6.1
 - Fixed aiming mode has been significantly improved and is considered ready to use now
@@ -10,7 +16,6 @@
 - API: Refactored BehaviorRangedWeapon method Shoot into smaller methods, for easier extensibility and cross-mod support
 - API: Ranged damage and velocity modifiers moved to GetProjectileDamage and GetProjectileVelocity methods
 - Other: Minor code performance improvements
-
 
 = 2.5.0-rc.1 =
 

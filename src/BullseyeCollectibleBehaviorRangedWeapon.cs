@@ -564,6 +564,9 @@ namespace Bullseye
 
 			if (projectileEntity is EntityProjectile entityProjectile)
 			{
+				// Unlike other projectiles, EntityProjectile applies the class bonus damage itself, so we need to reduce it here
+				damage /= byEntity.Stats.GetBlended("rangedWeaponsDamage");
+
 				entityProjectile.FiredBy = byEntity;
 				entityProjectile.Damage = damage;
 				entityProjectile.ProjectileStack = ammoStack;
