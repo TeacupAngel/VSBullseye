@@ -258,7 +258,7 @@ namespace Bullseye
 		{
 			if (onlyWhenAnimating && ActiveAnimationsByAnimCode.Count == 0)
 			{
-				capi.Render.RenderMesh(renderInfo.ModelRef);
+				capi.Render.RenderMultiTextureMesh(renderInfo.ModelRef);
 			}
 			else
 			{
