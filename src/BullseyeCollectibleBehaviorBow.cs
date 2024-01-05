@@ -103,7 +103,7 @@ namespace Bullseye
 
 				if (api is ICoreClientAPI capi)
 				{
-					ItemRenderInfo renderInfo = capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground);
+					ItemRenderInfo renderInfo = capi.Render.GetItemStackRenderInfo(arrowSlot, EnumItemRenderTarget.Ground, 0);
 					renderInfo.Transform = renderInfo.Transform.Clone();
 
 					// Scale arrows down - ground model of arrows is 21 voxels long, but in bows, the arrows are only 15 units long

@@ -83,7 +83,7 @@ namespace Bullseye
 
 				prog.UniformMatrix("modelViewMatrix", AttachedMeshMat.Values);
 
-				capi.Render.RenderMesh(AttachedRenderInfo.ModelRef);
+				capi.Render.RenderMultiTextureMesh(AttachedRenderInfo.ModelRef);
 			}
 		}
 	}
