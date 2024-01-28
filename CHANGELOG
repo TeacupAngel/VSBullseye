@@ -5,6 +5,7 @@
 - New: Russian translation by Vulpeep
 
 = 2.5.0 =
+
 - Bullseye now targets .NET 7, and is no longer compatible with .NET Framework 4.6.1
 - Fixed aiming mode has been significantly improved and is considered ready to use now
 - Tweak: Malefactors no longer receive ranged penalties to slings (also applies to any modded class with Improviser trait)

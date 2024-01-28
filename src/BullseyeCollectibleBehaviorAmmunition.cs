@@ -21,7 +21,7 @@ namespace Bullseye
 
 		public virtual float GetDamage(ItemSlot inSlot, string weaponType, IWorldAccessor world)
 		{
-			if (!String.IsNullOrEmpty(weaponType) && inSlot.Itemstack.ItemAttributes != null)
+			if (!string.IsNullOrEmpty(weaponType) && inSlot.Itemstack.ItemAttributes != null)
 			{
 				JsonObject damageObject = inSlot.Itemstack.ItemAttributes["ammoTypes"][weaponType]["damage"];
 
@@ -42,7 +42,7 @@ namespace Bullseye
 			if (inSlot is BullseyeItemSlotAmmo) return;
 			if (inSlot.Itemstack.ItemAttributes == null) return;
 
-			float damage = 0;
+			float damage;
 
 			if (inSlot.Itemstack.ItemAttributes["ammoTypes"].Exists && inSlot.Itemstack.ItemAttributes["ammoTypes"].Token is JObject ammoTypeJObject)
 			{

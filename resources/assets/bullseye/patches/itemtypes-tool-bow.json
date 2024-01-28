@@ -1,7 +1,8 @@
 [ 
 	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "replace", "path": "/class", "value": "Bullseye.BullseyeItemNoTpUseAnimation" },
 
-	{
+	// Disabled - doesn't work with new animation system
+	/*{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
 		{
 			"name": "Bullseye.AnimatableAttach",
@@ -10,7 +11,7 @@
 				"onlyWhenAnimating": false
 			}
 		}
-	},
+	},*/
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/behaviors/-", "value": 
@@ -22,7 +23,7 @@
 	{ 
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/bullseyeWeaponStatsByType", "value": 
 		{
-			"*-crude": {
+			"bow-crude": {
 				"ammoType": "arrow",
 
 				"aimDrift": 130,
@@ -43,7 +44,7 @@
 				"moveSpeedPenalty": 0.4
 			},
 
-			"*-simple": {
+			"bow-simple": {
 				"ammoType": "arrow",
 
 				"aimDrift": 130,
@@ -64,7 +65,7 @@
 				"moveSpeedPenalty": 0.4
 			},
 
-			"*-long": {
+			"bow-long": {
 				"ammoType": "arrow",
 
 				"aimDrift": 150,
@@ -88,7 +89,7 @@
 				"moveSpeedPenalty": 0.7
 			},
 
-			"*-recurve": {
+			"bow-recurve": {
 				"ammoType": "arrow",
 				
 				"aimDrift": 180,
@@ -114,25 +115,25 @@
 		}
 	},
 
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-crude" },
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-simple" },
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-long" },
-	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/*-recurve" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/bow-crude" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/bow-simple" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/bow-long" },
+	{ "side": "Server", "file": "game:itemtypes/tool/bow", "op": "remove", "path": "/attributes/damageByType/bow-recurve" },
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/damagePercentByType", "value": 
 		{
-			"*-crude": -0.1,
-			"*-long": 0.6,
-			"*-recurve": 0.35
+			"bow-crude": -0.1,
+			"bow-long": 0.6,
+			"bow-recurve": 0.35
 		}
 	},
 
 	{
 		"side": "Server", "file": "game:itemtypes/tool/bow", "op": "add", "path": "/attributes/arrowScaleByType", "value": 
 		{
-			"*-long": 1.2,
-			"*-recurve": 1.5
+			"bow-long": 1.2,
+			"bow-recurve": 1.5
 		}
 	},
 
