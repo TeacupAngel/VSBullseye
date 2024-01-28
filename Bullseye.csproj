@@ -10,7 +10,7 @@
     </PropertyGroup>
     <PropertyGroup>
         <ModId>bullseye</ModId>
-        <VSVersion>1.18.10</VSVersion>
+        <VSVersion>1.19.0-rc.5</VSVersion>
         <ModWebsite>https://mods.vintagestory.at/bullseye</ModWebsite>
     </PropertyGroup>
     <ItemGroup>
