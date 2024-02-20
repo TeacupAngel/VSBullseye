@@ -203,7 +203,6 @@
 				{
 					"frame": 0,
 					"elements": {
-						"origin": {  },
 						"BowGrip": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
 						"BowLimbUp": { "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
 						"BowTipUp": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
@@ -215,26 +214,9 @@
 					}
 				},
 				{
-					"frame": 5,
-					"elements": {
-						"origin": {  },
-						"BowGrip": {  },
-						"BowNock": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 4.5 }
-					}
-				},
-				{
-					"frame": 10,
-					"elements": {
-						"origin": {  },
-						"BowGrip": {  },
-						"BowNock": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 8.0 }
-					}
-				},
-				{
 					"frame": 14,
 					"elements": {
-						"origin": {  },
-						"BowGrip": {  },
+						"BowGrip": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
 						"BowLimbUp": { "rotationX": 0.0, "rotationY": -67.5, "rotationZ": 0.0 },
 						"BowTipUp": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
 						"BowStringUp1": { "rotationX": 0.0, "rotationY": 140.0, "rotationZ": 0.0 },
@@ -242,19 +224,6 @@
 						"BowTipDown": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
 						"BowStringDown1": { "rotationX": 0.0, "rotationY": -139.0, "rotationZ": 0.0 },
 						"BowNock": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 9.6 }
-					}
-				},
-				{
-					"frame": 15,
-					"elements": {
-						"origin": {  },
-						"BowGrip": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 },
-						"BowLimbUp": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": -22.5, "rotationZ": 0.0 },
-						"BowTipUp": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": -22.5, "rotationZ": 0.0 },
-						"BowStringUp1": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 112.5, "rotationZ": 0.0 },
-						"BowLimbDown": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 22.5, "rotationZ": 0.0 },
-						"BowTipDown": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 22.5, "rotationZ": 0.0 },
-						"BowStringDown1": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": -112.5, "rotationZ": 0.0 }
 					}
 				}
 			]

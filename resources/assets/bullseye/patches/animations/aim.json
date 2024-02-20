@@ -1,0 +1,66 @@
+﻿[
+  {
+    "file": "game:entities/humanoid/player",
+    "op": "add",
+    "path": "/client/animations/-",
+    "value": {"code": "aim-y-fp", "animation": "aim-y-fp", "animationSpeed": 1, "blendMode": "Add"}
+  },
+  {
+    "file": "game:shapes/entity/humanoid/seraph-faceless",
+    "op": "add",
+    "path": "/animations/-",
+    "value": {
+      "name": "aim-y-fp",
+      "code": "aim-y-fp",
+      "quantityframes": 91,
+      "onActivityStopped": "EaseOut",
+      "onAnimationEnd": "Hold",
+      "keyframes": [
+        {
+					"frame": 0,
+					"elements": {
+						"UpperTorso": { "rotationX": 0.0, "rotationY": -45.0, "rotationZ": 0.0 }
+					}
+				},
+				{
+					"frame": 90,
+					"elements": {
+						"UpperTorso": { "rotationX": 0.0, "rotationY": 45.0, "rotationZ": 0.0 }
+					}
+				}
+      ]
+    }
+  },
+  {
+    "file": "game:entities/humanoid/player",
+    "op": "add",
+    "path": "/client/animations/-",
+    "value": {"code": "aim-z-fp", "animation": "aim-z-fp", "animationSpeed": 1, "blendMode": "Add"}
+  },
+  {
+    "file": "game:shapes/entity/humanoid/seraph-faceless",
+    "op": "add",
+    "path": "/animations/-",
+    "value": {
+      "name": "aim-z-fp",
+      "code": "aim-z-fp",
+      "quantityframes": 91,
+      "onActivityStopped": "EaseOut",
+      "onAnimationEnd": "Hold",
+      "keyframes": [
+        {
+					"frame": 0,
+					"elements": {
+						"UpperTorso": { "rotationX": 0.0, "rotationY": 0, "rotationZ": -45.0 }
+					}
+				},
+				{
+					"frame": 90,
+					"elements": {
+						"UpperTorso": { "rotationX": 0.0, "rotationY": 0, "rotationZ": 45.0 }
+					}
+				}
+      ]
+    }
+  }
+]
