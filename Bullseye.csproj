@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyTitle>Bullseye</AssemblyTitle>
         <Authors>TeacupAngel</Authors>
-        <Version>2.5.2</Version>
+        <Version>2.5.4</Version>
         <Description>A vanilla-friendly rebalance and overhaul of ranged weapons.</Description>
         <RepositoryUrl>https://github.com/TeacupAngel/VSBullseye</RepositoryUrl>
         <TargetFramework>net7.0</TargetFramework>
@@ -14,17 +14,24 @@
         <ModWebsite>https://mods.vintagestory.at/bullseye</ModWebsite>
     </PropertyGroup>
     <ItemGroup>
-        <ModInfoAuthors Include='TeacupAngel'/>
+        <ModInfoAuthors Include="TeacupAngel" />
     </ItemGroup>
     <ItemGroup>
-        <Dependencies Include='game'>
+        <Dependencies Include="game">
             <Version>$(VSVersion)</Version>
         </Dependencies>
-        <Dependencies Include='survival'>
+        <Dependencies Include="survival">
             <Version>$(VSVersion)</Version>
+        </Dependencies>
+        <Dependencies Include="animationmanagerlib">
+            <Version>0.6.2</Version>
         </Dependencies>
     </ItemGroup>
     <ItemGroup>
+        <Reference Include="AnimationManager">
+          <HintPath>..\Firearms\AnimationManager_19\Releases\animationmanagerlib\AnimationManager.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
         <Reference Include="VintagestoryAPI">
             <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
             <Private>false</Private>
@@ -32,6 +39,10 @@
         <Reference Include="VSEssentials">
             <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
             <Private>false</Private>
+        </Reference>
+        <Reference Include="VSImGui">
+          <HintPath>VSImGui.dll</HintPath>
+          <Private>False</Private>
         </Reference>
         <Reference Include="VSSurvivalMod">
             <HintPath>$(VINTAGE_STORY)/Mods/VSSurvivalMod.dll</HintPath>
@@ -89,10 +100,10 @@
         </PropertyGroup>
 
         <WriteLinesToFile File="$(MSBuildProjectDirectory)/resources/modinfo.json" Lines="$(ModInfo)" Overwrite="true" WriteOnlyWhenDifferent="true" />
-        <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/resources" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="$(MSBuildProjectDirectory)/resources/modinfo.json" DestinationFolder="$(MSBuildProjectDirectory)/resources" SkipUnchangedFiles="true" />
 
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/resources/" SkipUnchangedFiles="true"/>
-        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/resources" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MSBuildProjectDirectory)/resources/" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(MSBuildProjectDirectory)/resources" SkipUnchangedFiles="true" />
     </Target>
     <Target Name="DebugTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(ReleasePack)' == ''"></Target>
     <Target Name="ReleaseTarget" AfterTargets="PostBuildEvent" DependsOnTargets="BaseTarget" Condition="'$(ReleasePack)' == 1">

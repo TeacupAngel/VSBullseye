@@ -14,3 +14,6 @@ Launcher/obj
 
 # release packaging folders
 /release
+/.vs
+/.gitignore
+/.gitignore
